@@ -52,7 +52,7 @@ configurations.all {
 dependencies {
     compile project(':library-core')
     
-    compile 'com.deltadna.android:deltadna-sdk:4.0.0-SNAPSHOT'
+    compile 'com.deltadna.android:deltadna-sdk:4.0.0'
 }
 
 apply from: "$rootProject.projectDir/gradle/mvn-push.gradle"
