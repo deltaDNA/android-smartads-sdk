@@ -1,0 +1,5 @@
+<lint>
+  <issue id="InvalidPackage">
+    <ignore path="**/stax-1.2.0.jar"/>
+  </issue>
+</lint>

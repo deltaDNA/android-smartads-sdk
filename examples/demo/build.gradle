@@ -1,0 +1,118 @@
+/*
+ * Copyright (c) 2016 deltaDNA Ltd. All rights reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    
+    defaultConfig {
+        applicationId "com.deltadna.android.sdk.ads.example"
+        
+        minSdkVersion    rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        
+        versionCode 1
+        versionName "1.0.0"
+        
+        buildConfigField('String', logTagName, "\"$logTagValue\"")
+        
+        multiDexEnabled true
+    }
+    
+    compileOptions {
+        sourceCompatibility rootProject.ext.sourceCompatibilityVersion
+        targetCompatibility rootProject.ext.targetCompatibilityVersion
+    }
+    
+    dexOptions {
+        javaMaxHeapSize "2048M"
+    }
+    
+    signingConfigs {
+        // for demonstration purposes only, replace with your own signing config
+        release.initWith(debug)
+    }
+    
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
+            
+            signingConfig signingConfigs.release
+        }
+        
+        // https://code.google.com/p/android/issues/detail?id=187483
+        // none of the suggested workarounds work so will need to wait for a fix
+        //releaseOptimized {
+        //    minifyEnabled true
+        //    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard.cfg'
+        //    
+        //    signingConfig signingConfigs.release
+        //}
+    }
+    
+    productFlavors {
+        none {}
+        all_ {} // 'all' appears to be reserved
+        adcolony {}
+        admob {}
+        amazon {}
+        applovin {}
+        chartboost {}
+        flurry {}
+        inmobi {}
+        mobfox {}
+        mopub {}
+        supersonic {}
+        unity {}
+        vungle {}
+    }
+}
+
+dependencies {
+    compile project(':library')
+    
+    all_Compile project(':provider-adcolony')
+    all_Compile project(':provider-admob')
+    all_Compile project(':provider-amazon')
+    all_Compile project(':provider-applovin')
+    all_Compile project(':provider-chartboost')
+    all_Compile project(':provider-flurry')
+    all_Compile project(':provider-inmobi')
+    all_Compile project(':provider-mobfox')
+    all_Compile project(':provider-mopub')
+    all_Compile project(':provider-supersonic')
+    all_Compile project(':provider-unity')
+    all_Compile project(':provider-vungle')
+    
+    adcolonyCompile project(':provider-adcolony')
+    admobCompile project(':provider-admob')
+    amazonCompile project(':provider-amazon')
+    applovinCompile project(':provider-applovin')
+    chartboostCompile project(':provider-chartboost')
+    flurryCompile project(':provider-flurry')
+    inmobiCompile project(':provider-inmobi')
+    mobfoxCompile project(':provider-mobfox')
+    mopubCompile project(':provider-mopub')
+    supersonicCompile project(':provider-supersonic')
+    unityCompile project(':provider-unity')
+    vungleCompile project(':provider-vungle')
+    
+    compile 'com.android.support:multidex:1.0.1'
+    compile "com.android.support:appcompat-v7:$appCompatVersion"
+}
