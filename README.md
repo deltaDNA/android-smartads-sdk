@@ -2,6 +2,10 @@
 
 # deltaDNA Android SDK SmartAds
 
+The deltaDNA SmartAds SDK provides your Android game with access to our intelligent ad mediation platform.  It supports both interstitial and rewarded type ads.
+
+SmartAds is currently an Enterprise only feature.  SmartAds On Demand will be available soon, meanwhile once you've completed the integration steps below, contact <louise.cameron@deltadna.com> to enable the service.
+
 ## Contents
 * [Adding to a project](#adding-to-a-project)
 * [Usage](#usage)
@@ -88,7 +92,7 @@ gets included by the Android build tools during the build process.
 1.  My project has a dependency on a newer version of Google Play
     Services, can I use a different version of AdMob than what is
     documented?
-    
+
     Yes. If you have added AdMob to your dependencies then you can
     change the version to what you require, for example
     ```Java
