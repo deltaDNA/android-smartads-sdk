@@ -61,6 +61,7 @@ android {
 dependencies {
     compile "com.android.support:appcompat-v7:$appCompatVersion"
     
+    compile project(':provider-adcolony')
     compile project(':provider-admob')
     compile project(':provider-applovin')
     compile project(':provider-mobfox')
