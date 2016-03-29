@@ -31,21 +31,21 @@ allprojects {
 ```
 In your app's build script
 ```groovy
-compile 'com.deltadna.android:deltadna-smartads:1.0.1'
+compile 'com.deltadna.android:deltadna-smartads:1.0.2-SNAPSHOT'
 
 // ad providers
-compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.0.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.0.2-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.0.2-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.0.2-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.0.2-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.0.2-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.0.2-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.0.2-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.0.2-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.0.2-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.0.2-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.0.2-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.0.2-SNAPSHOT'
 ```
 
 Please note that the versions used for SmartAds and the providers should
