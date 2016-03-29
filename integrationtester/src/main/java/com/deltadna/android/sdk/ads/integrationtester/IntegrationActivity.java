@@ -28,6 +28,7 @@ import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter;
 import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
@@ -47,6 +48,13 @@ public final class IntegrationActivity extends AppCompatActivity implements
     
     private static final List<? extends MediationAdapter> PROVIDERS =
             Arrays.asList(
+                    new AdColonyAdapter(
+                            0,
+                            0,
+                            0,
+                            "appc804f742b8064114a9",
+                            "",
+                            "vzbb9fa7accb4e4185b7"),
                     new AdMobAdapter(
                             0,
                             0,
