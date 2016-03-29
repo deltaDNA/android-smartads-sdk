@@ -46,8 +46,7 @@ android {
 
 dependencies {
     compile project(':library-bindings')
-    
-    compile 'com.android.support:support-annotations:23.1.1'
+    compile "com.android.support:support-annotations:$annotationsVersion"
     
     compile files('libs/adcolony-2.3.4.jar')
     // needed for advertising id retrieval
