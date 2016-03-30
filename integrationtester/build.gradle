@@ -59,7 +59,7 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:$appCompatVersion"
+    compile "com.android.support:appcompat-v7:$supportVersion"
     
     compile project(':provider-adcolony')
     compile project(':provider-admob')

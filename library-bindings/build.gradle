@@ -54,7 +54,7 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:support-annotations:$annotationsVersion"
+    compile "com.android.support:support-annotations:$supportVersion"
     
     testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
