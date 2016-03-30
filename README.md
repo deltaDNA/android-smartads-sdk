@@ -1,8 +1,11 @@
 ![deltaDNA logo](https://deltadna.com/wp-content/uploads/2015/06/deltadna_www@1x.png)
 
 # deltaDNA Android SDK SmartAds
+[![Download](https://api.bintray.com/packages/deltadna/android/deltadna-smartads/images/download.svg)](https://bintray.com/deltadna/android/deltadna-smartads/_latestVersion)
 
-The deltaDNA SmartAds SDK provides your Android game with access to our intelligent ad mediation platform.  It supports both interstitial and rewarded type ads.
+The deltaDNA SmartAds SDK provides your Android game with access to our
+intelligent ad mediation platform.  It supports both interstitial and
+rewarded type ads.
 
 ## Contents
 * [Adding to a project](#adding-to-a-project)
