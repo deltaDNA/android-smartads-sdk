@@ -33,7 +33,7 @@ allprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.11'
+    gradleVersion = '2.12'
 }
 
 task clean(type: Delete) {
@@ -54,11 +54,9 @@ ext {
     // N.B in 'AdvertisingIdClient' class has been moved in 8.* to 'basement' package
     // https://developers.google.com/android/reference/com/google/android/gms/ads/identifier/AdvertisingIdClient
     playServicesVersion = '7.8.0'
-    annotationsVersion = '23.2.1'
+    supportVersion = '23.2.1'
     
-    appCompatVersion = '23.2.1'
-    
-    kotlinVersion = '1.0.0'
+    kotlinVersion = '1.0.1'
     
     logTagName  = 'LOG_TAG'
     logTagValue = 'deltaDNA'

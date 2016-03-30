@@ -1,8 +1,11 @@
 ![deltaDNA logo](https://deltadna.com/wp-content/uploads/2015/06/deltadna_www@1x.png)
 
 # deltaDNA Android SDK SmartAds
+[![Download](https://api.bintray.com/packages/deltadna/android/deltadna-smartads/images/download.svg)](https://bintray.com/deltadna/android/deltadna-smartads/_latestVersion)
 
-The deltaDNA SmartAds SDK provides your Android game with access to our intelligent ad mediation platform.  It supports both interstitial and rewarded type ads.
+The deltaDNA SmartAds SDK provides your Android game with access to our
+intelligent ad mediation platform.  It supports both interstitial and
+rewarded type ads.
 
 ## Contents
 * [Adding to a project](#adding-to-a-project)
@@ -29,22 +32,26 @@ allprojects {
 ```
 In your app's build script
 ```groovy
-compile 'com.deltadna.android:deltadna-smartads:1.0.1'
+compile 'com.deltadna.android:deltadna-sdk:VERSION'
+compile 'com.deltadna.android:deltadna-smartads:1.0.2'
 
 // ad providers
-compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.0.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.0.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.0.2'
+compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.0.2'
+compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.0.2'
+compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.0.2'
+compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.0.2'
+compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.0.2'
+compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.0.2'
+compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.0.2'
+compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.0.2'
+compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.0.2'
+compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.0.2'
+compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.0.2'
 ```
+Any combination of the above ad providers can be defined in your build
+script, depending on which ad networks you would like to use in your
+application.
 
 Please note that the versions used for SmartAds and the providers should
 be the same. We cannot guarantee that an ad provider will work correctly
@@ -55,6 +62,42 @@ An instance can be retrieved by calling `DDNASmartAds.instance()`, and
 registering for ads can be done through the `registerForAds(Activity)`
 method. The analytics SDK should be initialised and started before
 registering for ads.
+```java
+@Override
+public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    
+    DDNA.instance().startSdk();
+    DDNASmartAds.instance.registerForAds(this);
+}
+```
+
+SmartAds should be notified of when your `Activity` is resumed, paused,
+and destroyed by overriding the lifecycle methods and calling the
+appropriate methods on `DDNASmartAds`.
+```java
+@Override
+public void onResume() {
+    super.onResume();
+    
+    DDNASmartAds.instance().onResume();
+}
+
+@Override
+public void onPause() {
+    super.onPause();
+    
+    DDNASmartAds.instance().onPause();
+}
+
+@Override
+public void onDestroy() {
+    DDNASmartAds.instance().onDestroy();
+    DDNA.instance().stopSdk();
+    
+    super.onDestroy();
+}
+```
 
 Whether an ad is available can be checked by using
 `isInterstitialAdAvailable()` for interstitial ads, and
@@ -88,16 +131,26 @@ gets included by the Android build tools during the build process.
 
 ## FAQs
 1.  My project has a dependency on a newer version of Google Play
-    Services, can I use a different version of AdMob than what is
-    documented?
-
-    Yes. If you have added AdMob to your dependencies then you can
-    change the version to what you require, for example
+    Services, can I use a different version than what SmartAds uses
+    internally?
+    
+    Yes. If you have added any of the other Play Service modules to
+    your dependencies then you can change the version to what you
+    require, for example
     ```Java
-    compile 'com.google.android.gms:play-services-ads:8.4.0'
+    compile 'com.google.android.gms:play-services-maps:8.4.0'
     ```
     We have verified so far that versions 8.* can be used instead of
     version 7.8.
+2.  I'm getting a `TransformException` on the
+    `transformClassesWithDexForDebug` task when my project is being
+    built.
+    
+    This can happen if you have included more ad providers which can
+    result in your app containing more than 65K methods. Ad providers
+    can either be removed to decrease the method count, or an
+    [official workaround](http://developer.android.com/tools/building/multidex.html#mdex-gradle)
+    can be implemented.
 
 ## Changelog
 Can be found [here](CHANGELOG.md).

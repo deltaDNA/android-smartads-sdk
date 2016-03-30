@@ -114,5 +114,5 @@ dependencies {
     vungleCompile project(':provider-vungle')
     
     compile 'com.android.support:multidex:1.0.1'
-    compile "com.android.support:appcompat-v7:$appCompatVersion"
+    compile "com.android.support:appcompat-v7:$supportVersion"
 }
