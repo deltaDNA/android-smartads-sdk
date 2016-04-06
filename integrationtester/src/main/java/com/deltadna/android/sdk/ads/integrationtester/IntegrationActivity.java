@@ -95,7 +95,7 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             0,
                             0,
-                            "55e5cbcf15d3c2221b000275"));
+                            "55f6a0bf03f5ac182100067a"));
     private static final List<String> PROVIDER_NAMES;
     static {
         final List<String> names = new ArrayList<>(PROVIDERS.size());

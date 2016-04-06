@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.0.3) (2016-04-06)
+Fixed JavaDoc links to Android/Java classes.
+Fixed Vungle reporting incorrect ad completion.
+Updated Vungle library dependency.
+
 ## [1.0.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.0.2) (2016-03-30)
 Fixed build failure with MobFox provider.
 
