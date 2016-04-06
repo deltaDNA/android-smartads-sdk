@@ -69,14 +69,13 @@ dependencies {
     provided project(':provider-unity')
     provided project(':provider-vungle')
     
+    testCompile "com.google.truth:truth:$truthVersion"
+    testCompile "junit:junit:$junitVersion"
     testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-    
-    testCompile 'com.google.truth:truth:0.28'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.json:json:20160212'
-    testCompile 'org.mockito:mockito-core:1.10.19'
-    testCompile 'org.robolectric:robolectric:3.0'
+    testCompile "org.json:json:$jsonVersion"
+    testCompile "org.mockito:mockito-core:$mockitoVersion"
+    testCompile "org.robolectric:robolectric:$robolectricVersion"
 }
 
 apply from: "$rootProject.projectDir/gradle/mvn-push.gradle"
