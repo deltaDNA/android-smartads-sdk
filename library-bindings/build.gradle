@@ -56,10 +56,10 @@ android {
 dependencies {
     compile "com.android.support:support-annotations:$supportVersion"
     
+    testCompile "com.google.truth:truth:$truthVersion"
+    testCompile "junit:junit:$junitVersion"
     testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-    testCompile 'com.google.truth:truth:0.28'
-    testCompile 'junit:junit:4.12'
 }
 
 apply from: "$rootProject.projectDir/gradle/mvn-push.gradle"

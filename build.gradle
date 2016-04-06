@@ -56,7 +56,13 @@ ext {
     playServicesVersion = '7.8.0'
     supportVersion = '23.2.1'
     
+    mockitoKotlinVersion = '0.3.0'
+    truthVersion = '0.28'
+    junitVersion = '4.12'
     kotlinVersion = '1.0.1'
+    jsonVersion = '20160212'
+    mockitoVersion = '1.10.19'
+    robolectricVersion = '3.0'
     
     logTagName  = 'LOG_TAG'
     logTagValue = 'deltaDNA'
