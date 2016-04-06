@@ -31,49 +31,57 @@ final class VungleEventForwarder implements EventListener {
     private boolean available;
     private boolean complete;
     
-    public VungleEventForwarder(
-            MediationListener listener,
-            MediationAdapter adapter) {
-        
+    VungleEventForwarder(MediationListener listener, MediationAdapter adapter) {
         this.listener = listener;
         this.adapter = adapter;
     }
     
     @Override
     public void onAdEnd(boolean wasCallToActionClicked) {
-        if(wasCallToActionClicked) {
+        Log.d(  BuildConfig.LOG_TAG,
+                "Ad end with wasCallToActionClicked " + wasCallToActionClicked);
+        
+        if (wasCallToActionClicked) {
             listener.onAdClicked(adapter);
         }
-
+        
         listener.onAdClosed(adapter, complete);
     }
-
+    
     @Override
     public void onAdStart() {
+        Log.d(BuildConfig.LOG_TAG, "Ad start");
+        
         complete = false;
         listener.onAdShowing(adapter);
     }
-
+    
     @Override
     public void onAdUnavailable(String reason) {
         Log.w(BuildConfig.LOG_TAG, "Ad unavailable: " + reason);
+        
         listener.onAdFailedToLoad(
                 adapter,
                 AdRequestResult.Error,
                 "Vungle ad unavailable: " + reason);
     }
-
+    
     @Override
     public void onAdPlayableChanged(boolean isAdPlayable) {
+        Log.d(BuildConfig.LOG_TAG, "Ad playable changed to " + isAdPlayable);
+        
         this.available = isAdPlayable;
     }
-
+    
     @Override
     public void onVideoView(boolean isCompletedView, int watchedMillis, int videoMillis) {
+        Log.d(  BuildConfig.LOG_TAG,
+                "Video view with isCompletedView " + isCompletedView);
+        
         complete = isCompletedView;
     }
-
-    public boolean isAvailable() {
+    
+    boolean isAvailable() {
         return available;
     }
 }
