@@ -17,6 +17,11 @@
 package com.deltadna.android.sdk.ads.core;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
@@ -30,10 +35,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 public class AdService implements
         EngagementListener,
         AdAgentListener {
@@ -41,13 +42,16 @@ public class AdService implements
     public static final String AD_TYPE_UNKNOWN = "UNKNOWN";
     public static final String AD_TYPE_INTERSTITIAL = "INTERSTITIAL";
     public static final String AD_TYPE_REWARDED = "REWARDED";
-
-    public static final int AD_CONFIGURATION_RETRY_SECONDS = 60 * 15;
     
-    static final String VERSION = "SmartAds v" + BuildConfig.VERSION_NAME;
+    private static final int TIME_ONE_SECOND = 60 * 1000;
+    private static final String VERSION = "SmartAds v" + BuildConfig.VERSION_NAME;
+    
+    private final Handler handler = new Handler(Looper.getMainLooper());
     
     private final Activity activity;
     private final AdServiceListener listener;
+    
+    private final ConnectivityManager connectivity;
     
     private String decisionPoint;
     
@@ -58,8 +62,7 @@ public class AdService implements
 
     private int sessionAdCount = 0;
     private long lastAdShownTime = 0;
-
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    
     private int adMinimumInterval;
     private int adMaxPerSession;
     private boolean adDebugMode = true;
@@ -70,6 +73,9 @@ public class AdService implements
         
         this.activity = activity;
         this.listener = listener;
+        
+        connectivity = (ConnectivityManager)
+                activity.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     public void init(String decisionPoint) {
@@ -162,16 +168,24 @@ public class AdService implements
     
     @Override
     public void onFailure(Throwable t) {
-        Log.w(BuildConfig.LOG_TAG, "Engage request failed due to " + t, t);
-
-        listener.onFailedToRegisterForAds("Engage request failed, unable to initialise ad service.");
-
-        scheduler.schedule(new Runnable() {
-            @Override
-            public void run() {
-                requestAdConfiguration();
-            }
-        }, AD_CONFIGURATION_RETRY_SECONDS, TimeUnit.SECONDS);
+        Log.w(BuildConfig.LOG_TAG, "Engage request failed", t);
+        
+        final NetworkInfo info = connectivity.getActiveNetworkInfo();
+        if (info == null || !info.isConnected()) {
+            handler.postDelayed(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(  BuildConfig.LOG_TAG,
+                                    "Retrying to register for ads");
+                            requestAdConfiguration();
+                        }
+                    },
+                    TIME_ONE_SECOND);
+        } else {
+            listener.onFailedToRegisterForAds(
+                    "Failed to initialise ad service");
+        }
     }
     
     @Override
@@ -412,12 +426,14 @@ public class AdService implements
             rewardedAgent.onResume();
         }
     }
-
+    
     public void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+        
         if (interstitialAgent != null) {
             interstitialAgent.onDestroy();
         }
-        if(rewardedAgent != null) {
+        if (rewardedAgent != null) {
             rewardedAgent.onDestroy();
         }
     }
