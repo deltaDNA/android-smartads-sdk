@@ -1,6 +1,7 @@
 # Change Log
 
 ## [1.1.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.0) (YYYY-MM-DD)
+Fixed Unity reporting 'no fill' on a cold start.
 
 ## [1.0.4](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.0.4) (YYYY-MM-DD)
 

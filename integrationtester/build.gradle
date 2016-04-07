@@ -66,5 +66,6 @@ dependencies {
     compile project(':provider-applovin')
     compile project(':provider-mobfox')
     compile project(':provider-supersonic')
+    compile project(':provider-unity')
     compile project(':provider-vungle')
 }

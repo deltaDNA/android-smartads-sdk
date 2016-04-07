@@ -17,6 +17,9 @@
 package com.deltadna.android.sdk.ads.provider.unity;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
@@ -28,7 +31,10 @@ import org.json.JSONObject;
 
 public final class UnityRewardedAdapter extends MediationAdapter {
     
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    
     private final String gameId;
+    @Nullable
     private final String zoneId;
     private final boolean testMode;
     
@@ -40,7 +46,7 @@ public final class UnityRewardedAdapter extends MediationAdapter {
             int demoteOnCode,
             int waterfallIndex,
             String gameId,
-            String zoneId,
+            @Nullable String zoneId,
             boolean testMode) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
@@ -51,7 +57,11 @@ public final class UnityRewardedAdapter extends MediationAdapter {
     }
     
     @Override
-    public void requestAd(Activity activity, MediationListener listener, JSONObject configuration) {
+    public void requestAd(
+            Activity activity,
+            final MediationListener listener,
+            JSONObject configuration) {
+        
         this.activity = activity;
         
         if (!initialised) {
@@ -73,46 +83,44 @@ public final class UnityRewardedAdapter extends MediationAdapter {
                         AdRequestResult.Configuration,
                         "Invalid Unity configuration: " + e);
             }
-        }
-        
-        if (UnityAds.canShow()) {
-            listener.onAdLoaded(this);
         } else {
-            Log.w(BuildConfig.LOG_TAG, "No fill");
-            listener.onAdFailedToLoad(
-                    this,
-                    AdRequestResult.NoFill,
-                    "Unity no fill");
+            if (UnityAds.canShow()) {
+                listener.onAdLoaded(UnityRewardedAdapter.this);
+            } else {
+                Log.w(BuildConfig.LOG_TAG, "No fill");
+                listener.onAdFailedToLoad(
+                        UnityRewardedAdapter.this,
+                        AdRequestResult.NoFill,
+                        "Unity no fill");
+            }
         }
     }
-
+    
     @Override
     public void showAd() {
         if(UnityAds.canShow()) {
             UnityAds.show();
         }
     }
-
+    
     @Override
     public String getProviderString() {
         return "UNITY";
     }
-
+    
     @Override
     public String getProviderVersionString() {
         return UnityAds.getSDKVersion();
     }
-
+    
     @Override
     public void onDestroy() {
-
+        handler.removeCallbacksAndMessages(null);
     }
-
+    
     @Override
-    public void onPause() {
-
-    }
-
+    public void onPause() {}
+    
     @Override
     public void onResume() {
         if(activity != null) {

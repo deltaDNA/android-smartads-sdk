@@ -35,6 +35,7 @@ import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicRewardedAdapter;
+import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter;
 
 import org.json.JSONObject;
@@ -91,6 +92,13 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             "45d0aacd",
                             false),
+                    new UnityRewardedAdapter(
+                            0,
+                            0,
+                            0,
+                            "109764",
+                            null,
+                            true),
                     new VungleAdapter(
                             0,
                             0,
