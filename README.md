@@ -3,6 +3,7 @@
 # deltaDNA Android SDK SmartAds
 [![Build Status](https://travis-ci.org/deltaDNA/android-smartads-sdk.svg)](https://travis-ci.org/deltaDNA/android-smartads-sdk)
 [![Download](https://api.bintray.com/packages/deltadna/android/deltadna-smartads/images/download.svg)](https://bintray.com/deltadna/android/deltadna-smartads/_latestVersion)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/438f868ae71a444b8a1f8ebce32c3176)](https://www.codacy.com/app/deltaDNA/android-smartads-sdk)
 
 The deltaDNA SmartAds SDK provides your Android game with access to our
 intelligent ad mediation platform.  It supports both interstitial and
