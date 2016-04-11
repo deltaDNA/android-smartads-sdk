@@ -3,6 +3,7 @@
 # deltaDNA Android SDK智能广告
 [![Build Status](https://travis-ci.org/deltaDNA/android-smartads-sdk.svg)](https://travis-ci.org/deltaDNA/android-smartads-sdk)
 [![Download](https://api.bintray.com/packages/deltadna/android/deltadna-smartads/images/download.svg)](https://bintray.com/deltadna/android/deltadna-smartads/_latestVersion)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/438f868ae71a444b8a1f8ebce32c3176)](https://www.codacy.com/app/deltaDNA/android-smartads-sdk)
 
 deltaDNA智能广告SDK用于将你的Android游戏接入我们的智能广告中间平台。它同时支持空闲广告和奖励广告。
 
