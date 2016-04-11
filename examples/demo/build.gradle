@@ -82,6 +82,11 @@ android {
         unity {}
         vungle {}
     }
+    
+    lintOptions {
+        // workaround for missing stax dependency (mobfox)
+        disable 'InvalidPackage'
+    }
 }
 
 dependencies {
