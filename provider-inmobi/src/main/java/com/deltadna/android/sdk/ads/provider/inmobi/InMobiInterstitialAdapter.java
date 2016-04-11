@@ -99,20 +99,19 @@ public final class InMobiInterstitialAdapter extends MediationAdapter {
     public String getProviderVersionString() {
         return InMobiSdk.getVersion();
     }
-
+    
     @Override
     public void onDestroy() {
-
+        interstitial = null;
     }
-
+    
     @Override
     public void onPause() {
-
+        // cannot forward
     }
-
+    
     @Override
     public void onResume() {
-
+        // cannot forward
     }
-
 }

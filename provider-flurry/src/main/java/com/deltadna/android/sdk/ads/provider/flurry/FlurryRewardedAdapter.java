@@ -101,21 +101,22 @@ public final class FlurryRewardedAdapter extends MediationAdapter {
     public String getProviderVersionString() {
         return FlurryAgent.getReleaseVersion();
     }
-
+    
     @Override
     public void onDestroy() {
-        if(interstitial != null) {
+        if (interstitial != null) {
             interstitial.destroy();
+            interstitial = null;
         }
     }
-
+    
     @Override
     public void onPause() {
-
+        // cannot forward
     }
-
+    
     @Override
     public void onResume() {
-
+        // cannot forward
     }
 }

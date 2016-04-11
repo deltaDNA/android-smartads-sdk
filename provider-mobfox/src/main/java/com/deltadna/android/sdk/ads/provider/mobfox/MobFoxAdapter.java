@@ -87,19 +87,22 @@ public final class MobFoxAdapter extends MediationAdapter {
     public String getProviderVersionString() {
         return "7.0.8";
     }
-
+    
     @Override
     public void onDestroy() {
-
+        if (adManager != null) {
+            adManager.release();
+            adManager = null;
+        }
     }
-
+    
     @Override
     public void onPause() {
-
+        // cannot forward
     }
-
+    
     @Override
     public void onResume() {
-
+        // cannot forward
     }
 }

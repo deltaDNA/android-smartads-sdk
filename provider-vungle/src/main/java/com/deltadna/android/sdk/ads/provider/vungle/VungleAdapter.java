@@ -87,22 +87,22 @@ public final class VungleAdapter extends MediationAdapter {
     public String getProviderVersionString() {
         return VunglePub.VERSION;
     }
-
+    
     @Override
     public void onDestroy() {
-
+        vunglePub = null;
     }
-
+    
     @Override
     public void onPause() {
-        if(vunglePub != null) {
+        if (vunglePub != null) {
             vunglePub.onPause();
         }
     }
-
+    
     @Override
     public void onResume() {
-        if(vunglePub != null) {
+        if (vunglePub != null) {
             vunglePub.onResume();
         }
     }

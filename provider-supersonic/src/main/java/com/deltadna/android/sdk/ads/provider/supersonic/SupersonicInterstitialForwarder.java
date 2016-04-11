@@ -40,7 +40,9 @@ final class SupersonicInterstitialForwarder implements InterstitialListener {
     }
     
     @Override
-    public void onInterstitialInitSuccess() {}
+    public void onInterstitialInitSuccess() {
+        // nothing to do
+    }
     
     @Override
     public void onInterstitialInitFail(SupersonicError error) {

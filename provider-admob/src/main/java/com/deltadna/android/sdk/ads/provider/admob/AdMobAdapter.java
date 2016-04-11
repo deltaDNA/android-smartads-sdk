@@ -79,36 +79,36 @@ final public class AdMobAdapter extends MediationAdapter {
             }
         });
     }
-
+    
     @Override
     public void showAd() {
-        if(interstitial != null && interstitial.isLoaded()) {
+        if (interstitial != null && interstitial.isLoaded()) {
             interstitial.show();
         }
     }
-
+    
     @Override
     public String getProviderString() {
         return "ADMOB";
     }
-
+    
     @Override
     public String getProviderVersionString() {
         return "7.8.0";
     }
-
+    
     @Override
     public void onDestroy() {
-
+        interstitial = null;
     }
-
+    
     @Override
     public void onPause() {
-
+        // cannot forward
     }
-
+    
     @Override
     public void onResume() {
-
+        // cannot forward
     }
 }

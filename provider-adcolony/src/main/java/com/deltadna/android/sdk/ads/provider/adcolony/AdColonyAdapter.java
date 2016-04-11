@@ -17,6 +17,7 @@
 package com.deltadna.android.sdk.ads.provider.adcolony;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
@@ -33,6 +34,7 @@ public final class AdColonyAdapter extends MediationAdapter {
     private final String clientOptions;
     private final String zoneIds;
     
+    @Nullable
     private Activity activity;
     
     private boolean initialised;
@@ -111,39 +113,40 @@ public final class AdColonyAdapter extends MediationAdapter {
             }
         }
     }
-
+    
     @Override
     public void showAd() {
-        if(initialised && videoAd != null && videoAd.isReady()) {
+        if (initialised && videoAd != null && videoAd.isReady()) {
             videoAd.show();
         }
     }
-
+    
     @Override
     public String getProviderString() {
         return "ADCOLONY";
     }
-
+    
     @Override
     public String getProviderVersionString() {
         return "2.3.4";
     }
-
+    
     @Override
     public void onDestroy() {
-
+        videoAd = null;
+        activity = null;
     }
-
+    
     @Override
     public void onPause() {
-        if(initialised) {
+        if (initialised) {
             AdColony.pause();
         }
     }
-
+    
     @Override
     public void onResume() {
-        if(initialised) {
+        if (initialised && activity != null) {
             AdColony.resume(activity);
         }
     }

@@ -51,6 +51,7 @@ final class FlurryRewardedEventForwarder implements FlurryAdInterstitialListener
 
     @Override
     public void onRendered(FlurryAdInterstitial flurryAdInterstitial) {
+        // nothing to do
     }
 
     @Override

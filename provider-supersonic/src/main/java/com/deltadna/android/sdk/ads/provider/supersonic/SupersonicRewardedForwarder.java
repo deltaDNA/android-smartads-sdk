@@ -43,7 +43,9 @@ final class SupersonicRewardedForwarder implements RewardedVideoListener {
     }
     
     @Override
-    public void onRewardedVideoInitSuccess() {}
+    public void onRewardedVideoInitSuccess() {
+        // nothing to do
+    }
     
     @Override
     public void onRewardedVideoInitFail(SupersonicError error) {

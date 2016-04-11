@@ -129,8 +129,12 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
     }
     
     @Override
-    public void onPause() {}
+    public void onPause() {
+        // cannot forward
+    }
     
     @Override
-    public void onResume() {}
+    public void onResume() {
+        // cannot forward
+    }
 }

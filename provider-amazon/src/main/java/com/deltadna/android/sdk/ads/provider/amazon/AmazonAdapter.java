@@ -86,7 +86,7 @@ public final class AmazonAdapter extends MediationAdapter {
     
     @Override
     public void showAd() {
-        if(interstitial != null && interstitial.isReady()){
+        if (interstitial != null && interstitial.isReady()) {
             interstitial.showAd();
         }
     }
@@ -102,11 +102,17 @@ public final class AmazonAdapter extends MediationAdapter {
     }
     
     @Override
-    public void onDestroy() {}
+    public void onDestroy() {
+        interstitial = null;
+    }
     
     @Override
-    public void onPause() {}
+    public void onPause() {
+        // cannot forward
+    }
     
     @Override
-    public void onResume() {}
+    public void onResume() {
+        // cannot forward
+    }
 }

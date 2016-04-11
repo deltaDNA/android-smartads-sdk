@@ -161,7 +161,7 @@ class AdAgent implements MediationListener {
     @Override
     public void onAdLoaded(MediationAdapter mediationAdapter) {
         // some adapters keep loading without being requested to
-        if (mediationAdapter == currentAdapter) {
+        if (mediationAdapter.equals(currentAdapter)) {
             Log.d(BuildConfig.LOG_TAG, "Ad loaded for " + mediationAdapter);
             
             handler.removeCallbacks(loadTimeout);
@@ -184,7 +184,7 @@ class AdAgent implements MediationListener {
             String reason) {
         
         // some adapters keep loading without being requested to
-        if (adapter == currentAdapter) {
+        if (adapter.equals(currentAdapter)) {
             Log.d(BuildConfig.LOG_TAG, String.format(
                     Locale.US,
                     "Ad failed to load for %s due to %s with reason %s",

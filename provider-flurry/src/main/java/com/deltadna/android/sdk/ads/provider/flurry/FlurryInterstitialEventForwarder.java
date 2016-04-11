@@ -49,6 +49,7 @@ final class FlurryInterstitialEventForwarder implements FlurryAdInterstitialList
 
     @Override
     public void onRendered(FlurryAdInterstitial flurryAdInterstitial) {
+        // nothing to do
     }
 
     @Override
@@ -73,6 +74,7 @@ final class FlurryInterstitialEventForwarder implements FlurryAdInterstitialList
 
     @Override
     public void onVideoCompleted(FlurryAdInterstitial flurryAdInterstitial) {
+        // nothing to do
     }
 
     @Override

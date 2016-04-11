@@ -38,7 +38,6 @@ public final class UnityRewardedAdapter extends MediationAdapter {
     private final String zoneId;
     private final boolean testMode;
     
-    private Activity activity;
     private boolean initialised;
     
     public UnityRewardedAdapter(
@@ -62,8 +61,6 @@ public final class UnityRewardedAdapter extends MediationAdapter {
             final MediationListener listener,
             JSONObject configuration) {
         
-        this.activity = activity;
-        
         if (!initialised) {
             try {
                 UnityAds.init(
@@ -84,6 +81,8 @@ public final class UnityRewardedAdapter extends MediationAdapter {
                         "Invalid Unity configuration: " + e);
             }
         } else {
+            UnityAds.changeActivity(activity);
+            
             if (UnityAds.canShow()) {
                 listener.onAdLoaded(UnityRewardedAdapter.this);
             } else {
@@ -119,12 +118,12 @@ public final class UnityRewardedAdapter extends MediationAdapter {
     }
     
     @Override
-    public void onPause() {}
+    public void onPause() {
+        // cannot forward
+    }
     
     @Override
     public void onResume() {
-        if(activity != null) {
-            UnityAds.changeActivity(activity);
-        }
+        // cannot forward
     }
 }
