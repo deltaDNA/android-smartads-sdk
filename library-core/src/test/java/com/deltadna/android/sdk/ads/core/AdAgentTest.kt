@@ -24,7 +24,6 @@ import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.google.common.truth.Truth.assertThat
 import org.json.JSONObject
 import org.junit.After
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
@@ -99,7 +98,6 @@ class AdAgentTest {
         }
     }
     
-    @Ignore("roboelectic does not appear to support delayed handler messages")
     @Test
     fun requestAdLoadTimesOut() {
         withAgent(spiedAdapters(2)) { adapters ->
@@ -117,6 +115,8 @@ class AdAgentTest {
             
             requestAd(activity, config)
             latch.await()
+            
+            Robolectric.flushForegroundThreadScheduler()
             
             assertThat(isAdLoaded)
             inOrder(listener) {
