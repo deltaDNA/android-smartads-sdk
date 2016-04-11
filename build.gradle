@@ -20,7 +20,7 @@ buildscript {
     }
     
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.0.0'
     }
 }
 
@@ -42,7 +42,7 @@ task clean(type: Delete) {
 
 ext {
     compileSdkVersion = 23
-    buildToolsVersion = '23.0.2'
+    buildToolsVersion = '23.0.3'
     
     minSdkVersion    = 15
     targetSdkVersion = 23
@@ -54,7 +54,7 @@ ext {
     // N.B in 'AdvertisingIdClient' class has been moved in 8.* to 'basement' package
     // https://developers.google.com/android/reference/com/google/android/gms/ads/identifier/AdvertisingIdClient
     playServicesVersion = '7.8.0'
-    supportVersion = '23.2.1'
+    supportVersion = '23.3.0'
     
     mockitoKotlinVersion = '0.3.0'
     truthVersion = '0.28'
