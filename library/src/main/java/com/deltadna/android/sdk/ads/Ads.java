@@ -192,14 +192,19 @@ final class Ads implements AdServiceListener {
         
         DDNA.instance().requestEngagement(
                 new Engagement(decisionPoint, flavour),
-                new EngageListener() {
+                new EngageListener<Engagement>() {
                     @Override
-                    public void onSuccess(JSONObject result) {
-                        listener.onSuccess(result);
+                    public void onCompleted(Engagement engagement) {
+                        if (engagement.isSuccessful()) {
+                            listener.onSuccess(engagement.getJson());
+                        } else {
+                            listener.onFailure(new EngagementFailureException(
+                                    engagement));
+                        }
                     }
                     
                     @Override
-                    public void onFailure(Throwable t) {
+                    public void onError(Throwable t) {
                         listener.onFailure(t);
                     }
                 });
