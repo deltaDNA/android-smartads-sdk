@@ -20,8 +20,7 @@ import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.deltadna.android.sdk.ads.core.listeners.AdsListener;
-import com.deltadna.android.sdk.ads.core.listeners.RewardedAdsListener;
+import com.deltadna.android.sdk.ads.core.listeners.AdRegistrationListener;
 
 /**
  * Singleton class for accessing the deltaDNA SmartAds SDK.
@@ -29,13 +28,12 @@ import com.deltadna.android.sdk.ads.core.listeners.RewardedAdsListener;
  * An instance should be retrieved by calling {@link #instance()}.
  * {@link com.deltadna.android.sdk.DDNA} should be initialised and started
  * before registering for ads through {@link #registerForAds(Activity)}. At
- * the point where you would like to display an ad, use one of the
- * {@link #showInterstitialAd()} or {@link #showRewardedAd()} methods.
+ * the point where you would like to display an ad, use one of the static
+ * {@code create} methods in the {@link InterstitialAd}/{@link RewardedAd}
+ * classes.
  * <p>
- * In order to listen to the lifecycle of ads
- * {@link #setAdsListener(AdsListener)} or
- * {@link #setRewardedAdsListener(RewardedAdsListener)} can be used to set a
- * listener.
+ * Listening for ad registration success or failure can be done using
+ * {@link #setAdRegistrationListener(AdRegistrationListener)}.
  */
 public final class DDNASmartAds {
     
@@ -45,17 +43,9 @@ public final class DDNASmartAds {
     private Ads ads;
     
     @Nullable
-    private AdsListener adsListener;
-    @Nullable
-    private RewardedAdsListener rewardedAdsListener;
+    private AdRegistrationListener registrationListener;
     
-    public static synchronized DDNASmartAds instance() {
-        if (instance == null) {
-            instance = new DDNASmartAds();
-        }
-        
-        return instance;
-    }
+    private DDNASmartAds() {}
     
     /**
      * Registers for ads.
@@ -67,11 +57,8 @@ public final class DDNASmartAds {
             if (ads == null) {
                 ads = new Ads(activity);
                 
-                if (adsListener != null) {
-                    ads.setAdsListener(adsListener);
-                }
-                if (rewardedAdsListener != null) {
-                    ads.setRewardedAdsListener(rewardedAdsListener);
+                if (registrationListener != null) {
+                    ads.setAdRegistrationListener(registrationListener);
                 }
                 
                 ads.registerForAds();
@@ -81,134 +68,22 @@ public final class DDNASmartAds {
         } catch (Exception e) {
             Log.e(BuildConfig.LOG_TAG, "Error registering for ads", e);
             
-            if (adsListener != null) {
-                adsListener.onFailedToRegisterForAds(
-                        "Exception not handled " + e);
-            }
-            if (rewardedAdsListener != null) {
-                rewardedAdsListener.onFailedToRegisterForAds(
-                        "Exception not handled " + e);
+            if (registrationListener != null) {
+                registrationListener.onFailedToRegisterForInterstitial(
+                        e.getMessage());
+                registrationListener.onFailedToRegisterForRewarded(
+                        e.getMessage());
             }
         }
     }
     
-    /**
-     * Checks whether an interstitial ad is available to be shown.
-     *
-     * @return {@code true} if an ad is available, else {@code false}
-     */
-    public boolean isInterstitialAdAvailable() {
-        return ads != null && ads.isInterstitialAdAvailable();
-    }
-    
-    /**
-     * Checks whether a rewarded ad is available to be shown.
-     *
-     * @return {@code true} if an ad is available, else {@code false}
-     */
-    public boolean isRewardedAdAvailable() {
-        return ads != null && ads.isRewardedAdAvailable();
-    }
-    
-    /**
-     * Shows an interstitial ad, if one is available.
-     */
-    public void showInterstitialAd() {
-        showInterstitialAd(null);
-    }
-    
-    /**
-     * Shows an interstitial ad, if one is available and if the user is included
-     * in the set of users who should receive ads for the specified decision
-     * point.
-     *
-     * @param decisionPoint the decision point to show ads for, may be
-     *                      {@code null}
-     */
-    public void showInterstitialAd(@Nullable String decisionPoint) {
-        try {
-            if (ads != null) {
-                ads.showAd(decisionPoint);
-            } else {
-                Log.w(BuildConfig.LOG_TAG, "Not registered for ads");
-                
-                if (adsListener != null) {
-                    adsListener.onAdFailedToOpen();
-                }
-            }
-        } catch (Exception e) {
-            Log.e(  BuildConfig.LOG_TAG,
-                    "Error showing interstitial ad for " + decisionPoint,
-                    e);
-            
-            if (adsListener != null) {
-                adsListener.onAdFailedToOpen();
-            }
-        }
-    }
-    
-    /**
-     * Shows a rewarded ad, if one is available.
-     */
-    public void showRewardedAd() {
-        showRewardedAd(null);
-    }
-    
-    /**
-     * Shows a rewarded ad, if one is available and if the user is included
-     * in the set of users who should receive ads for the specified decision
-     * point.
-     *
-     * @param decisionPoint the decision point to show ads for, may be
-     *                      {@code null}
-     */
-    public void showRewardedAd(@Nullable String decisionPoint) {
-        try {
-            if (ads != null) {
-                ads.showRewardedAd(decisionPoint);
-            } else {
-                Log.w(BuildConfig.LOG_TAG, "Not registered for ads");
-                
-                if (rewardedAdsListener != null) {
-                    rewardedAdsListener.onAdFailedToOpen();
-                }
-            }
-        } catch (Exception e) {
-            Log.e(  BuildConfig.LOG_TAG,
-                    "Error showing rewarded ad for " + decisionPoint,
-                    e);
-            
-            if (rewardedAdsListener != null) {
-                rewardedAdsListener.onAdFailedToOpen();
-            }
-        }
-    }
-    
-    /**
-     * Sets a listener for responding to events within the interstitial ad
-     * lifecycle.
-     *
-     * @param listener the listener, may be {@code null}
-     */
-    public void setAdsListener(@Nullable AdsListener listener) {
-        adsListener = listener;
+    public void setAdRegistrationListener(
+            @Nullable AdRegistrationListener listener) {
+        
+        registrationListener = listener;
         
         if (ads != null) {
-            ads.setAdsListener(listener);
-        }
-    }
-    
-    /**
-     * Sets a listener for responding to events within the rewarded ad
-     * lifecycle.
-     *
-     * @param listener the listener, may be {@code null}
-     */
-    public void setRewardedAdsListener(@Nullable RewardedAdsListener listener) {
-        rewardedAdsListener = listener;
-        
-        if (ads != null) {
-            ads.setRewardedAdsListener(listener);
+            ads.setAdRegistrationListener(listener);
         }
     }
     
@@ -230,5 +105,16 @@ public final class DDNASmartAds {
         }
     }
     
-    private DDNASmartAds() {}
+    @Nullable
+    Ads getAds() {
+        return ads;
+    }
+    
+    public static synchronized DDNASmartAds instance() {
+        if (instance == null) {
+            instance = new DDNASmartAds();
+        }
+        
+        return instance;
+    }
 }

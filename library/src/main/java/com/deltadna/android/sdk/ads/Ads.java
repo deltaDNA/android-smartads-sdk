@@ -17,6 +17,7 @@
 package com.deltadna.android.sdk.ads;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.deltadna.android.sdk.DDNA;
@@ -25,9 +26,11 @@ import com.deltadna.android.sdk.Event;
 import com.deltadna.android.sdk.Params;
 import com.deltadna.android.sdk.ads.core.AdService;
 import com.deltadna.android.sdk.ads.core.AdServiceListener;
-import com.deltadna.android.sdk.ads.core.listeners.AdsListener;
 import com.deltadna.android.sdk.ads.core.engage.EngagementListener;
+import com.deltadna.android.sdk.ads.core.listeners.AdRegistrationListener;
+import com.deltadna.android.sdk.ads.core.listeners.InterstitialAdsListener;
 import com.deltadna.android.sdk.ads.core.listeners.RewardedAdsListener;
+import com.deltadna.android.sdk.ads.exceptions.EngagementFailureException;
 import com.deltadna.android.sdk.listeners.EngageListener;
 
 import org.json.JSONException;
@@ -36,140 +39,151 @@ import org.json.JSONObject;
 final class Ads implements AdServiceListener {
     
     private static final String DECISION_POINT = "advertising";
-
-    private final AdService adService;
-    private AdsListener adsListener;
-    private RewardedAdsListener rewardedAdsListener;
-
+    
+    private final AdService service;
+    
+    @Nullable
+    private AdRegistrationListener registrationListener;
+    @Nullable
+    private InterstitialAdsListener interstitialListener;
+    @Nullable
+    private RewardedAdsListener rewardedListener;
+    
     Ads(Activity activity) {
-        this.adService = new AdService(activity, this);
+        service = new AdService(activity, this);
     }
-
-    void setAdsListener(AdsListener adsListener) {
-        this.adsListener = adsListener;
+    
+    void setAdRegistrationListener(
+            @Nullable AdRegistrationListener listener) {
+        
+        registrationListener = listener;
     }
-
-    void setRewardedAdsListener(RewardedAdsListener rewardedAdsListener) {
-        this.rewardedAdsListener = rewardedAdsListener;
+    
+    void setInterstitialAdsListener(
+            @Nullable InterstitialAdsListener listener) {
+        
+        interstitialListener = listener;
     }
-
+    
+    void setRewardedAdsListener(
+            @Nullable RewardedAdsListener listener) {
+        
+        rewardedListener = listener;
+    }
+    
     void registerForAds() {
-        adService.init(DECISION_POINT);
+        service.init(DECISION_POINT);
     }
-
-    void showAd() {
-        adService.showAd();
-    }
-
-    void showAd(String adPoint) {
-        if (adPoint == null || adPoint.length() == 0) {
-            this.showAd();
-        }
-        else {
-            adService.showAd(adPoint);
-        }
-    }
-
+    
     boolean isInterstitialAdAvailable() {
-        return adService.isInterstitialAdAvailable();
+        return service.isInterstitialAdAvailable();
     }
-
+    
     boolean isRewardedAdAvailable() {
-        return adService.isRewardedAdAvailable();
+        return service.isRewardedAdAvailable();
     }
-
-    void showRewardedAd() {
-        adService.showRewardedAd();
+    
+    void showInterstitialAd(@Nullable String adPoint) {
+        service.showInterstitialAd(adPoint);
     }
-
-    void showRewardedAd(String adPoint) {
-        if (adPoint == null || adPoint.length() == 0) {
-            this.showRewardedAd();
-        }
-        else {
-            adService.showRewardedAd(adPoint);
-        }
+    
+    void showRewardedAd(@Nullable String adPoint) {
+        service.showRewardedAd(adPoint);
     }
-
+    
     void onPause() {
-        adService.onPause();
+        service.onPause();
     }
-
+    
     void onResume() {
-        adService.onResume();
+        service.onResume();
     }
-
+    
     void onDestroy() {
-        adService.onDestroy();
+        service.onDestroy();
     }
-
+    
     @Override
-    public void onRegisteredForAds() {
-        if (adsListener != null) {
-            adsListener.onRegisteredForAds();
+    public void onRegisteredForInterstitialAds() {
+        if (registrationListener != null) {
+            registrationListener.onRegisteredForInterstitial();
         }
     }
-
+    
+    @Override
+    public void onFailedToRegisterForInterstitialAds(String reason) {
+        if (registrationListener != null) {
+            registrationListener.onFailedToRegisterForInterstitial(reason);
+        }
+    }
+    
     @Override
     public void onRegisteredForRewardedAds() {
-        if(rewardedAdsListener != null) {
-            rewardedAdsListener.onRegisteredForAds();
+        if (registrationListener != null) {
+            registrationListener.onRegisteredForRewarded();
         }
     }
-
+    
     @Override
-    public void onFailedToRegisterForAds(String errorReason) {
-        if (adsListener != null) {
-            adsListener.onFailedToRegisterForAds(errorReason);
+    public void onFailedToRegisterForRewardedAds(String reason) {
+        if (registrationListener != null) {
+            registrationListener.onFailedToRegisterForRewarded(reason);
         }
     }
-
+    
     @Override
-    public void onFailedToRegisterForRewardedAds(String errorReason) {
-        if(rewardedAdsListener != null) {
-            rewardedAdsListener.onFailedToRegisterForAds(errorReason);
+    public void onInterstitialAdLoaded() {
+        if (interstitialListener != null) {
+            interstitialListener.onLoaded();
         }
     }
-
+    
     @Override
-    public void onAdOpened() {
-        if (adsListener != null) {
-            adsListener.onAdOpened();
+    public void onInterstitialAdOpened() {
+        if (interstitialListener != null) {
+            interstitialListener.onOpened();
         }
     }
-
+    
     @Override
-    public void onAdFailedToOpen() {
-        if (adsListener != null) {
-            adsListener.onAdFailedToOpen();
+    public void onInterstitialAdFailedToOpen(String reason) {
+        if (interstitialListener != null) {
+            interstitialListener.onFailedToOpen(reason);
         }
     }
-
+    
     @Override
-    public void onAdClosed() {
-        if (adsListener != null) {
-            adsListener.onAdClosed();
+    public void onInterstitialAdClosed() {
+        if (interstitialListener != null) {
+            interstitialListener.onClosed();
         }
     }
-
+    
+    @Override
+    public void onRewardedAdLoaded() {
+        if (rewardedListener != null) {
+            rewardedListener.onLoaded();
+        }
+    }
+    
     @Override
     public void onRewardedAdOpened() {
-        if(rewardedAdsListener != null) {
-            rewardedAdsListener.onAdOpened();
+        if (rewardedListener != null) {
+            rewardedListener.onOpened();
         }
     }
-
+    
     @Override
-    public void onRewardedAdFailedToOpen() {
-        if(rewardedAdsListener != null) {
-            rewardedAdsListener.onAdFailedToOpen();
+    public void onRewardedAdFailedToOpen(String reason) {
+        if (rewardedListener != null) {
+            rewardedListener.onFailedToOpen(reason);
         }
     }
-
+    
     @Override
     public void onRewardedAdClosed(boolean completed) {
-        if(rewardedAdsListener != null) {
-            rewardedAdsListener.onAdClosed(completed);
+        if (rewardedListener != null) {
+            rewardedListener.onClosed(completed);
         }
     }
     

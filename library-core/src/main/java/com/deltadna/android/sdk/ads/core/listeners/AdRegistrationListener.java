@@ -17,34 +17,31 @@
 package com.deltadna.android.sdk.ads.core.listeners;
 
 /**
- * Listener for events within the interstitial ads lifecycle.
+ * Listener for ad registration events.
  */
-public interface AdsListener {
+public interface AdRegistrationListener {
     
     /**
-     * Invoked when the SDK has successfully registered for ads.
+     * Called when registering for interstitial ads has succeeded.
      */
-    void onRegisteredForAds();
+    void onRegisteredForInterstitial();
     
     /**
-     * Invoked when there was a problem registering for ads.
+     * Called when registering for interstitial ads has failed.
      *
-     * @param reason the reason of the problem
+     * @param reason the reason for the failure
      */
-    void onFailedToRegisterForAds(String reason);
+    void onFailedToRegisterForInterstitial(String reason);
     
     /**
-     * Invoked when an ad was opened.
+     * Called when registering for rewarded ads has succeeded.
      */
-    void onAdOpened();
+    void onRegisteredForRewarded();
     
     /**
-     * Invoked when ad has failed to show.
+     * Called when registering for rewarded ads has failed.
+     *
+     * @param reason the reason for the failure
      */
-    void onAdFailedToOpen();
-    
-    /**
-     * Invoked when an open has been closed.
-     */
-    void onAdClosed();
+    void onFailedToRegisterForRewarded(String reason);
 }

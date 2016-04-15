@@ -23,9 +23,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.deltadna.android.sdk.DDNA;
+import com.deltadna.android.sdk.Engagement;
+import com.deltadna.android.sdk.ImageMessage;
 import com.deltadna.android.sdk.ads.DDNASmartAds;
-import com.deltadna.android.sdk.ads.core.listeners.AdsListener;
-import com.deltadna.android.sdk.ads.core.listeners.RewardedAdsListener;
+import com.deltadna.android.sdk.ads.InterstitialAd;
+import com.deltadna.android.sdk.ads.RewardedAd;
+import com.deltadna.android.sdk.ads.core.listeners.AdRegistrationListener;
+import com.deltadna.android.sdk.listeners.EngageListener;
 
 public class ExampleActivity extends Activity {
     
@@ -35,65 +39,29 @@ public class ExampleActivity extends Activity {
         
         setContentView(R.layout.activity_example);
         
-        DDNASmartAds.instance().setAdsListener(new AdsListener() {
-            @Override
-            public void onRegisteredForAds() {
-                Log.d(BuildConfig.LOG_TAG, "Registered for ads");
-            }
-            
-            @Override
-            public void onFailedToRegisterForAds(String reason) {
-                Log.d(BuildConfig.LOG_TAG, "Failed to register for ads: " + reason);
-            }
-            
-            @Override
-            public void onAdOpened() {
-                Log.d(BuildConfig.LOG_TAG, "Ad opened");
-            }
-            
-            @Override
-            public void onAdFailedToOpen() {
-                Log.d(BuildConfig.LOG_TAG, "Ad failed to open");
-            }
-            
-            @Override
-            public void onAdClosed() {
-                Log.d(BuildConfig.LOG_TAG, "Ad closed");
-            }
-        });
+        DDNA.instance().startSdk();
         
-        DDNASmartAds.instance().setRewardedAdsListener(new RewardedAdsListener() {
+        DDNASmartAds.instance().setAdRegistrationListener(new AdRegistrationListener() {
             @Override
-            public void onRegisteredForAds() {
+            public void onRegisteredForInterstitial() {
+                Log.d(BuildConfig.LOG_TAG, "Registered for interstitial ads");
+            }
+            
+            @Override
+            public void onFailedToRegisterForInterstitial(String reason) {
+                Log.d(BuildConfig.LOG_TAG, "Failed to register for interstitial ads");
+            }
+            
+            @Override
+            public void onRegisteredForRewarded() {
                 Log.d(BuildConfig.LOG_TAG, "Registered for rewarded ads");
             }
             
             @Override
-            public void onFailedToRegisterForAds(String reason) {
-                Log.d(BuildConfig.LOG_TAG, "Failed to register for rewarded ads: " + reason);
-            }
-            
-            @Override
-            public void onAdOpened() {
-                Log.d(BuildConfig.LOG_TAG, "Ad opened");
-            }
-            
-            @Override
-            public void onAdFailedToOpen() {
-                Log.d(BuildConfig.LOG_TAG, "Ad failed to open");
-            }
-            
-            @Override
-            public void onAdClosed(boolean completed) {
-                if (completed) {
-                    Log.d(BuildConfig.LOG_TAG, "Rewarded ad closed and completed");
-                } else {
-                    Log.d(BuildConfig.LOG_TAG, "Rewarded ad closed and not completed");
-                }
+            public void onFailedToRegisterForRewarded(String reason) {
+                Log.d(BuildConfig.LOG_TAG, "Failed to register for rewarded ads");
             }
         });
-        
-        DDNA.instance().startSdk();
         DDNASmartAds.instance().registerForAds(this);
         
         ((TextView) findViewById(R.id.user_id)).setText(getString(
@@ -122,19 +90,90 @@ public class ExampleActivity extends Activity {
         super.onDestroy();
     }
     
-    public void onShowAd(View view) {
-        DDNASmartAds.instance().showInterstitialAd();
+    public void onShowInterstitialAd(View view) {
+        InterstitialAd.create().show();
     }
     
-    public void onEngageAd(View view) {
-        DDNASmartAds.instance().showInterstitialAd("testAdPoint");
+    public void onEngageInterstitialAd(View view) {
+        DDNA.instance().requestEngagement(
+                new Engagement("testAdPoint"),
+                new EngageListener<Engagement>() {
+                    @Override
+                    public void onCompleted(Engagement engagement) {
+                        InterstitialAd ad = InterstitialAd.create(engagement);
+                        if (ad != null) {
+                            ad.show();
+                        } else {
+                            Log.d(  BuildConfig.LOG_TAG,
+                                    "Engage not setup to show ad");
+                        }
+                    }
+                    
+                    @Override
+                    public void onError(Throwable t) {
+                        Log.d(BuildConfig.LOG_TAG, "Failed to engage", t);
+                    }
+                });
     }
     
     public void onShowRewardedAd(View view) {
-        DDNASmartAds.instance().showRewardedAd();
+        RewardedAd.create().show();
     }
     
     public void onShowEngageRewardedAd(View view) {
-        DDNASmartAds.instance().showRewardedAd("testAdPoint");
+        DDNA.instance().requestEngagement(
+                new Engagement("testAdPoint"),
+                new EngageListener<Engagement>() {
+                    @Override
+                    public void onCompleted(Engagement engagement) {
+                        RewardedAd ad = RewardedAd.create(engagement);
+                        if (ad != null) {
+                            ad.show();
+                        } else {
+                            Log.d(  BuildConfig.LOG_TAG,
+                                    "Engage not setup to show ad");
+                        }
+                    }
+                    
+                    @Override
+                    public void onError(Throwable t) {
+                        Log.d(BuildConfig.LOG_TAG, "Failed to engage", t);
+                    }
+                });
+    }
+    
+    public void onEngageRewardOrImage(View view) {
+        DDNA.instance().requestEngagement(
+                new Engagement("rewardOrImage"),
+                new EngageListener<Engagement>() {
+                    @Override
+                    public void onCompleted(Engagement engagement) {
+                        RewardedAd reward = RewardedAd.create(engagement);
+                        ImageMessage image = ImageMessage.create(engagement);
+                        
+                        if (image != null) {
+                            image.prepare(new ImageMessage.PrepareListener() {
+                                @Override
+                                public void onPrepared(ImageMessage src) {
+                                    src.show(ExampleActivity.this, 1);
+                                }
+                                
+                                @Override
+                                public void onError(Throwable cause) {
+                                    Log.d(  BuildConfig.LOG_TAG,
+                                            "Failed to prepare image",
+                                            cause);
+                                }
+                            });
+                        } else if (reward != null) {
+                            reward.show();
+                        }
+                    }
+                    
+                    @Override
+                    public void onError(Throwable t) {
+                        Log.d(BuildConfig.LOG_TAG, "Failed to engage", t);
+                    }
+                });
     }
 }

@@ -18,9 +18,12 @@ limitations under the License.
 <resources>
     <string name="app_name">deltaDNA Ads SDK Example</string>
     
-    <string name="user_id">User ID: %s</string>
-    <string name="show_ad">Show ad</string>
-    <string name="engage_ad">Engage ad</string>
-    <string name="show_rewarded_ad">Show rewarded ad</string>
+    <string name="engage_interstitial_ad">Engage interstitial ad</string>
     <string name="engage_rewarded_ad">Engage rewarded ad</string>
+    <string name="engage_reward_or_image">Engage reward or image</string>
+    
+    <string name="show_interstitial_ad">Show interstitial ad</string>
+    <string name="show_rewarded_ad">Show rewarded ad</string>
+    
+    <string name="user_id">User ID: %s</string>
 </resources>

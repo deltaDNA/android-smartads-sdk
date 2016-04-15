@@ -12,7 +12,8 @@ rewarded type ads.
 
 ## Contents
 * [Adding to a project](#adding-to-a-project)
-* [Usage](#usage)
+* [Initialising](#initialising)
+* [Showing ads](#showing-ads)
 * [Permissions](#permissions)
 * [ProGuard](#proguard)
 * [FAQs](#faqs)
@@ -60,7 +61,7 @@ Please note that the versions used for SmartAds and the providers should
 be the same. We cannot guarantee that an ad provider will work correctly
 if there is a version mismatch.
 
-## Usage
+## Initialising
 An instance can be retrieved by calling `DDNASmartAds.instance()`, and
 registering for ads can be done through the `registerForAds(Activity)`
 method. The analytics SDK should be initialised and started before
@@ -102,16 +103,44 @@ public void onDestroy() {
 }
 ```
 
-Whether an ad is available can be checked by using
-`isInterstitialAdAvailable()` for interstitial ads, and
-`isRewardedAdAvailable()` for rewarded ads.
+Listening to the registration status for interstitial and rewarded ads can be done by using the `setAdRegistrationListener(AdRegistrationListener)` method.
+```java
+DDNASmartAds.instance().setAdRegistrationListener(new AdRegistrationListener() {
+    // callback methods
+});
+```
 
-Ads can finally be shown by calling `showInterstitialAd()` or
-`showRewardedAd()` for rewarded ads.
+## Showing ads
+Showing interstitial ads can be done by creating an instance of an `InterstitialAd` and calling `show()`.
+```java
+InterstitialAd.create().show();
+```
+Rewarded ads are created in a similar way, but through the `RewardedAd` class instead. Both classes allow for a listener to be passed in at creation for listening to ad lifecycle events.
 
-In order to listen to the lifecycle of ads `setAdsListener(AdsListener)`
-or `setRewardedAdsListener(RewardedAdsListener)` can be used to set a
-listener.
+Ads can also be created by performing an Engage request and creating an `InterstitialAd` or `RewardedAd` instance from the returned `Engagement`.
+```java
+DDNA.instance().requestEngagement(
+        new Engagement("myDecisionPoint"),
+        new EngageListener<Engagement>() {
+            @Override
+            public void onCompleted(Engagement engagement) {
+                RewardedAd reward = RewardedAd.create(engagement);
+                ImageMessage image = ImageMessage.create(engagement);
+                
+                if (image != null) {
+                    // code for showing Image Message
+                } else if (reward != null) {
+                    reward.show();
+                }
+            }
+            
+            @Override
+            public void onError(Throwable t) {
+                // act on error
+            }
+        }
+);
+```
 
 ## Permissions
 The library includes all the required permissions in its manifest file

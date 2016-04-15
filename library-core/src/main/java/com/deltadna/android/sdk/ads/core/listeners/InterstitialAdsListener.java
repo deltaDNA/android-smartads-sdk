@@ -14,13 +14,32 @@
  * limitations under the License.
  */
 
-package com.deltadna.android.sdk.ads;
+package com.deltadna.android.sdk.ads.core.listeners;
 
-import com.deltadna.android.sdk.Engagement;
-
-public class EngagementFailureException extends Exception {
+/**
+ * Listener for events within the interstitial ad lifecycle.
+ */
+public interface InterstitialAdsListener {
     
-    EngagementFailureException(Engagement engagement) {
-        super(engagement.getError());
-    }
+    /**
+     * Called when an interstitial ad has been loaded.
+     */
+    void onLoaded();
+    
+    /**
+     * Called when an interstitial ad has been opened.
+     */
+    void onOpened();
+    
+    /**
+     * Called when an interstitial ad has failed to open.
+     *
+     * @param reason the reason for the failure
+     */
+    void onFailedToOpen(String reason);
+    
+    /**
+     * Called when an interstitial ad has closed.
+     */
+    void onClosed();
 }

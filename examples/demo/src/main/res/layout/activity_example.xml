@@ -43,14 +43,8 @@ limitations under the License.
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/show_ad"
-            android:onClick="onShowAd"/>
-        
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/engage_ad"
-            android:onClick="onEngageAd"/>
+            android:text="@string/show_interstitial_ad"
+            android:onClick="onShowInterstitialAd"/>
         
         <Button
             android:layout_width="wrap_content"
@@ -61,7 +55,19 @@ limitations under the License.
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/engage_interstitial_ad"
+            android:onClick="onEngageInterstitialAd"/>
+        
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/engage_rewarded_ad"
             android:onClick="onShowEngageRewardedAd"/>
+        
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/engage_reward_or_image"
+            android:onClick="onEngageRewardOrImage"/>
     </LinearLayout>
 </LinearLayout>

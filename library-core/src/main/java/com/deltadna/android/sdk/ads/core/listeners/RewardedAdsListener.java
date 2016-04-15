@@ -22,32 +22,27 @@ package com.deltadna.android.sdk.ads.core.listeners;
 public interface RewardedAdsListener {
     
     /**
-     * Invoked when the SDK has successfully registered for ads.
+     * Called when a rewarded ad has been loaded.
      */
-    void onRegisteredForAds();
+    void onLoaded();
     
     /**
-     * Invoked when there was a problem registering for ads.
+     * Called when a rewarded ad has been opened.
+     */
+    void onOpened();
+    
+    /**
+     * Called when a rewarded ad has failed to open.
      *
-     * @param reason the reason of the problem
+     * @param reason the reason for the failure
      */
-    void onFailedToRegisterForAds(String reason);
+    void onFailedToOpen(String reason);
     
     /**
-     * Invoked when an ad was opened.
-     */
-    void onAdOpened();
-    
-    /**
-     * Invoked when ad has failed to show.
-     */
-    void onAdFailedToOpen();
-    
-    /**
-     * Invoked when an open has been closed.
+     * Called when a rewarded as has closed.
      *
-     * @param completed indicates whether the full ad was watched, and whether
-     *                  the reward should be given
+     * @param completed whether the full ad was watched, and whether the reward
+     *                  should be given
      */
-    void onAdClosed(boolean completed);
+    void onClosed(boolean completed);
 }

@@ -15,6 +15,7 @@
  */
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -34,9 +35,17 @@ android {
         consumerProguardFiles 'proguard.cfg'
     }
     
+    sourceSets {
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+    
     compileOptions {
         sourceCompatibility rootProject.ext.sourceCompatibilityVersion
         targetCompatibility rootProject.ext.targetCompatibilityVersion
+    }
+    
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
     
     lintOptions {
@@ -53,6 +62,25 @@ dependencies {
     compile project(':library-core')
     
     compile 'com.deltadna.android:deltadna-sdk:4.1.0-SNAPSHOT'
+    
+    testCompile "com.google.truth:truth:$truthVersion"
+    testCompile "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+    testCompile "org.json:json:$jsonVersion"
+    testCompile "org.mockito:mockito-core:$mockitoVersion"
 }
 
 apply from: "$rootProject.projectDir/gradle/mvn-push.gradle"
+
+// https://github.com/dam5s/android-example-kotlin/issues/1
+buildscript {
+    repositories {
+        jcenter()
+    }
+    
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}

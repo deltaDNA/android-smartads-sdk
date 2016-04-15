@@ -22,6 +22,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
@@ -90,35 +92,42 @@ public class AdService implements
     @Override
     public void onSuccess(JSONObject result) {
         Log.d(BuildConfig.LOG_TAG, "Engage request succeeded: " + result);
-
+        
         if (!result.has("parameters")) {
-            listener.onFailedToRegisterForAds("Invalid Engage response, missing 'parameters' key.");
-            listener.onFailedToRegisterForRewardedAds("Invalid Engage response, missing 'parameters' key.");
+            listener.onFailedToRegisterForInterstitialAds(
+                    "Invalid Engage response, missing 'parameters' key");
+            listener.onFailedToRegisterForRewardedAds(
+                    "Invalid Engage response, missing 'parameters' key");
             return;
         }
-
+        
         adConfiguration = result.optJSONObject("parameters");
-
+        
         if (!adConfiguration.optBoolean("adShowSession", false)) {
-            listener.onFailedToRegisterForAds("Ads disabled for this session");
-            listener.onFailedToRegisterForRewardedAds("Ads disabled for this session");
+            listener.onFailedToRegisterForInterstitialAds(
+                    "Ads disabled for this session");
+            listener.onFailedToRegisterForRewardedAds(
+                    "Ads disabled for this session");
             return;
         }
-
-        if (!adConfiguration.has("adProviders") && !adConfiguration.has("adRewardedProviders")) {
-            listener.onFailedToRegisterForAds("Invalid Engage response, missing 'adProviders' key.");
-            listener.onFailedToRegisterForRewardedAds("Invalid Engage response, missing 'adRewardedProviders' key.");
+        
+        if (    !adConfiguration.has("adProviders")
+                && !adConfiguration.has("adRewardedProviders")) {
+            listener.onFailedToRegisterForInterstitialAds(
+                    "Invalid Engage response, missing 'adProviders' key");
+            listener.onFailedToRegisterForRewardedAds(
+                    "Invalid Engage response, missing 'adRewardedProviders' key");
             return;
         }
-
+        
         adDebugMode = adConfiguration.optBoolean("adRecordAdRequests", true);
-
+        
         final int adFloorPrice = adConfiguration.optInt("adFloorPrice");
         final int demoteOnCode = adConfiguration.optInt("onDemoteRequestCode");
         final int maxPerNetwork = adConfiguration.optInt("maxPerNetwork");
         adMinimumInterval = adConfiguration.optInt("adMinimumInterval");
         adMaxPerSession = adConfiguration.optInt("adMaxPerSession");
-
+        
         JSONArray adProviders = adConfiguration.optJSONArray("adProviders");
         if(adProviders != null && adProviders.length() > 0) {
             final Waterfall waterfall = WaterfallFactory.create(
@@ -128,7 +137,8 @@ public class AdService implements
                     AdProviderType.INTERSTITIAL);
             
             if (waterfall.getAdapters().isEmpty()) {
-                listener.onFailedToRegisterForAds("Invalid ad configuration");
+                listener.onFailedToRegisterForInterstitialAds(
+                        "Invalid ad configuration");
             } else {
                 interstitialAgent = new AdAgent(
                         this,
@@ -136,10 +146,11 @@ public class AdService implements
                         maxPerNetwork);
                 interstitialAgent.requestAd(activity, adConfiguration);
                 
-                listener.onRegisteredForAds();
+                listener.onRegisteredForInterstitialAds();
             }
         } else {
-            listener.onFailedToRegisterForAds("No interstitial ad providers defined");
+            listener.onFailedToRegisterForInterstitialAds(
+                    "No interstitial ad providers defined");
         }
         
         JSONArray adRewardedProviders = adConfiguration.optJSONArray("adRewardedProviders");
@@ -183,7 +194,9 @@ public class AdService implements
                     },
                     TIME_ONE_SECOND);
         } else {
-            listener.onFailedToRegisterForAds(
+            listener.onFailedToRegisterForInterstitialAds(
+                    "Failed to initialise ad service");
+            listener.onFailedToRegisterForRewardedAds(
                     "Failed to initialise ad service");
         }
     }
@@ -215,214 +228,269 @@ public class AdService implements
         sessionAdCount++;
         if (adAgent.equals(interstitialAgent)) {
             Log.d(BuildConfig.LOG_TAG, "Interstitial ad opened");
-            listener.onAdOpened();
+            listener.onInterstitialAdOpened();
         } else if(adAgent.equals(rewardedAgent)) {
             Log.d(BuildConfig.LOG_TAG, "Rewarded ad opened");
             listener.onRewardedAdOpened();
         }
     }
-
+    
     @Override
     public void onAdFailedToOpen(AdAgent adAgent, MediationAdapter mediationAdapter, String reason, AdClosedResult adClosedResult) {
         if (adAgent.equals(interstitialAgent)) {
-            Log.d(BuildConfig.LOG_TAG, "Interstitial ad failed to open");
+            Log.w(  BuildConfig.LOG_TAG,
+                    "Interstitial ad failed to open: " + reason);
+            
             postAdClosedEvent(adAgent, mediationAdapter, adClosedResult);
-            listener.onAdFailedToOpen();
+            listener.onInterstitialAdFailedToOpen(reason);
         } else if(adAgent.equals(rewardedAgent)) {
-            Log.d(BuildConfig.LOG_TAG, "Rewarded ad failed to open");
+            Log.w(  BuildConfig.LOG_TAG,
+                    "Rewarded ad failed to open: " + reason);
+            
             postAdClosedEvent(adAgent, mediationAdapter, adClosedResult);
-            listener.onRewardedAdFailedToOpen();
+            listener.onRewardedAdFailedToOpen(reason);
         }
     }
-
+    
     @Override
     public void onAdClosed(AdAgent adAgent, MediationAdapter mediationAdapter, boolean complete) {
         lastAdShownTime = System.currentTimeMillis();
         if (adAgent.equals(interstitialAgent)) {
             Log.d(BuildConfig.LOG_TAG, "Interstitial ad closed");
+            
             postAdClosedEvent(adAgent, mediationAdapter, AdClosedResult.SUCCESS);
-            listener.onAdClosed();
+            listener.onInterstitialAdClosed();
         } else if(adAgent.equals(rewardedAgent)) {
             Log.d(BuildConfig.LOG_TAG, "Rewarded ad closed");
+            
             postAdClosedEvent(adAgent, mediationAdapter, AdClosedResult.SUCCESS);
             listener.onRewardedAdClosed(complete);
         }
     }
-
-    public void showAd() {
+    
+    public void showInterstitialAd(@Nullable String adPoint) {
         if (interstitialAgent != null) {
-            showAdImpl(interstitialAgent);
+            showAdImpl(interstitialAgent, adPoint);
         } else {
-            listener.onAdFailedToOpen();
+            listener.onInterstitialAdFailedToOpen(
+                    "Interstitial agent is not initialised");
         }
     }
-
-    public void showAd(final String adPoint) {
-        if (interstitialAgent != null) {
-            showAdImpl(adPoint, interstitialAgent);
-        } else {
-            listener.onAdFailedToOpen();
-        }
-    }
-
-    public void showRewardedAd() {
+    
+    public void showRewardedAd(@Nullable String adPoint) {
         if (rewardedAgent != null) {
-            showAdImpl(rewardedAgent);
+            showAdImpl(rewardedAgent, adPoint);
         } else {
-            listener.onRewardedAdFailedToOpen();
+            listener.onRewardedAdFailedToOpen(
+                    "Rewarded agent is not initialised");
         }
     }
-
-    public void showRewardedAd(String adPoint) {
-        if (rewardedAgent != null) {
-            showAdImpl(adPoint, rewardedAgent);
-        } else {
-            listener.onRewardedAdFailedToOpen();
-        }
-    }
-
-    private void showAdImpl(final AdAgent agent) {
-
-        MediationAdapter mediationAdapter = null;
-        if(agent != null) {
+    
+    private void showAdImpl(
+            final AdAgent agent,
+            @Nullable final String adPoint) {
+        
+        MediationAdapter mediationAdapter;
+        if (agent != null) {
             mediationAdapter = agent.getCurrentAdapter();
-            agent.setAdPoint(null);
-        }
-
-        if(System.currentTimeMillis() - lastAdShownTime <= adMinimumInterval) {
-            Log.i(BuildConfig.LOG_TAG, "show ad called before minimum interval " + adMinimumInterval +" ms between ads has elapsed");
-            postAdShowEvent(agent, mediationAdapter, AdShowResult.MIN_TIME_NOT_ELAPSED);
-            listener.onAdFailedToOpen();
-            return;
-        }
-
-        if(sessionAdCount >= adMaxPerSession) {
-            Log.i(BuildConfig.LOG_TAG, "The number of ads shown during this session has exceeded the maximum: " + adMaxPerSession);
-            postAdShowEvent(agent, mediationAdapter, AdShowResult.SESSION_LIMIT_REACHED);
-            listener.onAdFailedToOpen();
-            return;
-        }
-
-        if(agent != null && agent.isAdLoaded()) {
-            try {
-                postAdShowEvent(agent, mediationAdapter, AdShowResult.FULFILLED);
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        agent.showAd(null);
-                    }
-                });
-            } catch (Exception e) {
-                Log.e(BuildConfig.LOG_TAG, "Problem showing ad", e);
-                postAdShowEvent(interstitialAgent, interstitialAgent.getCurrentAdapter(), AdShowResult.INTERNAL_ERROR);
-                listener.onAdFailedToOpen();
+            if (adPoint != null) {
+                agent.setAdPoint(adPoint);
+            }
+            
+            if (!agent.isAdLoaded()) {
+                postAdShowEvent(
+                        agent,
+                        mediationAdapter,
+                        AdShowResult.NOT_REGISTERED);
+                if (agent.equals(interstitialAgent)) {
+                    listener.onInterstitialAdFailedToOpen(
+                            "Interstitial ad agent not registered");
+                } else if (agent.equals(rewardedAgent)) {
+                    listener.onRewardedAdFailedToOpen(
+                            "Rewarded ad agent not registered");
+                }
+                return;
             }
         } else {
-            postAdShowEvent(agent, mediationAdapter, agent != null ? AdShowResult.NOT_READY : AdShowResult.NOT_REGISTERED);
-            listener.onAdFailedToOpen();
-        }
-
-    }
-
-    private void showAdImpl(final String adPoint, final AdAgent agent) {
-        MediationAdapter mediationAdapter = null;
-        if(agent != null) {
-            mediationAdapter = agent.getCurrentAdapter();
-            agent.setAdPoint(adPoint);
-        }
-
-        if(System.currentTimeMillis() - lastAdShownTime <= adMinimumInterval) {
-            Log.i(BuildConfig.LOG_TAG, "show ad called before minimum interval " + adMinimumInterval +" ms between ads has elapsed");
-            postAdShowEvent(agent, mediationAdapter, AdShowResult.MIN_TIME_NOT_ELAPSED);
-            listener.onAdFailedToOpen();
+            postAdShowEvent(
+                    null,
+                    null,
+                    AdShowResult.NOT_READY);
+            // FIXME should notify listener here as well, but don't know which
             return;
         }
-
-        if(sessionAdCount >= adMaxPerSession) {
-            Log.i(BuildConfig.LOG_TAG, "The number of ads shown during this session has exceeded the maximum: " + adMaxPerSession);
-            postAdShowEvent(agent, mediationAdapter, AdShowResult.SESSION_LIMIT_REACHED);
-            listener.onAdFailedToOpen();
+        
+        if (System.currentTimeMillis() - lastAdShownTime <= adMinimumInterval) {
+            Log.w(BuildConfig.LOG_TAG, "Not showing ad before minimum interval");
+            
+            postAdShowEvent(
+                    agent,
+                    mediationAdapter,
+                    AdShowResult.MIN_TIME_NOT_ELAPSED);
+            if (agent.equals(interstitialAgent)) {
+                listener.onInterstitialAdFailedToOpen(
+                        "Minimum interval between ads not elapsed");
+            } else if (agent.equals(rewardedAgent)) {
+                listener.onRewardedAdFailedToOpen(
+                        "Minimum interval between ads not elapsed");
+            }
             return;
         }
-
-        if (agent != null) {
-            if (adConfiguration.optBoolean("adShowPoint", true)) {
-                final MediationAdapter finalMediationAdapter = mediationAdapter;
-                
-                final EngagementListener engageListener = new EngagementListener() {
-                    @Override
-                    public void onSuccess(JSONObject result) {
-                        JSONObject parameters = result.optJSONObject("parameters");
-                        if (parameters != null) {
-                            if (parameters.optBoolean("adShowPoint", true)) {
-                                Log.d(BuildConfig.LOG_TAG, "Engage allowing ad at adPoint " + adPoint);
-                                if(agent.isAdLoaded()) {
-                                    try {
-                                        postAdShowEvent(agent, finalMediationAdapter, AdShowResult.FULFILLED);
-                                        agent.showAd(adPoint);
-                                    } catch (Exception e) {
-                                        Log.e(BuildConfig.LOG_TAG, "Problem showing ad at adPoint "+adPoint, e);
-                                        postAdShowEvent(interstitialAgent, interstitialAgent.getCurrentAdapter(), AdShowResult.INTERNAL_ERROR);
-                                        listener.onAdFailedToOpen();
+        
+        if (sessionAdCount >= adMaxPerSession) {
+            Log.w(  BuildConfig.LOG_TAG,
+                    "Number of ads shown this session exceeded the maximum");
+            
+            postAdShowEvent(
+                    agent,
+                    mediationAdapter,
+                    AdShowResult.SESSION_LIMIT_REACHED);
+            if (agent.equals(interstitialAgent)) {
+                listener.onInterstitialAdFailedToOpen(
+                        "Too many ads shown per session");
+            } else if (agent.equals(rewardedAgent)) {
+                listener.onRewardedAdFailedToOpen(
+                        "Too many ads shown per session");
+            }
+            return;
+        }
+        
+        if (    !TextUtils.isEmpty(adPoint)
+                && adConfiguration.optBoolean("adShowPoint", true)) {
+            final MediationAdapter finalMediationAdapter = mediationAdapter;
+            
+            final EngagementListener engageListener = new EngagementListener() {
+                @Override
+                public void onSuccess(JSONObject result) {
+                    JSONObject parameters = result.optJSONObject("parameters");
+                    if (parameters != null) {
+                        if (parameters.optBoolean("adShowPoint", true)) {
+                            Log.d(BuildConfig.LOG_TAG, "Engage allowing ad at adPoint " + adPoint);
+                            if (agent.isAdLoaded()) {
+                                try {
+                                    postAdShowEvent(agent, finalMediationAdapter, AdShowResult.FULFILLED);
+                                    agent.showAd(adPoint);
+                                } catch (Exception e) {
+                                    Log.w(  BuildConfig.LOG_TAG,
+                                            "Error showing ad at adPoint " + adPoint,
+                                            e);
+                                    
+                                    postAdShowEvent(
+                                            agent,
+                                            finalMediationAdapter,
+                                            AdShowResult.INTERNAL_ERROR);
+                                    if (agent.equals(interstitialAgent)) {
+                                        listener.onInterstitialAdFailedToOpen(
+                                                e.getMessage());
+                                    } else if (agent.equals(rewardedAgent)) {
+                                        listener.onRewardedAdFailedToOpen(
+                                                e.getMessage());
                                     }
-                                } else {
-                                    agent.setAdPoint(adPoint);  // inject ad point so still appears in event
-                                    postAdShowEvent(agent, finalMediationAdapter, AdShowResult.NOT_READY);
-                                    listener.onAdFailedToOpen();
                                 }
                             } else {
-                                Log.d(BuildConfig.LOG_TAG, "Engage prevented ad from opening");
-                                agent.setAdPoint(adPoint);  // inject ad point so still appears in event
-                                postAdShowEvent(agent, finalMediationAdapter, AdShowResult.AD_SHOW_POINT);
-                                listener.onAdFailedToOpen();
+                                Log.w(BuildConfig.LOG_TAG, "Ad agent not ready");
+                                
+                                // inject ad point so still appears in event
+                                agent.setAdPoint(adPoint);
+                                
+                                postAdShowEvent(
+                                        agent,
+                                        finalMediationAdapter,
+                                        AdShowResult.NOT_READY);
+                                if (agent.equals(interstitialAgent)) {
+                                    listener.onInterstitialAdFailedToOpen(
+                                            "Interstitial ad agent not ready");
+                                } else if (agent.equals(rewardedAgent)) {
+                                    listener.onRewardedAdFailedToOpen(
+                                            "Rewarded ad agent not ready");
+                                }
+                            }
+                        } else {
+                            Log.w(  BuildConfig.LOG_TAG,
+                                    "Engage prevented ad from opening");
+                            
+                            // inject ad point so still appears in event
+                            agent.setAdPoint(adPoint);
+                            
+                            postAdShowEvent(
+                                    agent,
+                                    finalMediationAdapter,
+                                    AdShowResult.AD_SHOW_POINT);
+                            if (agent.equals(interstitialAgent)) {
+                                listener.onInterstitialAdFailedToOpen(
+                                        "Ad agent not ready");
+                            } else if (agent.equals(rewardedAgent)) {
+                                listener.onRewardedAdFailedToOpen(
+                                        "Ad agent not ready");
                             }
                         }
                     }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        // Engage failed so we should try and show the ad
-                        Log.d(BuildConfig.LOG_TAG, "Engage request failed: "+t+", showing ad anyway");
-                        try {
-                            postAdShowEvent(agent, finalMediationAdapter, AdShowResult.AD_SHOW_ENGAGE_FAILED);
-                            agent.showAd(adPoint);
-                        } catch (Exception e1) {
-                            Log.e(BuildConfig.LOG_TAG, "Problem showing ad at adPoint "+adPoint, e1);
-                            agent.setAdPoint(adPoint);  // inject ad point so still appears in event
-                            postAdShowEvent(interstitialAgent, interstitialAgent.getCurrentAdapter(), AdShowResult.INTERNAL_ERROR);
-                            listener.onAdFailedToOpen();
+                }
+                
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.w(  BuildConfig.LOG_TAG,
+                            "Engage request failed, showing ad anyway",
+                            t);
+                    
+                    try {
+                        postAdShowEvent(
+                                agent,
+                                finalMediationAdapter,
+                                AdShowResult.AD_SHOW_ENGAGE_FAILED);
+                        agent.showAd(adPoint);
+                    } catch (Exception e1) {
+                        Log.w(  BuildConfig.LOG_TAG,
+                                "Error showing ad at adPoint " + adPoint,
+                                e1);
+                        
+                        // inject ad point so still appears in event
+                        agent.setAdPoint(adPoint);
+                        
+                        postAdShowEvent(
+                                agent,
+                                finalMediationAdapter,
+                                AdShowResult.INTERNAL_ERROR);
+                        if (agent.equals(interstitialAgent)) {
+                            listener.onInterstitialAdFailedToOpen(
+                                    e1.getMessage());
+                        } else if (agent.equals(rewardedAgent)) {
+                            listener.onRewardedAdFailedToOpen(
+                                    e1.getMessage());
                         }
                     }
-                };
-                
-                listener.onRequestEngagement(
-                        adPoint,
-                        EngagementFlavour.ADVERTISING.toString(),
-                        engageListener);
-            } else {
-                Log.d(BuildConfig.LOG_TAG, "adShowPoint=false in configuration, not supporting adPoints");
-                showAd();
-            }
+                }
+            };
+            
+            listener.onRequestEngagement(
+                    adPoint,
+                    EngagementFlavour.ADVERTISING.toString(),
+                    engageListener);
         } else {
-            postAdShowEvent(null, null, AdShowResult.NOT_REGISTERED);
-            listener.onAdFailedToOpen();
+            if (!TextUtils.isEmpty(adPoint)) {
+                Log.w(  BuildConfig.LOG_TAG,
+                        "Ad points not supported by configuration");
+            }
+            
+            postAdShowEvent(agent, mediationAdapter, AdShowResult.FULFILLED);
+            agent.showAd(null);
         }
     }
-
+    
     public void onPause() {
         if (interstitialAgent != null) {
             interstitialAgent.onPause();
         }
-        if(rewardedAgent != null) {
+        if (rewardedAgent != null) {
             rewardedAgent.onPause();
         }
     }
-
+    
     public void onResume() {
         if (interstitialAgent != null) {
             interstitialAgent.onResume();
         }
-        if(rewardedAgent != null) {
+        if (rewardedAgent != null) {
             rewardedAgent.onResume();
         }
     }

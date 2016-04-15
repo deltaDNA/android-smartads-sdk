@@ -20,23 +20,27 @@ import com.deltadna.android.sdk.ads.core.engage.EngagementListener;
 
 public interface AdServiceListener {
 
-    void onRegisteredForAds();
+    void onRegisteredForInterstitialAds();
+
+    void onFailedToRegisterForInterstitialAds(String reason);
 
     void onRegisteredForRewardedAds();
 
-    void onFailedToRegisterForAds(String errorReason);
+    void onFailedToRegisterForRewardedAds(String reason);
 
-    void onFailedToRegisterForRewardedAds(String errorReason);
+    void onInterstitialAdLoaded();
 
-    void onAdOpened();
+    void onInterstitialAdOpened();
 
-    void onAdFailedToOpen();
+    void onInterstitialAdFailedToOpen(String reason);
 
-    void onAdClosed();
+    void onInterstitialAdClosed();
+
+    void onRewardedAdLoaded();
 
     void onRewardedAdOpened();
 
-    void onRewardedAdFailedToOpen();
+    void onRewardedAdFailedToOpen(String reason);
 
     void onRewardedAdClosed(boolean completed);
 
