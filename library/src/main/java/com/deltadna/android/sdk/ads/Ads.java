@@ -132,13 +132,6 @@ final class Ads implements AdServiceListener {
     }
     
     @Override
-    public void onInterstitialAdLoaded() {
-        if (interstitialListener != null) {
-            interstitialListener.onLoaded();
-        }
-    }
-    
-    @Override
     public void onInterstitialAdOpened() {
         if (interstitialListener != null) {
             interstitialListener.onOpened();
@@ -156,13 +149,6 @@ final class Ads implements AdServiceListener {
     public void onInterstitialAdClosed() {
         if (interstitialListener != null) {
             interstitialListener.onClosed();
-        }
-    }
-    
-    @Override
-    public void onRewardedAdLoaded() {
-        if (rewardedListener != null) {
-            rewardedListener.onLoaded();
         }
     }
     

@@ -22,11 +22,6 @@ package com.deltadna.android.sdk.ads.listeners;
 public interface InterstitialAdsListener {
     
     /**
-     * Called when an interstitial ad has been loaded.
-     */
-    void onLoaded();
-    
-    /**
      * Called when an interstitial ad has been opened.
      */
     void onOpened();

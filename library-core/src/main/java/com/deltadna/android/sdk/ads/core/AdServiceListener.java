@@ -29,15 +29,11 @@ public interface AdServiceListener {
 
     void onFailedToRegisterForRewardedAds(String reason);
 
-    void onInterstitialAdLoaded();
-
     void onInterstitialAdOpened();
 
     void onInterstitialAdFailedToOpen(String reason);
 
     void onInterstitialAdClosed();
-
-    void onRewardedAdLoaded();
 
     void onRewardedAdOpened();
 

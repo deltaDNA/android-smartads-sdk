@@ -22,11 +22,6 @@ package com.deltadna.android.sdk.ads.listeners;
 public interface RewardedAdsListener {
     
     /**
-     * Called when a rewarded ad has been loaded.
-     */
-    void onLoaded();
-    
-    /**
      * Called when a rewarded ad has been opened.
      */
     void onOpened();
