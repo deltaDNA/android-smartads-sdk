@@ -16,8 +16,6 @@
 
 package com.deltadna.android.sdk.ads.core;
 
-import com.deltadna.android.sdk.ads.core.engage.EngagementListener;
-
 @UnityInterOp
 public interface AdServiceListener {
 

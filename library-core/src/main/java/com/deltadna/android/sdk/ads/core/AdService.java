@@ -29,8 +29,6 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
-import com.deltadna.android.sdk.ads.core.engage.EngagementListener;
-import com.deltadna.android.sdk.ads.core.engage.EngagementFlavour;
 import com.deltadna.android.sdk.ads.core.utils.Preconditions;
 
 import org.json.JSONArray;
