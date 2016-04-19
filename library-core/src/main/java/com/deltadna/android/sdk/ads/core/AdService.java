@@ -202,13 +202,17 @@ public class AdService implements
     }
     
     @Override
-    public void onAdLoaded(AdAgent adAgent, MediationAdapter mediationAdapter, long requestTime) {
-        if (adAgent.equals(interstitialAgent)) {
+    public void onAdLoaded(AdAgent agent, MediationAdapter adapter, long time) {
+        if (agent.equals(interstitialAgent)) {
             Log.d(BuildConfig.LOG_TAG, "Interstitial ad loaded");
-            postAdRequestEventSuccess(adAgent, mediationAdapter, requestTime);
-        } else if(adAgent.equals(rewardedAgent)) {
+            
+            postAdRequestEventSuccess(agent, adapter, time);
+            listener.onInterstitialAdLoaded();
+        } else if(agent.equals(rewardedAgent)) {
             Log.d(BuildConfig.LOG_TAG, "Rewarded ad loaded");
-            postAdRequestEventSuccess(adAgent, mediationAdapter, requestTime);
+            
+            postAdRequestEventSuccess(agent, adapter, time);
+            listener.onRewardedAdLoaded();
         }
     }
 
