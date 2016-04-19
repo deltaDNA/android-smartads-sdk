@@ -25,6 +25,16 @@ import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Class for creating and showing a rewarded ad.
+ * <p>
+ * The ad can be created through one of the static {@code create} helpers,
+ * from an {@link Engagement} as well as without one.
+ * <p>
+ * The ad can be shown through {@link #show()}.
+ * <p>
+ * {@link DDNASmartAds} must be registered for ads beforehand.
+ */
 public final class RewardedAd {
     
     private static final String TAG = BuildConfig.LOG_TAG
