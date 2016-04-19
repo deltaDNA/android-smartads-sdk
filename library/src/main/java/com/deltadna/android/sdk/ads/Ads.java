@@ -27,9 +27,9 @@ import com.deltadna.android.sdk.Params;
 import com.deltadna.android.sdk.ads.core.AdService;
 import com.deltadna.android.sdk.ads.core.AdServiceListener;
 import com.deltadna.android.sdk.ads.core.engage.EngagementListener;
-import com.deltadna.android.sdk.ads.core.listeners.AdRegistrationListener;
-import com.deltadna.android.sdk.ads.core.listeners.InterstitialAdsListener;
-import com.deltadna.android.sdk.ads.core.listeners.RewardedAdsListener;
+import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
+import com.deltadna.android.sdk.ads.listeners.InterstitialAdsListener;
+import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener;
 import com.deltadna.android.sdk.ads.exceptions.EngagementFailureException;
 import com.deltadna.android.sdk.listeners.EngageListener;
 

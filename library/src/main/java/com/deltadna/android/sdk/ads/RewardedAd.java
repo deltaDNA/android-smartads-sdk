@@ -20,7 +20,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.deltadna.android.sdk.Engagement;
-import com.deltadna.android.sdk.ads.core.listeners.RewardedAdsListener;
+import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.deltadna.android.sdk.ads.core.listeners.AdRegistrationListener;
+import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
 
 /**
  * Singleton class for accessing the deltaDNA SmartAds SDK.

@@ -14,35 +14,32 @@
  * limitations under the License.
  */
 
-package com.deltadna.android.sdk.ads.core.listeners;
+package com.deltadna.android.sdk.ads.listeners;
 
 /**
- * Listener for events within the rewarded ads lifecycle.
+ * Listener for events within the interstitial ad lifecycle.
  */
-public interface RewardedAdsListener {
+public interface InterstitialAdsListener {
     
     /**
-     * Called when a rewarded ad has been loaded.
+     * Called when an interstitial ad has been loaded.
      */
     void onLoaded();
     
     /**
-     * Called when a rewarded ad has been opened.
+     * Called when an interstitial ad has been opened.
      */
     void onOpened();
     
     /**
-     * Called when a rewarded ad has failed to open.
+     * Called when an interstitial ad has failed to open.
      *
      * @param reason the reason for the failure
      */
     void onFailedToOpen(String reason);
     
     /**
-     * Called when a rewarded as has closed.
-     *
-     * @param completed whether the full ad was watched, and whether the reward
-     *                  should be given
+     * Called when an interstitial ad has closed.
      */
-    void onClosed(boolean completed);
+    void onClosed();
 }

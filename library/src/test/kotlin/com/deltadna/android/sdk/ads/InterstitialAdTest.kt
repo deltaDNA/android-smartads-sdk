@@ -17,7 +17,7 @@
 package com.deltadna.android.sdk.ads
 
 import com.deltadna.android.sdk.Engagement
-import com.deltadna.android.sdk.ads.core.listeners.InterstitialAdsListener
+import com.deltadna.android.sdk.ads.listeners.InterstitialAdsListener
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever

@@ -20,7 +20,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.deltadna.android.sdk.Engagement;
-import com.deltadna.android.sdk.ads.core.listeners.InterstitialAdsListener;
+import com.deltadna.android.sdk.ads.listeners.InterstitialAdsListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;

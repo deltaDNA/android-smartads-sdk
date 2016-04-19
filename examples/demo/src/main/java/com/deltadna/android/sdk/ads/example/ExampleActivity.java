@@ -28,7 +28,7 @@ import com.deltadna.android.sdk.ImageMessage;
 import com.deltadna.android.sdk.ads.DDNASmartAds;
 import com.deltadna.android.sdk.ads.InterstitialAd;
 import com.deltadna.android.sdk.ads.RewardedAd;
-import com.deltadna.android.sdk.ads.core.listeners.AdRegistrationListener;
+import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
 import com.deltadna.android.sdk.listeners.EngageListener;
 
 public class ExampleActivity extends Activity {
