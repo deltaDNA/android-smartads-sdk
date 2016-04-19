@@ -32,12 +32,17 @@ public final class RewardedAd {
             + RewardedAd.class.getSimpleName();
     private static final String AD_SHOW_POINT = "adShowPoint";
     
+    /**
+     * Parameters from the Engage response if the ad was created from a
+     * successful {@link Engagement}, else {@code null}.
+     */
+    @Nullable
     public final JSONObject params;
     
     private final DDNASmartAds smartAds = DDNASmartAds.instance();
     
     private RewardedAd(
-            JSONObject params,
+            @Nullable JSONObject params,
             @Nullable RewardedAdsListener listener) {
         
         this.params = params;

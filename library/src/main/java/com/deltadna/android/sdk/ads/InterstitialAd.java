@@ -32,6 +32,10 @@ public final class InterstitialAd {
             + InterstitialAd.class.getSimpleName();
     private static final String AD_SHOW_POINT = "adShowPoint";
     
+    /**
+     * Parameters from the Engage response if the ad was created from a
+     * successful {@link Engagement}, else {@code null}.
+     */
     @Nullable
     public final JSONObject params;
     
