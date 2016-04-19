@@ -363,7 +363,7 @@ public class AdService implements
         if (    !TextUtils.isEmpty(adPoint)
                 && adConfiguration.optBoolean("adShowPoint", true)) {
             final MediationAdapter finalMediationAdapter = mediationAdapter;
-            
+
             final EngagementListener engageListener = new EngagementListener() {
                 @Override
                 public void onSuccess(JSONObject result) {
@@ -376,10 +376,10 @@ public class AdService implements
                                     postAdShowEvent(agent, finalMediationAdapter, AdShowResult.FULFILLED);
                                     agent.showAd(adPoint);
                                 } catch (Exception e) {
-                                    Log.w(  BuildConfig.LOG_TAG,
+                                    Log.w(BuildConfig.LOG_TAG,
                                             "Error showing ad at adPoint " + adPoint,
                                             e);
-                                    
+
                                     postAdShowEvent(
                                             agent,
                                             finalMediationAdapter,
@@ -394,10 +394,10 @@ public class AdService implements
                                 }
                             } else {
                                 Log.w(BuildConfig.LOG_TAG, "Ad agent not ready");
-                                
+
                                 // inject ad point so still appears in event
                                 agent.setAdPoint(adPoint);
-                                
+
                                 postAdShowEvent(
                                         agent,
                                         finalMediationAdapter,
@@ -411,12 +411,12 @@ public class AdService implements
                                 }
                             }
                         } else {
-                            Log.w(  BuildConfig.LOG_TAG,
+                            Log.w(BuildConfig.LOG_TAG,
                                     "Engage prevented ad from opening");
-                            
+
                             // inject ad point so still appears in event
                             agent.setAdPoint(adPoint);
-                            
+
                             postAdShowEvent(
                                     agent,
                                     finalMediationAdapter,
@@ -431,13 +431,13 @@ public class AdService implements
                         }
                     }
                 }
-                
+
                 @Override
                 public void onFailure(Throwable t) {
-                    Log.w(  BuildConfig.LOG_TAG,
+                    Log.w(BuildConfig.LOG_TAG,
                             "Engage request failed, showing ad anyway",
                             t);
-                    
+
                     try {
                         postAdShowEvent(
                                 agent,
@@ -445,13 +445,13 @@ public class AdService implements
                                 AdShowResult.AD_SHOW_ENGAGE_FAILED);
                         agent.showAd(adPoint);
                     } catch (Exception e1) {
-                        Log.w(  BuildConfig.LOG_TAG,
+                        Log.w(BuildConfig.LOG_TAG,
                                 "Error showing ad at adPoint " + adPoint,
                                 e1);
-                        
+
                         // inject ad point so still appears in event
                         agent.setAdPoint(adPoint);
-                        
+
                         postAdShowEvent(
                                 agent,
                                 finalMediationAdapter,
@@ -466,17 +466,27 @@ public class AdService implements
                     }
                 }
             };
-            
+
             listener.onRequestEngagement(
                     adPoint,
                     EngagementFlavour.ADVERTISING.toString(),
                     engageListener);
-        } else {
-            if (!TextUtils.isEmpty(adPoint)) {
-                Log.w(  BuildConfig.LOG_TAG,
+        } else if (!TextUtils.isEmpty(adPoint)) {
+            Log.w(  BuildConfig.LOG_TAG,
+                    "Ad points not supported by configuration");
+            
+            postAdShowEvent(
+                    agent,
+                    mediationAdapter,
+                    AdShowResult.AD_SHOW_POINT);
+            if (agent.equals(interstitialAgent)) {
+                listener.onInterstitialAdFailedToOpen(
+                        "Ad points not supported by configuration");
+            } else if (agent.equals(rewardedAgent)) {
+                listener.onRewardedAdFailedToOpen(
                         "Ad points not supported by configuration");
             }
-            
+        } else {
             postAdShowEvent(agent, mediationAdapter, AdShowResult.FULFILLED);
             agent.showAd(null);
         }
