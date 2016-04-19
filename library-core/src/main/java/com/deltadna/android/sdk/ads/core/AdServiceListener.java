@@ -18,6 +18,7 @@ package com.deltadna.android.sdk.ads.core;
 
 import com.deltadna.android.sdk.ads.core.engage.EngagementListener;
 
+@UnityInterOp
 public interface AdServiceListener {
 
     void onRegisteredForInterstitialAds();
@@ -45,7 +46,7 @@ public interface AdServiceListener {
     void onRewardedAdClosed(boolean completed);
 
     void onRecordEvent(String name, String jsonParams);
-    
+
     void onRequestEngagement(
             String decisionPoint,
             String flavour,

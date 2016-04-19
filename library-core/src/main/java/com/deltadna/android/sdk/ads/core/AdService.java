@@ -37,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@UnityInterOp
 public class AdService implements
         EngagementListener,
         AdAgentListener {
