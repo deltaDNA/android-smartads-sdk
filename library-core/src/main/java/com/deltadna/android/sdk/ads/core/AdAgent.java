@@ -21,6 +21,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
+import android.support.annotation.UiThread;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
@@ -110,7 +111,8 @@ class AdAgent implements MediationListener {
     boolean isAdLoaded() {
         return state == State.LOADED;
     }
-
+    
+    @UiThread
     void showAd(String adPoint) {
         this.adPoint = adPoint;
         if (state == State.LOADED) {

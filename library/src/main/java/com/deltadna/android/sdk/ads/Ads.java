@@ -26,6 +26,7 @@ import com.deltadna.android.sdk.Event;
 import com.deltadna.android.sdk.Params;
 import com.deltadna.android.sdk.ads.core.AdService;
 import com.deltadna.android.sdk.ads.core.AdServiceListener;
+import com.deltadna.android.sdk.ads.core.AdServiceWrapper;
 import com.deltadna.android.sdk.ads.core.EngagementListener;
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
 import com.deltadna.android.sdk.ads.listeners.InterstitialAdsListener;
@@ -50,7 +51,7 @@ final class Ads implements AdServiceListener {
     private RewardedAdsListener rewardedListener;
     
     Ads(Activity activity) {
-        service = new AdService(activity, this);
+        service = AdServiceWrapper.create(activity, this);
     }
     
     void setAdRegistrationListener(

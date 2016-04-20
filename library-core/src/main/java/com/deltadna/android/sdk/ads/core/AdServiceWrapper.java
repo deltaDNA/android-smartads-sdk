@@ -16,20 +16,15 @@
 
 package com.deltadna.android.sdk.ads.core;
 
-import android.support.annotation.Nullable;
+import android.app.Activity;
 
 @UnityInterOp
-public interface AdService {
+public final class AdServiceWrapper {
     
-    void init(String decisionPoint);
-    
-    boolean isInterstitialAdAvailable();
-    boolean isRewardedAdAvailable();
-    
-    void showInterstitialAd(@Nullable String adPoint);
-    void showRewardedAd(@Nullable String adPoint);
-    
-    void onPause();
-    void onResume();
-    void onDestroy();
+    public static AdService create(
+            Activity activity,
+            AdServiceListener listener) {
+        
+        return new AdServiceImpl(activity, listener);
+    }
 }
