@@ -14,42 +14,9 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-
-// workaround for group/version not picked up through project() dependency
-group = GROUP
-version = VERSION_NAME
-
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-    
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        
-        versionCode 1
-        versionName VERSION_NAME
-        
         buildConfigField('String', logTagName, "\"$logTagValue Vungle\"")
-        
-        archivesBaseName = "${POM_ARTIFACT_ID}-${versionName}.${System.getenv("BUILD_NUMBER") ?: getSha()}"
-        
-        consumerProguardFiles 'proguard.cfg'
-    }
-    
-    sourceSets {
-        test.java.srcDirs += 'src/test/kotlin'
-    }
-    
-    compileOptions {
-        sourceCompatibility rootProject.ext.sourceCompatibilityVersion
-        targetCompatibility rootProject.ext.targetCompatibilityVersion
-    }
-    
-    testOptions {
-        unitTests.returnDefaultValues = true
     }
     
     packagingOptions {
@@ -73,26 +40,4 @@ dependencies {
     compile 'com.android.support:support-v4:18.0.0'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.squareup.dagger:dagger:1.2.2'
-    
-    testCompile "com.google.truth:truth:$truthVersion"
-    testCompile "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
-    testCompile "junit:junit:$junitVersion"
-    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-    testCompile "org.json:json:$jsonVersion"
-    testCompile "org.mockito:mockito-core:$mockitoVersion"
-    testCompile "org.robolectric:robolectric:$robolectricVersion"
-}
-
-apply from: "$rootProject.projectDir/gradle/mvn-push.gradle"
-
-// https://github.com/dam5s/android-example-kotlin/issues/1
-buildscript {
-    repositories {
-        jcenter()
-    }
-    
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-    }
 }

@@ -14,13 +14,29 @@
  * limitations under the License.
  */
 
+ext {
+    // can't update to 8.4.0 due to https://code.google.com/p/android/issues/detail?id=187483
+    // N.B in 'AdvertisingIdClient' class has been moved in 8.* to 'basement' package
+    // https://developers.google.com/android/reference/com/google/android/gms/ads/identifier/AdvertisingIdClient
+    playServicesVersion = '7.8.0'
+    supportVersion = '23.3.0'
+    
+    logTagName  = 'LOG_TAG'
+    logTagValue = 'deltaDNA'
+}
+
 buildscript {
+    ext {
+        kotlinVersion = '1.0.1'
+    }
+    
     repositories {
         jcenter()
     }
     
     dependencies {
         classpath 'com.android.tools.build:gradle:2.0.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
 
@@ -32,40 +48,82 @@ allprojects {
     }
 }
 
+subprojects {
+    def isLibrary = it.name.startsWith('library') || it.name.startsWith("provider")
+    
+    if (isLibrary) {
+        apply plugin: 'com.android.library'
+        apply plugin: 'kotlin-android'
+    } else {
+        apply plugin: 'com.android.application'
+    }
+    
+    if (isLibrary) {
+        // workaround for group/version not picked up through project() dependency
+        group = GROUP
+        version = VERSION_NAME
+    }
+    
+    android {
+        compileSdkVersion 23
+        buildToolsVersion '23.0.3'
+        
+        defaultConfig {
+            minSdkVersion 15
+            targetSdkVersion 23
+            
+            versionCode 1
+            versionName VERSION_NAME
+            
+            buildConfigField('String', logTagName, "\"$logTagValue\"")
+            
+            if (isLibrary) {
+                archivesBaseName = "${POM_ARTIFACT_ID}-${versionName}.${System.getenv("BUILD_NUMBER") ?: getSha()}"
+                
+                consumerProguardFiles 'proguard.cfg'
+            }
+        }
+        
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_7
+            targetCompatibility JavaVersion.VERSION_1_7
+        }
+        
+        if (isLibrary) {
+            sourceSets {
+                test.java.srcDirs += 'src/test/kotlin'
+            }
+            
+            testOptions {
+                unitTests.returnDefaultValues = true
+            }
+        }
+    }
+    
+    if (isLibrary) {
+        dependencies {
+            testCompile 'com.google.truth:truth:0.28'
+            testCompile 'com.nhaarman:mockito-kotlin:0.3.0'
+            testCompile 'junit:junit:4.12'
+            testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+            testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+            testCompile 'org.json:json:20160212'
+            testCompile 'org.mockito:mockito-core:1.10.19'
+            testCompile 'org.robolectric:robolectric:3.0'
+        }
+    }
+    
+    if (isLibrary) {
+        apply from: "$rootProject.projectDir/gradle/mvn-push.gradle"
+    }
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.12'
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-ext {
-    compileSdkVersion = 23
-    buildToolsVersion = '23.0.3'
-    
-    minSdkVersion    = 15
-    targetSdkVersion = 23
-    
-    sourceCompatibilityVersion = JavaVersion.VERSION_1_7
-    targetCompatibilityVersion = JavaVersion.VERSION_1_7
-    
-    // can't update to 8.4.0 due to https://code.google.com/p/android/issues/detail?id=187483
-    // N.B in 'AdvertisingIdClient' class has been moved in 8.* to 'basement' package
-    // https://developers.google.com/android/reference/com/google/android/gms/ads/identifier/AdvertisingIdClient
-    playServicesVersion = '7.8.0'
-    supportVersion = '23.3.0'
-    
-    mockitoKotlinVersion = '0.3.0'
-    truthVersion = '0.28'
-    junitVersion = '4.12'
-    kotlinVersion = '1.0.1'
-    jsonVersion = '20160212'
-    mockitoVersion = '1.10.19'
-    robolectricVersion = '3.0'
-    
-    logTagName  = 'LOG_TAG'
-    logTagValue = 'deltaDNA'
 }
 
 def getSha() {

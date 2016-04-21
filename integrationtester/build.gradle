@@ -14,25 +14,9 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-    
     defaultConfig {
         applicationId "com.deltadna.android.sdk.ads.adintegrationtester"
-        
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        
-        versionCode 1
-        versionName "1.0.0"
-    }
-    
-    compileOptions {
-        sourceCompatibility rootProject.ext.sourceCompatibilityVersion
-        targetCompatibility rootProject.ext.targetCompatibilityVersion
     }
     
     signingConfigs {
