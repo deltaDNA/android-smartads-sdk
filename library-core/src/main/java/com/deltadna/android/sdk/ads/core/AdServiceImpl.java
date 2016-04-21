@@ -298,7 +298,7 @@ final class AdServiceImpl implements AdService {
                         postAdShowEvent(
                                 agent,
                                 finalMediationAdapter,
-                                AdShowResult.AD_SHOW_ENGAGE_FAILED);
+                                AdShowResult.FULFILLED);
                         agent.showAd(adPoint);
                     } catch (Exception e1) {
                         Log.w(BuildConfig.LOG_TAG,
