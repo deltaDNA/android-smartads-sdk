@@ -29,9 +29,12 @@ import com.deltadna.android.sdk.ads.DDNASmartAds;
 import com.deltadna.android.sdk.ads.InterstitialAd;
 import com.deltadna.android.sdk.ads.RewardedAd;
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
+import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener;
 import com.deltadna.android.sdk.listeners.EngageListener;
 
-public class ExampleActivity extends Activity {
+public class ExampleActivity extends Activity implements AdRegistrationListener {
+    
+    // lifecycle methods
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,27 +44,7 @@ public class ExampleActivity extends Activity {
         
         DDNA.instance().startSdk();
         
-        DDNASmartAds.instance().setAdRegistrationListener(new AdRegistrationListener() {
-            @Override
-            public void onRegisteredForInterstitial() {
-                Log.d(BuildConfig.LOG_TAG, "Registered for interstitial ads");
-            }
-            
-            @Override
-            public void onFailedToRegisterForInterstitial(String reason) {
-                Log.d(BuildConfig.LOG_TAG, "Failed to register for interstitial ads");
-            }
-            
-            @Override
-            public void onRegisteredForRewarded() {
-                Log.d(BuildConfig.LOG_TAG, "Registered for rewarded ads");
-            }
-            
-            @Override
-            public void onFailedToRegisterForRewarded(String reason) {
-                Log.d(BuildConfig.LOG_TAG, "Failed to register for rewarded ads");
-            }
-        });
+        DDNASmartAds.instance().setAdRegistrationListener(this);
         DDNASmartAds.instance().registerForAds(this);
         
         ((TextView) findViewById(R.id.user_id)).setText(getString(
@@ -90,6 +73,30 @@ public class ExampleActivity extends Activity {
         super.onDestroy();
     }
     
+    // ad registration callbacks
+    
+    @Override
+    public void onRegisteredForInterstitial() {
+        Log.d(BuildConfig.LOG_TAG, "Registered for interstitial ads");
+    }
+    
+    @Override
+    public void onFailedToRegisterForInterstitial(String reason) {
+        Log.d(BuildConfig.LOG_TAG, "Failed to register for interstitial ads");
+    }
+    
+    @Override
+    public void onRegisteredForRewarded() {
+        Log.d(BuildConfig.LOG_TAG, "Registered for rewarded ads");
+    }
+    
+    @Override
+    public void onFailedToRegisterForRewarded(String reason) {
+        Log.d(BuildConfig.LOG_TAG, "Failed to register for rewarded ads");
+    }
+    
+    // view callbacks
+    
     public void onShowInterstitialAd(View view) {
         InterstitialAd.create().show();
     }
@@ -117,7 +124,23 @@ public class ExampleActivity extends Activity {
     }
     
     public void onShowRewardedAd(View view) {
-        RewardedAd.create().show();
+        RewardedAd.create(new RewardedAdsListener() {
+            @Override
+            public void onOpened() {
+                Log.d(BuildConfig.LOG_TAG, "Rewarded ad opened");
+            }
+            
+            @Override
+            public void onFailedToOpen(String reason) {
+                Log.d(  BuildConfig.LOG_TAG,
+                        "Rewarded ad failed to open: " + reason);
+            }
+            
+            @Override
+            public void onClosed(boolean completed) {
+                Log.d(BuildConfig.LOG_TAG, "Rewarded ad closed");
+            }
+        }).show();
     }
     
     public void onShowEngageRewardedAd(View view) {

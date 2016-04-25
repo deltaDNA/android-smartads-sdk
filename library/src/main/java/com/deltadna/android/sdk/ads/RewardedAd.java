@@ -48,6 +48,8 @@ public final class RewardedAd {
      */
     @Nullable
     public final JSONObject params;
+    @Nullable
+    private final RewardedAdsListener listener;
     
     private final DDNASmartAds smartAds = DDNASmartAds.instance();
     
@@ -56,10 +58,7 @@ public final class RewardedAd {
             @Nullable RewardedAdsListener listener) {
         
         this.params = params;
-        
-        if (smartAds.getAds() != null) {
-            smartAds.getAds().setRewardedAdsListener(listener);
-        }
+        this.listener = listener;
     }
     
     /**
@@ -78,8 +77,10 @@ public final class RewardedAd {
      * @return this instance
      */
     public RewardedAd show() {
-        if (smartAds.getAds() != null) {
-            smartAds.getAds().showRewardedAd(null);
+        final Ads ads = smartAds.getAds();
+        if (ads != null) {
+            ads.setRewardedAdsListener(listener);
+            ads.showRewardedAd(null);
         }
         
         return this;

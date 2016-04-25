@@ -22,6 +22,8 @@ import android.util.Log;
 
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Singleton class for accessing the deltaDNA SmartAds SDK.
  * <p>
@@ -39,11 +41,10 @@ public final class DDNASmartAds {
     
     private static DDNASmartAds instance = null;
     
+    private WeakReference<AdRegistrationListener> registrationListener =
+            new WeakReference<>(null);
     @Nullable
     private Ads ads;
-    
-    @Nullable
-    private AdRegistrationListener registrationListener;
     
     private DDNASmartAds() {}
     
@@ -55,21 +56,26 @@ public final class DDNASmartAds {
     public void registerForAds(Activity activity) {
         if (ads == null) {
             ads = new Ads(activity);
-            
-            if (registrationListener != null) {
-                ads.setAdRegistrationListener(registrationListener);
-            }
-            
+            ads.setAdRegistrationListener(registrationListener.get());
             ads.registerForAds();
         } else {
             Log.w(BuildConfig.LOG_TAG, "Already registered for ads");
         }
     }
     
+    /**
+     * Sets a listener for ad registration status callbacks.
+     * <p>
+     * The listener is stored as a weak reference so the instance should be
+     * attached to an object with a longer lifecycle, for example an
+     * {@link Activity}.
+     *
+     * @param listener the listener for ad registration status
+     */
     public void setAdRegistrationListener(
             @Nullable AdRegistrationListener listener) {
         
-        registrationListener = listener;
+        registrationListener = new WeakReference<>(listener);
         
         if (ads != null) {
             ads.setAdRegistrationListener(listener);

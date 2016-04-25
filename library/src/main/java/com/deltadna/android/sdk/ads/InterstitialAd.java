@@ -48,6 +48,8 @@ public final class InterstitialAd {
      */
     @Nullable
     public final JSONObject params;
+    @Nullable
+    private final InterstitialAdsListener listener;
     
     private final DDNASmartAds smartAds = DDNASmartAds.instance();
     
@@ -56,10 +58,7 @@ public final class InterstitialAd {
             @Nullable final InterstitialAdsListener listener) {
         
         this.params = params;
-        
-        if (smartAds.getAds() != null) {
-            smartAds.getAds().setInterstitialAdsListener(listener);
-        }
+        this.listener = listener;
     }
     
     /**
@@ -78,8 +77,10 @@ public final class InterstitialAd {
      * @return this instance
      */
     public InterstitialAd show() {
-        if (smartAds.getAds() != null) {
-            smartAds.getAds().showInterstitialAd(null);
+        final Ads ads = smartAds.getAds();
+        if (ads != null) {
+            ads.setInterstitialAdsListener(listener);
+            ads.showInterstitialAd(null);
         }
         
         return this;

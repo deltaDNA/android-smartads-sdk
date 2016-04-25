@@ -37,18 +37,20 @@ import com.deltadna.android.sdk.listeners.EngageListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
+
 final class Ads implements AdServiceListener {
     
     private static final String DECISION_POINT = "advertising";
     
     private final AdService service;
     
-    @Nullable
-    private AdRegistrationListener registrationListener;
-    @Nullable
-    private InterstitialAdsListener interstitialListener;
-    @Nullable
-    private RewardedAdsListener rewardedListener;
+    private WeakReference<AdRegistrationListener> registrationListener =
+            new WeakReference<>(null);
+    private WeakReference<InterstitialAdsListener> interstitialListener =
+            new WeakReference<>(null);
+    private WeakReference<RewardedAdsListener> rewardedListener =
+            new WeakReference<>(null);
     
     Ads(Activity activity) {
         service = AdServiceWrapper.create(activity, this);
@@ -57,19 +59,19 @@ final class Ads implements AdServiceListener {
     void setAdRegistrationListener(
             @Nullable AdRegistrationListener listener) {
         
-        registrationListener = listener;
+        registrationListener = new WeakReference<>(listener);
     }
     
     void setInterstitialAdsListener(
             @Nullable InterstitialAdsListener listener) {
         
-        interstitialListener = listener;
+        interstitialListener = new WeakReference<>(listener);
     }
     
     void setRewardedAdsListener(
             @Nullable RewardedAdsListener listener) {
         
-        rewardedListener = listener;
+        rewardedListener = new WeakReference<>(listener);
     }
     
     void registerForAds() {
@@ -106,72 +108,102 @@ final class Ads implements AdServiceListener {
     
     @Override
     public void onRegisteredForInterstitialAds() {
-        if (registrationListener != null) {
-            registrationListener.onRegisteredForInterstitial();
-        }
+        on(registrationListener, new WeakAction<AdRegistrationListener>() {
+            @Override
+            public void perform(AdRegistrationListener item) {
+                item.onRegisteredForInterstitial();
+            }
+        });
     }
     
     @Override
-    public void onFailedToRegisterForInterstitialAds(String reason) {
-        if (registrationListener != null) {
-            registrationListener.onFailedToRegisterForInterstitial(reason);
-        }
+    public void onFailedToRegisterForInterstitialAds(final String reason) {
+        on(registrationListener, new WeakAction<AdRegistrationListener>() {
+            @Override
+            public void perform(AdRegistrationListener item) {
+                item.onFailedToRegisterForInterstitial(reason);
+            }
+        });
     }
     
     @Override
     public void onRegisteredForRewardedAds() {
-        if (registrationListener != null) {
-            registrationListener.onRegisteredForRewarded();
-        }
+        on(registrationListener, new WeakAction<AdRegistrationListener>() {
+            @Override
+            public void perform(AdRegistrationListener item) {
+                item.onRegisteredForRewarded();
+            }
+        });
     }
     
     @Override
-    public void onFailedToRegisterForRewardedAds(String reason) {
-        if (registrationListener != null) {
-            registrationListener.onFailedToRegisterForRewarded(reason);
-        }
+    public void onFailedToRegisterForRewardedAds(final String reason) {
+        on(registrationListener, new WeakAction<AdRegistrationListener>() {
+            @Override
+            public void perform(AdRegistrationListener item) {
+                item.onFailedToRegisterForRewarded(reason);
+            }
+        });
     }
     
     @Override
     public void onInterstitialAdOpened() {
-        if (interstitialListener != null) {
-            interstitialListener.onOpened();
-        }
+        on(interstitialListener, new WeakAction<InterstitialAdsListener>() {
+            @Override
+            public void perform(InterstitialAdsListener item) {
+                item.onOpened();
+            }
+        });
     }
     
     @Override
-    public void onInterstitialAdFailedToOpen(String reason) {
-        if (interstitialListener != null) {
-            interstitialListener.onFailedToOpen(reason);
-        }
+    public void onInterstitialAdFailedToOpen(final String reason) {
+        on(interstitialListener, new WeakAction<InterstitialAdsListener>() {
+            @Override
+            public void perform(InterstitialAdsListener item) {
+                item.onFailedToOpen(reason);
+            }
+        });
     }
     
     @Override
     public void onInterstitialAdClosed() {
-        if (interstitialListener != null) {
-            interstitialListener.onClosed();
-        }
+        on(interstitialListener, new WeakAction<InterstitialAdsListener>() {
+            @Override
+            public void perform(InterstitialAdsListener item) {
+                item.onClosed();
+            }
+        });
     }
     
     @Override
     public void onRewardedAdOpened() {
-        if (rewardedListener != null) {
-            rewardedListener.onOpened();
-        }
+        on(rewardedListener, new WeakAction<RewardedAdsListener>() {
+            @Override
+            public void perform(RewardedAdsListener item) {
+                item.onOpened();
+            }
+        });
     }
     
     @Override
-    public void onRewardedAdFailedToOpen(String reason) {
-        if (rewardedListener != null) {
-            rewardedListener.onFailedToOpen(reason);
-        }
+    public void onRewardedAdFailedToOpen(final String reason) {
+        on(rewardedListener, new WeakAction<RewardedAdsListener>() {
+            @Override
+            public void perform(RewardedAdsListener item) {
+                item.onFailedToOpen(reason);
+            }
+        });
     }
     
     @Override
-    public void onRewardedAdClosed(boolean completed) {
-        if (rewardedListener != null) {
-            rewardedListener.onClosed(completed);
-        }
+    public void onRewardedAdClosed(final boolean completed) {
+        on(rewardedListener, new WeakAction<RewardedAdsListener>() {
+            @Override
+            public void perform(RewardedAdsListener item) {
+                item.onClosed(completed);
+            }
+        });
     }
     
     @Override
@@ -209,5 +241,17 @@ final class Ads implements AdServiceListener {
                         listener.onFailure(t);
                     }
                 });
+    }
+    
+    private <T> void on(WeakReference<T> reference, WeakAction<T> action) {
+        final T item = reference.get();
+        if (item != null) {
+            action.perform(item);
+        }
+    }
+    
+    private interface WeakAction<T> {
+        
+        void perform(T item);
     }
 }
