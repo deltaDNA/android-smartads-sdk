@@ -53,27 +53,16 @@ public final class DDNASmartAds {
      * @param activity the activity to register with ads
      */
     public void registerForAds(Activity activity) {
-        try {
-            if (ads == null) {
-                ads = new Ads(activity);
-                
-                if (registrationListener != null) {
-                    ads.setAdRegistrationListener(registrationListener);
-                }
-                
-                ads.registerForAds();
-            } else {
-                Log.w(BuildConfig.LOG_TAG, "Already registered for ads");
-            }
-        } catch (Exception e) {
-            Log.e(BuildConfig.LOG_TAG, "Error registering for ads", e);
+        if (ads == null) {
+            ads = new Ads(activity);
             
             if (registrationListener != null) {
-                registrationListener.onFailedToRegisterForInterstitial(
-                        e.getMessage());
-                registrationListener.onFailedToRegisterForRewarded(
-                        e.getMessage());
+                ads.setAdRegistrationListener(registrationListener);
             }
+            
+            ads.registerForAds();
+        } else {
+            Log.w(BuildConfig.LOG_TAG, "Already registered for ads");
         }
     }
     
