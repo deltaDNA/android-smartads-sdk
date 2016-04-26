@@ -1,7 +1,9 @@
 # Change Log
 
 ## [1.1.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.0) (YYYY-MM-DD)
+Added new interstitial and rewarded ad APIs.
 Fixed Unity reporting 'no fill' on a cold start.
+Fixed listener memory leaks.
 
 ## [1.0.4](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.0.4) (YYYY-MM-DD)
 
