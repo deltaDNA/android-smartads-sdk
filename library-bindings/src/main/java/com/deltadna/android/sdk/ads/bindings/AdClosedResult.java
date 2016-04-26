@@ -21,14 +21,10 @@ public enum AdClosedResult {
     EXPIRED("Expired"),
     ERROR("Error"),
     NOT_READY("Not Ready");
-
-    private final String status;
-
+    
+    public final String status;
+    
     AdClosedResult(String status) {
         this.status = status;
-    }
-
-    public String getStatus() {
-        return status;
     }
 }

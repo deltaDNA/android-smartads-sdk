@@ -402,7 +402,7 @@ final class AdServiceImpl implements AdService {
             eventParams.put("adLeftApplication", adAgent != null && adAgent.adDidLeaveApplication());
             eventParams.put("adEcpm", mediationAdapter != null ? mediationAdapter.eCPM : 0);
             eventParams.put("adSdkVersion", VERSION);
-            eventParams.put("adStatus", adClosedResult.getStatus());
+            eventParams.put("adStatus", adClosedResult.status);
         } catch (JSONException e) {
             Log.e(BuildConfig.LOG_TAG, e.getMessage());
         }
