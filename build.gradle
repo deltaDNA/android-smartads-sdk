@@ -127,7 +127,7 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.12'
+    gradleVersion = '2.13'
 }
 
 task clean(type: Delete) {
