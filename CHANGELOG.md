@@ -3,7 +3,8 @@
 ## [1.1.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.0) (YYYY-MM-DD)
 Added new interstitial and rewarded ad APIs.  
 Fixed Unity reporting 'no fill' on a cold start.  
-Fixed listener memory leaks.
+Fixed listener memory leaks.  
+Fixed requesting of WRITE_EXTERNAL_STORAGE permission on API 19+.
 
 ## [1.0.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.0.3) (2016-04-06)
 Fixed JavaDoc links to Android/Java classes.  

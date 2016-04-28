@@ -35,7 +35,6 @@ dependencies {
     compile files('libs/vungle-publisher-adaptive-id-3.3.4.jar')
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
-    compile "com.google.android.gms:play-services-location:$playServicesVersion"
     
     compile 'com.android.support:support-v4:18.0.0'
     compile 'com.nineoldandroids:library:2.4.0'
