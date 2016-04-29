@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.1.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.1) (2016-04-29)
+Fixed analytics dependency version.
+
 ## [1.1.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.0) (2016-04-29)
 Added new interstitial and rewarded ad APIs.  
 Fixed Unity reporting 'no fill' on a cold start.  
