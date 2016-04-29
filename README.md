@@ -36,21 +36,21 @@ allprojects {
 In your app's build script
 ```groovy
 compile 'com.deltadna.android:deltadna-sdk:VERSION'
-compile 'com.deltadna.android:deltadna-smartads:1.1.1-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads:1.1.1'
 
 // ad providers
-compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.1.1-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.1.1-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.1.1-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.1.1-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.1.1-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.1.1-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.1.1-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.1.1-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.1.1-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.1.1-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.1.1-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.1.1-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.1.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.1.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.1.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.1.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.1.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.1.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.1.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.1.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.1.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.1.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.1.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.1.1'
 ```
 Any combination of the above ad providers can be defined in your build script, depending on which ad networks you would like to use in your application.
 

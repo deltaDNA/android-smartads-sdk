@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.1.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.1) (YYYY-MM-DD)
+## [1.1.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.1) (2016-04-29)
 Fixed analytics dependency version.
 
 ## [1.1.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.0) (2016-04-29)
