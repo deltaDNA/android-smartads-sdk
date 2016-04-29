@@ -117,6 +117,4 @@ final class InMobiRewardedEventForwarder implements
     public void onUserLeftApplication(InMobiInterstitial inMobiInterstitial) {
         listener.onAdLeftApplication(adapter);
     }
-
-
 }

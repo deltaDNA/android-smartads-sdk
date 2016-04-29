@@ -14,29 +14,11 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-    
     defaultConfig {
         applicationId "com.deltadna.android.sdk.ads.example"
         
-        minSdkVersion    rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        
-        versionCode 1
-        versionName "1.0.0"
-        
-        buildConfigField('String', logTagName, "\"$logTagValue\"")
-        
         multiDexEnabled true
-    }
-    
-    compileOptions {
-        sourceCompatibility rootProject.ext.sourceCompatibilityVersion
-        targetCompatibility rootProject.ext.targetCompatibilityVersion
     }
     
     dexOptions {
@@ -81,6 +63,11 @@ android {
         supersonic {}
         unity {}
         vungle {}
+    }
+    
+    lintOptions {
+        // workaround for missing stax dependency (mobfox)
+        disable 'InvalidPackage'
     }
 }
 

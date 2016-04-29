@@ -93,24 +93,28 @@ public final class ChartBoostRewardedAdapter extends MediationAdapter {
     public String getProviderVersionString() {
         return "6.0.2";
     }
-
+    
     @Override
     public void onDestroy() {
-        if(activity != null && ChartBoostHelper.isInitialised()) {
-            Chartboost.onDestroy(activity);
+        if (activity != null) {
+            if (ChartBoostHelper.isInitialised()) {
+                Chartboost.onDestroy(activity);
+            }
+            
+            activity = null;
         }
     }
-
+    
     @Override
     public void onPause() {
-        if(activity != null && ChartBoostHelper.isInitialised()) {
+        if (activity != null && ChartBoostHelper.isInitialised()) {
             Chartboost.onPause(activity);
         }
     }
-
+    
     @Override
     public void onResume() {
-        if(activity != null && ChartBoostHelper.isInitialised()) {
+        if (activity != null && ChartBoostHelper.isInitialised()) {
             Chartboost.onResume(activity);
         }
     }

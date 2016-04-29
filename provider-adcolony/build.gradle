@@ -14,33 +14,9 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
-
-// workaround for group/version not picked up through project() dependency
-group = GROUP
-version = VERSION_NAME
-
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-    
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        
-        versionCode 1
-        versionName VERSION_NAME
-        
         buildConfigField('String', logTagName, "\"$logTagValue AdColony\"")
-        
-        archivesBaseName = "${POM_ARTIFACT_ID}-${versionName}.${System.getenv("BUILD_NUMBER") ?: getSha()}"
-        
-        consumerProguardFiles 'proguard.cfg'
-    }
-    
-    compileOptions {
-        sourceCompatibility rootProject.ext.sourceCompatibilityVersion
-        targetCompatibility rootProject.ext.targetCompatibilityVersion
     }
 }
 
@@ -52,5 +28,3 @@ dependencies {
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
 }
-
-apply from: "$rootProject.projectDir/gradle/mvn-push.gradle"

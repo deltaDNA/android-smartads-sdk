@@ -18,9 +18,9 @@ package com.deltadna.android.sdk.ads.provider.unity;
 
 import android.util.Log;
 
+import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.unity3d.ads.android.IUnityAdsListener;
 
 final class UnityRewardedEventForwarder implements IUnityAdsListener {
@@ -42,29 +42,27 @@ final class UnityRewardedEventForwarder implements IUnityAdsListener {
     public void onHide() {
         listener.onAdClosed(adapter, videoWatched);
     }
-
+    
     @Override
     public void onShow() {
         videoWatched = false;
         listener.onAdShowing(adapter);
     }
-
+    
     @Override
-    public void onVideoStarted() {
-
-    }
-
+    public void onVideoStarted() {}
+    
     @Override
     public void onVideoCompleted(String itemKey, boolean skipped) {
         videoWatched = !skipped;
     }
-
+    
     @Override
     public void onFetchCompleted() {
         Log.d(BuildConfig.LOG_TAG, "Ad fetch completed");
         listener.onAdLoaded(adapter);
     }
-
+    
     @Override
     public void onFetchFailed() {
         Log.w(BuildConfig.LOG_TAG, "Ad fetch failed");

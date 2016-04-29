@@ -21,6 +21,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
+import android.support.annotation.UiThread;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
@@ -110,7 +111,8 @@ class AdAgent implements MediationListener {
     boolean isAdLoaded() {
         return state == State.LOADED;
     }
-
+    
+    @UiThread
     void showAd(String adPoint) {
         this.adPoint = adPoint;
         if (state == State.LOADED) {
@@ -161,7 +163,7 @@ class AdAgent implements MediationListener {
     @Override
     public void onAdLoaded(MediationAdapter mediationAdapter) {
         // some adapters keep loading without being requested to
-        if (mediationAdapter == currentAdapter) {
+        if (mediationAdapter.equals(currentAdapter)) {
             Log.d(BuildConfig.LOG_TAG, "Ad loaded for " + mediationAdapter);
             
             handler.removeCallbacks(loadTimeout);
@@ -184,7 +186,7 @@ class AdAgent implements MediationListener {
             String reason) {
         
         // some adapters keep loading without being requested to
-        if (adapter == currentAdapter) {
+        if (adapter.equals(currentAdapter)) {
             Log.d(BuildConfig.LOG_TAG, String.format(
                     Locale.US,
                     "Ad failed to load for %s due to %s with reason %s",

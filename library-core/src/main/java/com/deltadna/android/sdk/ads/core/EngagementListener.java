@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package com.deltadna.android.sdk.ads.core.engage;
+package com.deltadna.android.sdk.ads.core;
 
-import java.util.Locale;
+import org.json.JSONObject;
 
-public enum EngagementFlavour {
+@UnityInterOp
+public interface EngagementListener {
     
-    ADVERTISING,
-    INTERNAL;
+    void onSuccess(JSONObject result);
     
-    @Override
-    public String toString() {
-        return name().toLowerCase(Locale.US);
-    }
+    void onFailure(Throwable t);
 }

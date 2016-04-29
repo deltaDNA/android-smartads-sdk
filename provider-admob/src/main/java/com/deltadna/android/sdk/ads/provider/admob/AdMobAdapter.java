@@ -63,52 +63,48 @@ final public class AdMobAdapter extends MediationAdapter {
             }
         }
         
-        AdRequest.Builder builder = new AdRequest.Builder();
-        builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
-        final AdRequest adRequest = builder.build();
-        
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    interstitial.loadAd(adRequest);
-                } catch (Exception e) {
-                    Log.e(BuildConfig.LOG_TAG, "Failed to request AdMob ad", e);
-                    listener.onAdFailedToLoad(AdMobAdapter.this, AdRequestResult.Error, "SDK exception on request: " + e.getMessage());
-                }
-            }
-        });
+        try {
+            interstitial.loadAd(new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .build());
+        } catch (Exception e) {
+            Log.w(BuildConfig.LOG_TAG, "Failed to request ad", e);
+            listener.onAdFailedToLoad(
+                    this,
+                    AdRequestResult.Error,
+                    "SDK exception on request: " + e.getMessage());
+        }
     }
-
+    
     @Override
     public void showAd() {
-        if(interstitial != null && interstitial.isLoaded()) {
+        if (interstitial != null && interstitial.isLoaded()) {
             interstitial.show();
         }
     }
-
+    
     @Override
     public String getProviderString() {
         return "ADMOB";
     }
-
+    
     @Override
     public String getProviderVersionString() {
         return "7.8.0";
     }
-
+    
     @Override
     public void onDestroy() {
-
+        interstitial = null;
     }
-
+    
     @Override
     public void onPause() {
-
+        // cannot forward
     }
-
+    
     @Override
     public void onResume() {
-
+        // cannot forward
     }
 }

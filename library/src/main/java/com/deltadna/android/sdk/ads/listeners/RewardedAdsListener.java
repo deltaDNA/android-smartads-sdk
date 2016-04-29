@@ -14,13 +14,30 @@
  * limitations under the License.
  */
 
-package com.deltadna.android.sdk.ads.core.engage;
+package com.deltadna.android.sdk.ads.listeners;
 
-import org.json.JSONObject;
-
-public interface EngagementListener {
+/**
+ * Listener for events within the rewarded ads lifecycle.
+ */
+public interface RewardedAdsListener {
     
-    void onSuccess(JSONObject result);
+    /**
+     * Called when a rewarded ad has been opened.
+     */
+    void onOpened();
     
-    void onFailure(Throwable t);
+    /**
+     * Called when a rewarded ad has failed to open.
+     *
+     * @param reason the reason for the failure
+     */
+    void onFailedToOpen(String reason);
+    
+    /**
+     * Called when a rewarded as has closed.
+     *
+     * @param completed whether the full ad was watched, and whether the reward
+     *                  should be given
+     */
+    void onClosed(boolean completed);
 }

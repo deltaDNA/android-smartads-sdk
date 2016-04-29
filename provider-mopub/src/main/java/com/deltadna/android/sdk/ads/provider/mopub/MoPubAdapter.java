@@ -88,19 +88,22 @@ public final class MoPubAdapter extends MediationAdapter {
     public String getProviderVersionString() {
         return "3.10.0";
     }
-
+    
     @Override
     public void onDestroy() {
-
+        if (interstitial != null) {
+            interstitial.destroy();
+            interstitial = null;
+        }
     }
-
+    
     @Override
     public void onPause() {
-
+        // cannot forward
     }
-
+    
     @Override
     public void onResume() {
-
+        // cannot forward
     }
 }

@@ -43,7 +43,7 @@ final class InMobiInterstitialEventForwarder implements
     
     @Override
     public void onAdRewardActionCompleted(InMobiInterstitial inMobiInterstitial, Map<Object, Object> map) {
-
+        // nothing to do
     }
 
     @Override

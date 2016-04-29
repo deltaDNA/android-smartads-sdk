@@ -14,31 +14,7 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
-
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-    
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        
-        versionCode 1
-        versionName VERSION_NAME
-        
-        buildConfigField('String', logTagName, "\"$logTagValue\"")
-        
-        archivesBaseName = "${POM_ARTIFACT_ID}-${versionName}.${System.getenv("BUILD_NUMBER") ?: getSha()}"
-        
-        consumerProguardFiles 'proguard.cfg'
-    }
-    
-    compileOptions {
-        sourceCompatibility rootProject.ext.sourceCompatibilityVersion
-        targetCompatibility rootProject.ext.targetCompatibilityVersion
-    }
-    
     lintOptions {
         // workaround for aar build, which reports missing stax dependency.
         disable 'InvalidPackage'
@@ -52,7 +28,5 @@ configurations.all {
 dependencies {
     compile project(':library-core')
     
-    compile 'com.deltadna.android:deltadna-sdk:4.0.3'
+    compile 'com.deltadna.android:deltadna-sdk:4.1.0-SNAPSHOT'
 }
-
-apply from: "$rootProject.projectDir/gradle/mvn-push.gradle"

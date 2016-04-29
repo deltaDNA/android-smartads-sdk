@@ -35,8 +35,6 @@ class ChartBoostEventForwarder extends ChartboostDelegate {
     
     private boolean rewardedComplete;
     
-    public ChartBoostEventForwarder() {}
-    
     public void setRewardedListeners(MediationListener rewardedMediationListener, MediationAdapter rewardedAdMediationAdapter) {
         this.rewardedAdMediationAdapter = rewardedAdMediationAdapter;
         this.rewardedMediationListener = rewardedMediationListener;

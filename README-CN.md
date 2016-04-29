@@ -2,6 +2,7 @@
 
 # deltaDNA Android SDK智能广告
 [![Build Status](https://travis-ci.org/deltaDNA/android-smartads-sdk.svg)](https://travis-ci.org/deltaDNA/android-smartads-sdk)
+[![codecov.io](https://codecov.io/github/deltaDNA/android-smartads-sdk/coverage.svg)](https://codecov.io/github/deltaDNA/android-smartads-sdk)
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/438f868ae71a444b8a1f8ebce32c3176)](https://www.codacy.com/app/deltaDNA/android-smartads-sdk)
 [![Apache2 licensed](https://img.shields.io/badge/license-Apache-blue.svg)](./LICENSE.txt)
 [![Download](https://api.bintray.com/packages/deltadna/android/deltadna-smartads/images/download.svg)](https://bintray.com/deltadna/android/deltadna-smartads/_latestVersion)
@@ -33,21 +34,21 @@ allprojects {
 在你APP的构建脚本
 ```groovy
 compile 'com.deltadna.android:deltadna-sdk:VERSION'
-compile 'com.deltadna.android:deltadna-smartads:1.0.3'
+compile 'com.deltadna.android:deltadna-smartads:1.1.0'
 
 // 广告提供商
-compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.0.3'
-compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.0.3'
-compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.0.3'
-compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.0.3'
-compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.0.3'
-compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.0.3'
-compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.0.3'
-compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.0.3'
-compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.0.3'
-compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.0.3'
-compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.0.3'
-compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.0.3'
+compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.1.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.1.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.1.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.1.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.1.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.1.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.1.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.1.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.1.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.1.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.1.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.1.0'
 ```
 上述广告提供商的任何组合都可以在你的构建脚本中定义，这取决于你想在你的应用程序中使用哪个广告网络。
 

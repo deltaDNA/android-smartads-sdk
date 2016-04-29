@@ -16,32 +16,31 @@
 
 package com.deltadna.android.sdk.ads.core;
 
-import com.deltadna.android.sdk.ads.core.engage.EngagementListener;
-
+@UnityInterOp
 public interface AdServiceListener {
 
-    void onRegisteredForAds();
+    void onRegisteredForInterstitialAds();
+
+    void onFailedToRegisterForInterstitialAds(String reason);
 
     void onRegisteredForRewardedAds();
 
-    void onFailedToRegisterForAds(String errorReason);
+    void onFailedToRegisterForRewardedAds(String reason);
 
-    void onFailedToRegisterForRewardedAds(String errorReason);
+    void onInterstitialAdOpened();
 
-    void onAdOpened();
+    void onInterstitialAdFailedToOpen(String reason);
 
-    void onAdFailedToOpen();
-
-    void onAdClosed();
+    void onInterstitialAdClosed();
 
     void onRewardedAdOpened();
 
-    void onRewardedAdFailedToOpen();
+    void onRewardedAdFailedToOpen(String reason);
 
     void onRewardedAdClosed(boolean completed);
 
     void onRecordEvent(String name, String jsonParams);
-    
+
     void onRequestEngagement(
             String decisionPoint,
             String flavour,
