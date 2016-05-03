@@ -23,7 +23,7 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile 'com.mopub:mopub-sdk:3.10.0'
+    compile 'com.mopub:mopub-sdk:4.6.0'
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
 }
