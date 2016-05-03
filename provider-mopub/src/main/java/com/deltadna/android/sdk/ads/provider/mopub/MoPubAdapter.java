@@ -71,22 +71,22 @@ public final class MoPubAdapter extends MediationAdapter {
             }
         });
     }
-
+    
     @Override
     public void showAd() {
-        if(interstitial != null && interstitial.isReady()) {
+        if (interstitial != null && interstitial.isReady()) {
             interstitial.show();
         }
     }
-
+    
     @Override
     public String getProviderString() {
         return "MoPub";
     }
-
+    
     @Override
     public String getProviderVersionString() {
-        return "3.10.0";
+        return "4.6.0";
     }
     
     @Override
