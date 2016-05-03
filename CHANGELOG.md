@@ -1,6 +1,8 @@
 # Change Log
 
 ## [1.1.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.2) (YYYY-MM-DD)
+Updated MoPub library dependency to fix security issue.  
+Fixed reporting of interstitial ad clicks for MoPub.
 
 ## [1.1.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.1) (2016-04-29)
 Fixed analytics dependency version.

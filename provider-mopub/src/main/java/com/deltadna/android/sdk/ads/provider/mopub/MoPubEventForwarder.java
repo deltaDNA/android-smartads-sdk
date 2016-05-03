@@ -21,11 +21,11 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.mopub.mobileads.DefaultInterstitialAdListener;
 import com.mopub.mobileads.MoPubErrorCode;
 import com.mopub.mobileads.MoPubInterstitial;
 
-final class MoPubEventForwarder extends DefaultInterstitialAdListener {
+final class MoPubEventForwarder implements
+        MoPubInterstitial.InterstitialAdListener {
     
     private final MediationListener listener;
     private final MediationAdapter adapter;
@@ -37,15 +37,16 @@ final class MoPubEventForwarder extends DefaultInterstitialAdListener {
     
     @Override
     public void onInterstitialLoaded(MoPubInterstitial interstitial) {
-        super.onInterstitialLoaded(interstitial);
         Log.d(BuildConfig.LOG_TAG, "Interstitial loaded");
         listener.onAdLoaded(adapter);
     }
     
     @Override
-    public void onInterstitialFailed(MoPubInterstitial interstitial, MoPubErrorCode errorCode) {
-        super.onInterstitialFailed(interstitial, errorCode);
-        Log.w(BuildConfig.LOG_TAG, "Interstitial failed");
+    public void onInterstitialFailed(
+            MoPubInterstitial interstitial,
+            MoPubErrorCode errorCode) {
+        
+        Log.w(BuildConfig.LOG_TAG, "Interstitial failed: " + errorCode);
         
         final AdRequestResult adStatus;
         switch (errorCode) {
@@ -97,19 +98,19 @@ final class MoPubEventForwarder extends DefaultInterstitialAdListener {
     
     @Override
     public void onInterstitialShown(MoPubInterstitial interstitial) {
-        super.onInterstitialShown(interstitial);
+        Log.d(BuildConfig.LOG_TAG, "Interstitial shown");
         listener.onAdShowing(adapter);
     }
-
+    
     @Override
     public void onInterstitialClicked(MoPubInterstitial interstitial) {
-        super.onInterstitialClicked(interstitial);
-        listener.onAdLeftApplication(adapter);
+        Log.d(BuildConfig.LOG_TAG, "Interstitial clicked");
+        listener.onAdClicked(adapter);
     }
-
+    
     @Override
     public void onInterstitialDismissed(MoPubInterstitial interstitial) {
-        super.onInterstitialDismissed(interstitial);
+        Log.d(BuildConfig.LOG_TAG, "Interstitial dismissed");
         listener.onAdClosed(adapter, true);
     }
 }
