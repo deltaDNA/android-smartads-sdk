@@ -34,7 +34,6 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricGradleTestRunner
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
-import java.util.concurrent.CountDownLatch
 
 @RunWith(RobolectricGradleTestRunner::class)
 @Config(constants = BuildConfig::class,
@@ -105,22 +104,16 @@ class AdAgentTest {
     @Test
     fun requestAdLoadTimesOut() {
         withAgent(spiedAdapters(2)) { adapters ->
-            val latch = CountDownLatch(1)
             doAnswer {
-                // fake a timeout
-                Thread({
-                    Thread.sleep(15000 + 500)
-                    latch.countDown()
-                }).start()
+                // fake timeout on adapter[0]
             }.whenever(adapters[0]).requestAd(activity, this, config)
             doAnswer {
                 onAdLoaded(adapters[1])
             }.whenever(adapters[1]).requestAd(activity, this, config)
             
             requestAd(activity, config)
-            latch.await()
             
-            Robolectric.flushForegroundThreadScheduler()
+            Robolectric.getForegroundThreadScheduler().advanceBy(15000)
             
             assertThat(isAdLoaded).isTrue()
             inOrder(listener) {
@@ -270,6 +263,54 @@ class AdAgentTest {
                 verify(listener).onAdLoaded(
                         same(this@withAgent), same(adapters[1]), any())
             }
+        }
+    }
+    
+    @Test
+    fun waitsWhenWaterfallExhausted() {
+        withAgent(spiedAdapters(2)) { adapters ->
+            doAnswer {
+                onAdFailedToLoad(adapters[0], AdRequestResult.NoFill, "")
+            }.whenever(adapters[0]).requestAd(activity, this, config)
+            doAnswer {
+                onAdFailedToLoad(adapters[1], AdRequestResult.NoFill, "")
+            }.whenever(adapters[1]).requestAd(activity, this, config)
+            
+            requestAd(activity, config)
+            
+            verify(listener).onAdFailedToLoad(
+                    same(this),
+                    same(adapters[0]),
+                    any(),
+                    any(),
+                    eq(AdRequestResult.NoFill))
+            verify(listener).onAdFailedToLoad(
+                    same(this),
+                    same(adapters[1]),
+                    any(),
+                    any(),
+                    eq(AdRequestResult.NoFill))
+            verifyNoMoreInteractions(listener)
+            
+            reset(listener)
+            with(Robolectric.getForegroundThreadScheduler()) {
+                assertThat(size()).isEqualTo(1)
+                advanceBy(60000)
+            }
+            
+            verify(listener).onAdFailedToLoad(
+                    same(this),
+                    same(adapters[0]),
+                    any(),
+                    any(),
+                    eq(AdRequestResult.NoFill))
+            verify(listener).onAdFailedToLoad(
+                    same(this),
+                    same(adapters[1]),
+                    any(),
+                    any(),
+                    eq(AdRequestResult.NoFill))
+            verifyNoMoreInteractions(listener)
         }
     }
     
