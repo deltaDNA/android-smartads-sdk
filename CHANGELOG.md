@@ -1,5 +1,7 @@
 # Change Log
 
+## [1.1.4](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.4) (YYYY-MM-DD)
+
 ## [1.1.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.3) (2016-05-09)
 Fixed crash when requesting ads without a network connection.
 
