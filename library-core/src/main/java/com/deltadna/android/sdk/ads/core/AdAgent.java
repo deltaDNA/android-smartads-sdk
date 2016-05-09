@@ -305,8 +305,11 @@ class AdAgent implements MediationListener {
                     .getSystemService(Context.CONNECTIVITY_SERVICE))
                     .getActiveNetworkInfo();
             
-            if (!network.isConnected()) {
-                onAdFailedToLoad(currentAdapter, AdRequestResult.Network, "No connection");
+            if (network == null || !network.isConnected()) {
+                onAdFailedToLoad(
+                        currentAdapter,
+                        AdRequestResult.Network,
+                        "No connection");
             } else {
                 if (state == State.READY) {
                     Log.d(  BuildConfig.LOG_TAG,

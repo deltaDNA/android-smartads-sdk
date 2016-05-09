@@ -20,12 +20,17 @@ import android.app.Activity
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import org.json.JSONObject
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.Shadows
 
 // *
 
 fun inOrder(vararg mocks: Any, block: org.mockito.InOrder.() -> Unit) {
     block.invoke(org.mockito.Mockito.inOrder(*mocks))
 }
+
+inline fun <reified T> service(name: String) =
+        RuntimeEnvironment.application.getSystemService(name) as T
 
 fun stubbedAdapters(n: Int): List<MediationAdapter> {
     return (0..n-1).map { StubbedAdapter(it) }
