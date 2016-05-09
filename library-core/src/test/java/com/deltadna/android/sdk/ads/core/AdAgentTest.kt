@@ -17,18 +17,22 @@
 package com.deltadna.android.sdk.ads.core
 
 import android.app.Activity
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Build
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockito_kotlin.*
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.*
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricGradleTestRunner
+import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import java.util.concurrent.CountDownLatch
 
@@ -37,7 +41,7 @@ import java.util.concurrent.CountDownLatch
         sdk = intArrayOf(Build.VERSION_CODES.LOLLIPOP))
 class AdAgentTest {
     
-    private val listener = mock(AdAgentListener::class.java)
+    private val listener = mock<AdAgentListener>()
     private val activity = Robolectric.setupActivity(Activity::class.java)
     private val config = JSONObject()
     
@@ -51,12 +55,12 @@ class AdAgentTest {
         withAgent(spiedAdapters(1)) { adapters ->
             doAnswer {
                 onAdLoaded(adapters[0])
-            }.`when`(adapters[0]).requestAd(activity, this, config)
+            }.whenever(adapters[0]).requestAd(activity, this, config)
             
             requestAd(activity, config)
             
-            assertThat(isAdLoaded)
-            verify(listener).onAdLoaded(same(this), same(adapters[0]), anyLong())
+            assertThat(isAdLoaded).isTrue()
+            verify(listener).onAdLoaded(same(this), same(adapters[0]), any())
             verifyNoMoreInteractions(listener)
         }
     }
@@ -66,17 +70,17 @@ class AdAgentTest {
         withAgent(spiedAdapters(1)) { adapters ->
             doAnswer {
                 onAdFailedToLoad(adapters[0], AdRequestResult.NoFill, "no fill")
-            }.`when`(adapters[0]).requestAd(activity, this, config)
+            }.whenever(adapters[0]).requestAd(activity, this, config)
             
             requestAd(activity, config)
             
-            assertThat(!isAdLoaded)
+            assertThat(isAdLoaded).isFalse()
             verify(listener).onAdFailedToLoad(
                     same(this), 
                     same(adapters[0]),
-                    eq("no fill"),
-                    anyLong(),
-                    same(AdRequestResult.NoFill))
+                    any(),
+                    any(),
+                    eq(AdRequestResult.NoFill))
             verifyNoMoreInteractions(listener)
         }
     }
@@ -86,15 +90,15 @@ class AdAgentTest {
         withAgent(spiedAdapters(2)) { adapters ->
             doAnswer {
                 onAdFailedToLoad(adapters[0], AdRequestResult.NoFill, "no fill")
-            }.`when`(adapters[0]).requestAd(activity, this, config)
+            }.whenever(adapters[0]).requestAd(activity, this, config)
             doAnswer {
                 onAdLoaded(adapters[1])
-            }.`when`(adapters[1]).requestAd(activity, this, config)
+            }.whenever(adapters[1]).requestAd(activity, this, config)
             
             requestAd(activity, config)
             
-            assertThat(isAdLoaded)
-            verify(listener).onAdLoaded(same(this), same(adapters[1]), anyLong())
+            assertThat(isAdLoaded).isTrue()
+            verify(listener).onAdLoaded(same(this), same(adapters[1]), any())
         }
     }
     
@@ -108,28 +112,28 @@ class AdAgentTest {
                     Thread.sleep(15000 + 500)
                     latch.countDown()
                 }).start()
-            }.`when`(adapters[0]).requestAd(activity, this, config)
+            }.whenever(adapters[0]).requestAd(activity, this, config)
             doAnswer {
                 onAdLoaded(adapters[1])
-            }.`when`(adapters[1]).requestAd(activity, this, config)
+            }.whenever(adapters[1]).requestAd(activity, this, config)
             
             requestAd(activity, config)
             latch.await()
             
             Robolectric.flushForegroundThreadScheduler()
             
-            assertThat(isAdLoaded)
+            assertThat(isAdLoaded).isTrue()
             inOrder(listener) {
                 verify(listener).onAdFailedToLoad(
                         same(this@withAgent),
                         same(adapters[0]),
-                        anyString(),
-                        anyLong(),
-                        same(AdRequestResult.Timeout))
+                        any(),
+                        any(),
+                        eq(AdRequestResult.Timeout))
                 verify(listener).onAdLoaded(
                         same(this@withAgent),
                         same(adapters[1]),
-                        anyLong())
+                        any())
             }
         }
     }
@@ -140,28 +144,70 @@ class AdAgentTest {
             doAnswer {
                 onAdLoaded(adapters[0])
                 onAdClosed(adapters[0], true)
-            }.`when`(adapters[0]).requestAd(activity, this, config)
+            }.whenever(adapters[0]).requestAd(activity, this, config)
             doAnswer {
                 onAdLoaded(adapters[1])
-            }.`when`(adapters[1]).requestAd(activity, this, config)
+            }.whenever(adapters[1]).requestAd(activity, this, config)
             
             requestAd(activity, config)
             
             inOrder(listener) {
                 // first adapter first run
                 verify(listener).onAdLoaded(
-                        same(this@withAgent), same(adapters[0]), anyLong())
+                        same(this@withAgent), same(adapters[0]), any())
                 verify(listener).onAdClosed(
                         same(this@withAgent), same(adapters[0]), eq(true))
                 // first adapter second run
                 verify(listener).onAdLoaded(
-                        same(this@withAgent), same(adapters[0]), anyLong())
+                        same(this@withAgent), same(adapters[0]), any())
                 verify(listener).onAdClosed(
                         same(this@withAgent), same(adapters[0]), eq(true))
                 // second adapter
                 verify(listener).onAdLoaded(
-                        same(this@withAgent), same(adapters[1]), anyLong())
+                        same(this@withAgent), same(adapters[1]), any())
             }
+        }
+    }
+    
+    @Test
+    fun requestAdWithNetworkNotConnected() {
+        with(Shadows.shadowOf(service<ConnectivityManager>(
+                Context.CONNECTIVITY_SERVICE))) {
+            val info = mock<NetworkInfo>()
+            whenever(info.isConnected).thenReturn(false)
+            activeNetworkInfo = info
+        }
+        
+        withAgent(spiedAdapters(1)) { adapters ->
+            requestAd(activity, config)
+            
+            assertThat(isAdLoaded).isFalse()
+            verify(listener).onAdFailedToLoad(
+                    same(this),
+                    same(adapters[0]),
+                    any(),
+                    any(),
+                    eq(AdRequestResult.Network))
+        }
+    }
+    
+    @Test
+    fun requestAdWithoutNetwork() {
+        with(Shadows.shadowOf(service<ConnectivityManager>(
+                Context.CONNECTIVITY_SERVICE))) {
+            activeNetworkInfo = null
+        }
+        
+        withAgent(spiedAdapters(1)) { adapters ->
+            requestAd(activity, config)
+            
+            assertThat(isAdLoaded).isFalse()
+            verify(listener).onAdFailedToLoad(
+                    same(this),
+                    same(adapters[0]),
+                    any(),
+                    any(),
+                    eq(AdRequestResult.Network))
         }
     }
     
@@ -171,15 +217,15 @@ class AdAgentTest {
             doAnswer {
                 onAdLoaded(adapters[0])
                 onAdShowing(adapters[0])
-            }.`when`(adapters[0]).requestAd(activity, this, config)
+            }.whenever(adapters[0]).requestAd(activity, this, config)
             
             requestAd(activity, config)
             showAd("adpoint")
             
-            assertThat(!isAdLoaded)
+            assertThat(isAdLoaded).isFalse()
             inOrder(listener) {
                 verify(listener).onAdLoaded(
-                        same(this@withAgent), same(adapters[0]), anyLong())
+                        same(this@withAgent), same(adapters[0]), any())
                 verify(listener).onAdOpened(
                         same(this@withAgent), same(adapters[0]))
             }
@@ -194,7 +240,8 @@ class AdAgentTest {
             verify(listener).onAdFailedToOpen(
                     same(this),
                     same(adapters[0]),
-                    anyString(), same(AdClosedResult.NOT_READY))
+                    any(),
+                    eq(AdClosedResult.NOT_READY))
         }
     }
     
@@ -203,13 +250,13 @@ class AdAgentTest {
         withAgent(spiedAdapters(2)) { adapters ->
             doAnswer {
                 onAdLoaded(adapters[0])
-            }.`when`(adapters[0]).requestAd(activity, this, config)
+            }.whenever(adapters[0]).requestAd(activity, this, config)
             doAnswer {
                 onAdFailedToShow(adapters[0], AdClosedResult.ERROR)
-            }.`when`(adapters[0]).showAd()
+            }.whenever(adapters[0]).showAd()
             doAnswer {
                 onAdLoaded(adapters[1])
-            }.`when`(adapters[1]).requestAd(activity, this, config)
+            }.whenever(adapters[1]).requestAd(activity, this, config)
             
             requestAd(activity, config)
             showAd("adpoint")
@@ -218,10 +265,10 @@ class AdAgentTest {
                 verify(listener).onAdFailedToOpen(
                         same(this@withAgent),
                         same(adapters[0]),
-                        anyString(),
-                        same(AdClosedResult.ERROR))
+                        any(),
+                        eq(AdClosedResult.ERROR))
                 verify(listener).onAdLoaded(
-                        same(this@withAgent), same(adapters[1]), anyLong())
+                        same(this@withAgent), same(adapters[1]), any())
             }
         }
     }
