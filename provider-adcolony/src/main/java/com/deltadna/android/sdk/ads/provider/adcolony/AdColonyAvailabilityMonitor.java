@@ -50,11 +50,10 @@ final class AdColonyAvailabilityMonitor implements AdColonyAdAvailabilityListene
          * ad is just being shown, so we override the value based on the
          * same criteria.
          */
-        this.available = available
-                || (forwarder != null && forwarder.isShowing());
+        this.available = available || (forwarder != null && forwarder.isShowing());
         this.reason = reason;
         
-        if(this.available) {
+        if (this.available) {
             Log.d(BuildConfig.LOG_TAG, "AdColonyAd loaded");
             listener.onAdLoaded(adapter);
         } else {
@@ -62,16 +61,16 @@ final class AdColonyAvailabilityMonitor implements AdColonyAdAvailabilityListene
             listener.onAdFailedToLoad(adapter, AdRequestResult.Error, reason);
         }
     }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public String getReason() {
-        return reason;
-    }
     
     void setForwarder(@Nullable AdColonyEventForwarder forwarder) {
         this.forwarder = forwarder;
+    }
+    
+    boolean isAvailable() {
+        return available;
+    }
+    
+    String getReason() {
+        return reason;
     }
 }
