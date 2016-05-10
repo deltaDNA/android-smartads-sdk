@@ -128,7 +128,7 @@ public final class AdColonyAdapter extends MediationAdapter {
     
     @Override
     public String getProviderVersionString() {
-        return "2.3.4";
+        return "2.3.5";
     }
     
     @Override
