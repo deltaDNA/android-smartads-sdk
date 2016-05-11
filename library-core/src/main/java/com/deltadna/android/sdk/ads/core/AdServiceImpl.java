@@ -181,7 +181,8 @@ final class AdServiceImpl implements AdService {
             return;
         }
         
-        if (System.currentTimeMillis() - lastAdShownTime <= adMinimumInterval) {
+        if (    System.currentTimeMillis() - lastAdShownTime
+                <= adMinimumInterval * 1000) {
             Log.w(BuildConfig.LOG_TAG, "Not showing ad before minimum interval");
             
             postAdShowEvent(
