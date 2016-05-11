@@ -19,6 +19,7 @@ package com.deltadna.android.sdk.ads.core
 import android.app.Activity
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
+import com.google.gson.JsonObject
 import org.json.JSONObject
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows
@@ -35,6 +36,10 @@ inline fun <reified T> service(name: String) =
 fun stubbedAdapters(n: Int): List<MediationAdapter> {
     return (0..n-1).map { StubbedAdapter(it) }
 }
+
+// JsonObject
+
+fun JsonObject.convert() = JSONObject(this.toString())
 
 // classes
 
