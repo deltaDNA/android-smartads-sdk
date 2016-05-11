@@ -57,45 +57,47 @@ public final class AdColonyAdapter extends MediationAdapter {
     }
     
     @Override
-    public void requestAd(Activity activity, MediationListener listener, JSONObject configuration) {
-        if(!initialised) {
-            this.activity = activity;
+    public void requestAd(
+            Activity activity,
+            MediationListener listener,
+            JSONObject configuration) {
+        
+        this.activity = activity;
+        
+        final boolean wasInitialised = initialised;
+        if (!initialised) {
             availabilityMonitor = new AdColonyAvailabilityMonitor(listener, this);
+            
             try {
                 AdColony.configure(activity, clientOptions, appId, zoneIds);
                 AdColony.addAdAvailabilityListener(availabilityMonitor);
-            } catch(Exception e) {
-                Log.e(BuildConfig.LOG_TAG, "Failed to initialise", e);
+            } catch (Exception e) {
+                Log.w(BuildConfig.LOG_TAG, "Failed to initialise", e);
                 listener.onAdFailedToLoad(
                         this,
                         AdRequestResult.Configuration,
-                        "Invalid AdColony configuration: " + e);
+                        "Failed to initialise AdColony: " + e);
                 return;
             }
-
+            
             initialised = true;
-
-            try {
-                videoAd = new AdColonyVideoAd();
-                AdColonyEventForwarder forwarder = new AdColonyEventForwarder(listener, this);
-                availabilityMonitor.setForwarder(forwarder);
-                videoAd.withListener(forwarder);
-            } catch (Exception e) {
-                Log.e(BuildConfig.LOG_TAG, "Failed to load ad", e);
-                listener.onAdFailedToLoad(
-                        this,
-                        AdRequestResult.Error,
-                        "Failed to load AdColony ad: " + e);
-            }
-        } else {
-            // Ad Colony doesn't trigger changes on it's ad availability interface when the next ad has loaded (seemingly)
-            // therefore we need to just take the last value on every attempt subsequent to initialisation.
-            try {
-                videoAd = new AdColonyVideoAd();
-                AdColonyEventForwarder forwarder = new AdColonyEventForwarder(listener, this);
-                availabilityMonitor.setForwarder(forwarder);
-                videoAd.withListener(forwarder);
-                if(availabilityMonitor.isAvailable()) {
+        }
+        
+        try {
+            final AdColonyEventForwarder forwarder =
+                    new AdColonyEventForwarder(listener, this);
+            availabilityMonitor.setForwarder(forwarder);
+            
+            videoAd = new AdColonyVideoAd();
+            videoAd.withListener(forwarder);
+            
+            /*
+             * AdColony doesn't trigger changes on its ad availability when the
+             * next ad has loaded, therefore we need to take the latest value
+             * on every attempt subsequent to initialisation.
+             */
+            if (wasInitialised) {
+                if (availabilityMonitor.isAvailable()) {
                     listener.onAdLoaded(this);
                 } else {
                     Log.w(BuildConfig.LOG_TAG, "No fill");
@@ -104,13 +106,13 @@ public final class AdColonyAdapter extends MediationAdapter {
                             AdRequestResult.NoFill,
                             availabilityMonitor.getReason());
                 }
-            } catch (Exception e) {
-                Log.e(BuildConfig.LOG_TAG, "Failed to load ad", e);
-                listener.onAdFailedToLoad(
-                        this,
-                        AdRequestResult.Error,
-                        "Failed to load AdColony ad: " + e);
             }
+        } catch (Exception e) {
+            Log.w(BuildConfig.LOG_TAG, "Failed to load ad", e);
+            listener.onAdFailedToLoad(
+                    this,
+                    AdRequestResult.Error,
+                    "Failed to load AdColony ad: " + e);
         }
     }
     
@@ -128,7 +130,7 @@ public final class AdColonyAdapter extends MediationAdapter {
     
     @Override
     public String getProviderVersionString() {
-        return "2.3.4";
+        return "2.3.5";
     }
     
     @Override

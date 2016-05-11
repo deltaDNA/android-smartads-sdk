@@ -17,77 +17,61 @@
 package com.deltadna.android.sdk.ads.core.network;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 
-import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 
 import org.json.JSONObject;
 
-public class DummyAdapter extends MediationAdapter {
-
-    private DummyInterstitial dummyInterstitial;
-    private MediationListener listener;
-
+public final class DummyAdapter extends MediationAdapter {
+    
+    public static final int DISMISS_AFTER = 1000;
+    
+    @Nullable
+    private DummyInterstitial interstitial;
+    
     public DummyAdapter(int eCPM, int demoteOnCode, int waterfallIndex) {
         super(eCPM, demoteOnCode, waterfallIndex);
     }
-
+    
     @Override
-    public void requestAd(Activity activity, MediationListener listener, JSONObject mediationParams) {
-
-        this.listener = listener;
-
-        // Bespoke behaviour to get a Dummy Ad
-        dummyInterstitial = new DummyInterstitial(activity);
-
-        // For example, check the configuration is valid
-        if (mediationParams == null) {
-            listener.onAdFailedToLoad(this, AdRequestResult.Configuration, "Invalid Configuration");
-            return;
-        }
-
-        dummyInterstitial.setQ(mediationParams.optInt("q"));
-        dummyInterstitial.setP(mediationParams.optInt("p"));
-
-        dummyInterstitial.setListener(new DummyMediationInterstitialEventForwarder(listener, this));
-
-        dummyInterstitial.loadAd("request");
+    public void requestAd(
+            Activity activity,
+            MediationListener listener,
+            JSONObject mediationParams) {
+        
+        interstitial = new DummyInterstitial(
+                activity,
+                new DummyEventForwarder(listener, this));
+        interstitial.loadAd("request");
     }
-
+    
     @Override
     public void showAd() {
-        if (dummyInterstitial != null) {
-            dummyInterstitial.show();
-            listener.onAdShowing(this);
+        if (interstitial != null) {
+            interstitial.show();
         }
     }
-
+    
     @Override
     public String getProviderString() {
         return "Dummy";
     }
-
+    
     @Override
     public String getProviderVersionString() {
         return "1.0";
     }
-
+    
     @Override
     public void onDestroy() {
-        if (dummyInterstitial != null) {
-            dummyInterstitial.destroy();
-        }
+        interstitial = null;
     }
-
+    
     @Override
-    public void onPause() {
-
-    }
-
+    public void onPause() {}
+    
     @Override
-    public void onResume() {
-
-    }
-
+    public void onResume() {}
 }
