@@ -17,12 +17,10 @@
 package com.deltadna.android.sdk.ads;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.deltadna.android.sdk.Engagement;
 import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -36,11 +34,6 @@ import org.json.JSONObject;
  * {@link DDNASmartAds} must be registered for ads beforehand.
  */
 public final class RewardedAd {
-    
-    private static final String TAG = BuildConfig.LOG_TAG
-            + ' '
-            + RewardedAd.class.getSimpleName();
-    private static final String AD_SHOW_POINT = "adShowPoint";
     
     /**
      * Parameters from the Engage response if the ad was created from a
@@ -88,31 +81,40 @@ public final class RewardedAd {
     
     /**
      * Creates a rewarded ad.
+     * <p>
+     * {@code null} may be returned in case the Engagement was not set-up to
+     * show a rewarded ad.
      *
-     * @return the rewarded ad
+     * @return the rewarded ad, or {@code null}
      */
+    @Nullable
     public static RewardedAd create() {
         return create((RewardedAdsListener) null);
     }
     
     /**
      * Creates a rewarded ad.
+     * <p>
+     * {@code null} may be returned in case the ad is now allowed to show (ie
+     * too many ads shown during the session).
      *
      * @param listener  the listener for events within the ad lifecycle, may be
      *                  {@code null}
      *
-     * @return the rewarded ad
+     * @return the rewarded ad, or {@code null}
      */
+    @Nullable
     public static RewardedAd create(RewardedAdsListener listener) {
-        return new RewardedAd(null, listener);
+        return create(null, listener);
     }
     
     /**
-     * Creates a rewarded ad from an Engage,ent once it has been populated
+     * Creates a rewarded ad from an Engagement once it has been populated
      * with response data after a successful request.
      * <p>
      * {@code null} may be returned in case the Engagement was not set-up to
-     * show a rewarded ad.
+     * show an ad, or the ad is now allowed to show (ie too many ads shown
+     * during the session).
      *
      * @param engagement the Engagement with response data
      *
@@ -125,13 +127,15 @@ public final class RewardedAd {
     }
     
     /**
-     * Creates an rewarded ad from an Engagement once it has been populated
+     * Creates a rewarded ad from an Engagement once it has been populated
      * with response data after a successful request.
      * <p>
      * {@code null} may be returned in case the Engagement was not set-up to
-     * show a rewarded ad.
+     * show an ad, or the ad is now allowed to show (ie too many ads shown
+     * during the session).
      *
-     * @param engagement    the Engagement with response data
+     * @param engagement    the Engagement with response data, may be
+     *                      {@code null}
      * @param listener      the listener for events within the ad lifecycle,
      *                      may be {@code null}
      *
@@ -140,27 +144,18 @@ public final class RewardedAd {
      */
     @Nullable
     public static RewardedAd create(
-            Engagement engagement,
+            @Nullable Engagement engagement,
             @Nullable RewardedAdsListener listener) {
         
-        if (engagement.isSuccessful() && engagement.getJson() != null) {
-            if (engagement.getJson().has("parameters")) {
-                try {
-                    final JSONObject params = engagement.getJson()
-                            .getJSONObject("parameters");
-                    
-                    if (    params.has(AD_SHOW_POINT)
-                            && !params.getBoolean(AD_SHOW_POINT)) {
-                        return null;
-                    }
-                    
-                    return new RewardedAd(params, listener);
-                } catch (JSONException e) {
-                    Log.w(TAG, "Failed to get parameters from " + engagement, e);
-                }
-            }
+        final Ads ads = DDNASmartAds.instance().getAds();
+        if (ads == null || !ads.isRewardedAdAllowed(engagement))  {
+            return null;
+        } else {
+            return new RewardedAd(
+                    (engagement == null || engagement.getJson() == null)
+                            ? null
+                            : engagement.getJson().optJSONObject("parameters"),
+                    listener);
         }
-        
-        return new RewardedAd(null, listener);
     }
 }

@@ -1,6 +1,8 @@
 # Change Log
 
 ## [1.2.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.0) (YYYY-MM-DD)
+Fixed creation of ads to take session and time limits into account.  
+Fixed session and time limits not being independent between interstitial and rewarded ads.  
 
 ## [1.1.5](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.5) (YYYY-MM-DD)
 

@@ -118,6 +118,7 @@ subprojects {
             testCompile 'com.google.truth:truth:0.28'
             testCompile 'com.nhaarman:mockito-kotlin:0.4.1'
             testCompile 'junit:junit:4.12'
+            testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
             testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
             testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
             testCompile 'org.json:json:20160212'

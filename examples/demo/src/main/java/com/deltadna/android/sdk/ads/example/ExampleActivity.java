@@ -98,7 +98,12 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
     // view callbacks
     
     public void onShowInterstitialAd(View view) {
-        InterstitialAd.create().show();
+        InterstitialAd ad = InterstitialAd.create();
+        if (ad != null) {
+            ad.show();
+        } else {
+            Log.w(BuildConfig.LOG_TAG, "Interstitial ad not created");
+        }
     }
     
     public void onEngageInterstitialAd(View view) {
@@ -124,7 +129,7 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
     }
     
     public void onShowRewardedAd(View view) {
-        RewardedAd.create(new RewardedAdsListener() {
+        RewardedAd ad = RewardedAd.create(new RewardedAdsListener() {
             @Override
             public void onOpened() {
                 Log.d(BuildConfig.LOG_TAG, "Rewarded ad opened");
@@ -140,7 +145,12 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
             public void onClosed(boolean completed) {
                 Log.d(BuildConfig.LOG_TAG, "Rewarded ad closed");
             }
-        }).show();
+        });
+        if (ad != null) {
+            ad.show();
+        } else {
+            Log.w(BuildConfig.LOG_TAG, "Rewarded ad not created");
+        }
     }
     
     public void onShowEngageRewardedAd(View view) {

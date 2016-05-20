@@ -101,11 +101,14 @@ DDNASmartAds.instance().setAdRegistrationListener(new AdRegistrationListener() {
 ```
 
 ## Showing ads
-Showing interstitial ads can be done by creating an instance of an `InterstitialAd` and calling `show()`.
+Showing interstitial ads can be done by creating an instance of an `InterstitialAd` and calling `show()`. The result should be null-checked after `create()` is called as the creation may fail if the time or session limits have been exceeded.
 ```java
-InterstitialAd.create().show();
+InterstitialAd ad = InterstitialAd.create();
+if (ad != null) {
+    ad.show();
+}
 ```
-Rewarded ads are created in a similar way, but through the `RewardedAd` class instead. Both classes allow for a listener to be passed in at creation for listening to ad lifecycle events.
+Rewarded ads are created in a similar way, but through the `RewardedAd` class instead.
 
 Ads can also be created by performing an Engage request and creating an `InterstitialAd` or `RewardedAd` instance from the returned `Engagement`.
 ```java
@@ -132,6 +135,8 @@ DDNA.instance().requestEngagement(
 );
 ```
 
+Both classes allow for a listener to be passed in at creation for listening to ad lifecycle events.
+
 ## Permissions
 The library includes all the required permissions in its manifest file which will get included by Android's manifest merger during the build process. The included permissions are the minimal required set for ensuring functionality of the ad providers, and all of them are non-dangerous permissions and thus don't require explicit granting of permissions on Android 6+ versions.
 
@@ -157,6 +162,7 @@ Can be found [here](CHANGELOG.md).
 
 ## Migrations
 * [Version 1.1](docs/migrations/1.1.md)
+* [Version 1.2](docs/migrations/1.2.md)
 
 ## License
 The sources are available under the Apache 2.0 license.

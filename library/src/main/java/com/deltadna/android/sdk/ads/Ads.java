@@ -39,7 +39,7 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
-final class Ads implements AdServiceListener {
+class Ads implements AdServiceListener {
     
     private static final String DECISION_POINT = "advertising";
     
@@ -76,6 +76,22 @@ final class Ads implements AdServiceListener {
     
     void registerForAds() {
         service.init(DECISION_POINT);
+    }
+    
+    boolean isInterstitialAdAllowed(@Nullable Engagement engagement) {
+        return service.isInterstitialAdAllowed(
+                (engagement == null) ? null : engagement.getDecisionPoint(),
+                (engagement == null || engagement.getJson() == null)
+                        ? null
+                        : engagement.getJson().optJSONObject("parameters"));
+    }
+    
+    boolean isRewardedAdAllowed(@Nullable Engagement engagement) {
+        return service.isRewardedAdAllowed(
+                (engagement == null) ? null : engagement.getDecisionPoint(),
+                (engagement == null || engagement.getJson() == null)
+                        ? null
+                        : engagement.getJson().optJSONObject("parameters"));
     }
     
     boolean isInterstitialAdAvailable() {

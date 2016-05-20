@@ -21,6 +21,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.util.Log;
 
@@ -66,9 +67,10 @@ class AdAgent implements MediationListener {
     private final Waterfall waterfall;
     private final int maxPerNetwork;
     
+    long lastShownTime;
+    int shownCount;
+    
     private MediationAdapter currentAdapter;
-    private long lastRequestStart = -1L;
-    private long lastRequestEnd = -1L;
     
     private Activity activity;
     private JSONObject configuration;
@@ -76,7 +78,11 @@ class AdAgent implements MediationListener {
     private State state;
     private boolean adWasClicked;
     private boolean adDidLeaveApplication;
-
+    
+    private long lastRequestStart;
+    private long lastRequestEnd;
+    
+    @Nullable
     private String adPoint;
     
     AdAgent(AdAgentListener listener,
@@ -134,10 +140,11 @@ class AdAgent implements MediationListener {
         return currentAdapter;
     }
 
-    void setAdPoint(String adPoint) {
+    void setAdPoint(@Nullable String adPoint) {
         this.adPoint = adPoint;
     }
-
+    
+    @Nullable
     String getAdPoint() {
         return adPoint;
     }
