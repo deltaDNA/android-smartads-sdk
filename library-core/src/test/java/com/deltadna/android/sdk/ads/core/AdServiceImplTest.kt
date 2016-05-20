@@ -271,8 +271,8 @@ class AdServiceImplTest {
             val adFloorPrice: Int = 0,
             val onDemoteRequestCode: Int = 0,
             val maxPerNetwork: Int = 0,
-            val adMinimumInterval: Int = 0,
-            val adMaxPerSession: Int = 0,
+            val adMinimumInterval: Int = -1,
+            val adMaxPerSession: Int = -1,
             val interstitial: List<AdProvider> = listOf(AdProvider.DUMMY),
             val rewarded: List<AdProvider> = listOf(AdProvider.DUMMY))
 }

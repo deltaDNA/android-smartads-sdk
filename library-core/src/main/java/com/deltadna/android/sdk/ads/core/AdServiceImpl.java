@@ -218,7 +218,8 @@ final class AdServiceImpl implements AdService {
             return false;
         }
         
-        if (    System.currentTimeMillis() - agent.lastShownTime
+        if (    adMinimumInterval != -1 &&
+                System.currentTimeMillis() - agent.lastShownTime
                 <= adMinimumInterval * 1000) {
             
             Log.w(BuildConfig.LOG_TAG, "Not showing ad before minimum interval");
@@ -229,7 +230,7 @@ final class AdServiceImpl implements AdService {
             return false;
         }
         
-        if (adMaxPerSession != 0 && agent.shownCount >= adMaxPerSession) {
+        if (adMaxPerSession != -1 && agent.shownCount >= adMaxPerSession) {
             Log.w(  BuildConfig.LOG_TAG,
                     "Number of ads shown this session exceeded the maximum");
             postAdShowEvent(
@@ -270,7 +271,8 @@ final class AdServiceImpl implements AdService {
             return;
         }
         
-        if (    System.currentTimeMillis() - agent.lastShownTime
+        if (    adMinimumInterval != -1 &&
+                System.currentTimeMillis() - agent.lastShownTime
                 <= adMinimumInterval * 1000) {
             
             Log.w(BuildConfig.LOG_TAG, "Not showing ad before minimum interval");
@@ -282,7 +284,7 @@ final class AdServiceImpl implements AdService {
             return;
         }
         
-        if (adMaxPerSession != 0 && agent.shownCount >= adMaxPerSession) {
+        if (adMaxPerSession != -1 && agent.shownCount >= adMaxPerSession) {
             Log.w(  BuildConfig.LOG_TAG,
                     "Number of ads shown this session exceeded the maximum");
             if (agent.equals(interstitialAgent)) {
@@ -578,8 +580,8 @@ final class AdServiceImpl implements AdService {
             final int adFloorPrice = adConfiguration.optInt("adFloorPrice");
             final int demoteOnCode = adConfiguration.optInt("onDemoteRequestCode");
             final int maxPerNetwork = adConfiguration.optInt("maxPerNetwork");
-            adMinimumInterval = adConfiguration.optInt("adMinimumInterval");
-            adMaxPerSession = adConfiguration.optInt("adMaxPerSession");
+            adMinimumInterval = adConfiguration.optInt("adMinimumInterval", -1);
+            adMaxPerSession = adConfiguration.optInt("adMaxPerSession", -1);
             
             final JSONArray interstitialProviders =
                     adConfiguration.optJSONArray("adProviders");
