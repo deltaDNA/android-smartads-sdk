@@ -18,7 +18,6 @@ package com.deltadna.android.sdk.ads;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
 
@@ -54,13 +53,9 @@ public final class DDNASmartAds {
      * @param activity the activity to register with ads
      */
     public void registerForAds(Activity activity) {
-        if (ads == null) {
-            ads = new Ads(activity);
-            ads.setAdRegistrationListener(registrationListener.get());
-            ads.registerForAds();
-        } else {
-            Log.w(BuildConfig.LOG_TAG, "Already registered for ads");
-        }
+        ads = new Ads(activity);
+        ads.setAdRegistrationListener(registrationListener.get());
+        ads.registerForAds();
     }
     
     /**
