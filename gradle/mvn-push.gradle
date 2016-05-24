@@ -111,6 +111,7 @@ afterEvaluate { project ->
     }
     
     task androidJavadocs(type: Javadoc) {
+        failOnError false
         source = android.sourceSets.main.java.srcDirs
         title = "$POM_NAME $VERSION_NAME API"
         //options.links('http://docs.oracle.com/javase/6/docs/api/')
