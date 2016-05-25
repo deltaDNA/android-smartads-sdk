@@ -40,12 +40,25 @@ public final class DDNASmartAds {
     
     private static DDNASmartAds instance = null;
     
-    private WeakReference<AdRegistrationListener> registrationListener =
-            new WeakReference<>(null);
     @Nullable
     private Ads ads;
     
-    private DDNASmartAds() {}
+    private WeakReference<AdRegistrationListener> registrationListener =
+            new WeakReference<>(null);
+    
+    /**
+     * Returns the {@link DDNASmartAds} singleton instance, initialising it if
+     * called the first time.
+     *
+     * @return singleton instance
+     */
+    public static synchronized DDNASmartAds instance() {
+        if (instance == null) {
+            instance = new DDNASmartAds();
+        }
+        
+        return instance;
+    }
     
     /**
      * Registers for ads.
@@ -53,7 +66,10 @@ public final class DDNASmartAds {
      * @param activity the activity to register with ads
      */
     public void registerForAds(Activity activity) {
-        ads = new Ads(activity);
+        if (ads == null) {
+            ads = new Ads(activity);
+        }
+        
         ads.setAdRegistrationListener(registrationListener.get());
         ads.registerForAds();
     }
@@ -92,6 +108,7 @@ public final class DDNASmartAds {
     public void onDestroy() {
         if (ads != null) {
             ads.onDestroy();
+            ads = null;
         }
     }
     
@@ -100,11 +117,5 @@ public final class DDNASmartAds {
         return ads;
     }
     
-    public static synchronized DDNASmartAds instance() {
-        if (instance == null) {
-            instance = new DDNASmartAds();
-        }
-        
-        return instance;
-    }
+    private DDNASmartAds() {}
 }

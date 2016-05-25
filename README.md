@@ -64,7 +64,7 @@ public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     
     DDNA.instance().startSdk();
-    DDNASmartAds.instance.registerForAds(this);
+    DDNASmartAds.instance().registerForAds(this);
 }
 ```
 
