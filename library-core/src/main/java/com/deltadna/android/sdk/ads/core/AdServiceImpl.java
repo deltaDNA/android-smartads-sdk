@@ -528,6 +528,7 @@ final class AdServiceImpl implements AdService {
                 boolean complete) {
             
             agent.lastShownTime = System.currentTimeMillis();
+            
             if (agent.equals(interstitialAgent)) {
                 Log.d(BuildConfig.LOG_TAG, "Interstitial ad closed");
                 
