@@ -29,17 +29,14 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class WaterfallFactoryTest {
     
-    @Test
+    @Test(expected = IllegalArgumentException::class)
     fun noAdaptersBuilt() {
-        with(WaterfallFactory.create(
+        WaterfallFactory.create(
                 JSONArray(),
                 1,
                 0,
-                AdProviderType.INTERSTITIAL)) {
-            assertThat(adapters.size).isEqualTo(0)
-            assertThat(resetAndGetFirst()).isNull()
-            assertThat(next).isNull()
-        }
+                1,
+                AdProviderType.INTERSTITIAL)
     }
     
     @Test
@@ -51,6 +48,7 @@ class WaterfallFactoryTest {
                         .put(buildAmazon(3)),
                 1,
                 0,
+                1,
                 AdProviderType.INTERSTITIAL)) {
             assertThat(adapters.size).isEqualTo(2)
             
@@ -78,6 +76,7 @@ class WaterfallFactoryTest {
                         .put(buildMisconfiguredProvider()),
                 1,
                 0,
+                1,
                 AdProviderType.INTERSTITIAL)) {
             assertThat(adapters.size).isEqualTo(1)
             assertThat(resetAndGetFirst()).isInstanceOf(AdMobAdapter::class.java)

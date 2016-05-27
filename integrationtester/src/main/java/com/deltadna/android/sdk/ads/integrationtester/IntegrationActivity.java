@@ -33,6 +33,7 @@ import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
+import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter;
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter;
@@ -80,6 +81,11 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             0,
                             "303fc0e182f1e126f276537f2b3d01ee"),
+                    new MoPubAdapter(
+                            0,
+                            0,
+                            0,
+                            "3ac456d99b6a4cffb58cfba31fab2a21"),
                     new SupersonicInterstitialAdapter(
                             0,
                             0,

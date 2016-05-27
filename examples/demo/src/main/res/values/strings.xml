@@ -18,6 +18,8 @@ limitations under the License.
 <resources>
     <string name="app_name">deltaDNA Ads SDK Example</string>
     
+    <string name="register_for_ads">Register for ads</string>
+    
     <string name="engage_interstitial_ad">Engage interstitial ad</string>
     <string name="engage_rewarded_ad">Engage rewarded ad</string>
     <string name="engage_reward_or_image">Engage reward or image</string>

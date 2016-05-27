@@ -19,68 +19,60 @@ package com.deltadna.android.sdk.ads.core.network;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Handler;
+import android.os.Looper;
 
-public class DummyInterstitial {
-
-    public static final int BAD_REQUEST = 1;
-
-    private Activity activity;
-    private DummyListener listener;
-    private int q;
-    private int p;
-
-    public DummyInterstitial(Activity activity) {
+class DummyInterstitial {
+    
+    static final int REQUEST_FAIL = 1;
+    
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    
+    private final Activity activity;
+    private final DummyListener listener;
+    
+    DummyInterstitial(Activity activity, DummyListener listener) {
         this.activity = activity;
-    }
-
-    public void setListener(DummyListener listener) {
         this.listener = listener;
     }
-
-    public void setQ(int q) {
-        this.q = q;
-    }
-
-    public void setP(int p) {
-        this.p = p;
-    }
-
-    public void loadAd(String request) {
-
-        if (listener == null) {
-            return;
-        }
-
-        if (request == null) {
-            listener.onAdFailed(BAD_REQUEST);
-        }
-        else {
-            listener.onAdReady();
+    
+    void loadAd(String request) {
+        if (request.equals("fail")) {
+            listener.onAdFailedToLoad(REQUEST_FAIL);
+        } else {
+            listener.onAdLoaded();
         }
     }
-
-
-    public void show() {
-
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                new AlertDialog.Builder(activity)
-                        .setTitle("Dummy Interstitial")
-                        .setMessage("You are viewing a test interstitial ad.")
-                        .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+    
+    void show() {
+        final AlertDialog alert = new AlertDialog.Builder(activity)
+                .setTitle("Dummy Ad")
+                .setMessage("You are viewing a dummy ad which will close soon.")
+                .setNeutralButton(
+                        android.R.string.ok,
+                        new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 listener.onAdClosed();
-                            }
-                        })
-                        .show();
+                            }})
+                .create();
+        
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                alert.show();
+                listener.onAdOpened();
             }
         });
+        
+        handler.postDelayed(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        alert.dismiss();
+                        listener.onAdClosed();
+                    }
+                },
+                DummyAdapter.DISMISS_AFTER);
     }
-
-    public void destroy() {
-        listener = null;
-    }
-
 }

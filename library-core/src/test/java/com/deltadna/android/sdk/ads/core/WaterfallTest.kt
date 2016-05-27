@@ -26,23 +26,9 @@ import org.junit.runners.JUnit4
 class WaterfallTest {
     
     @Test
-    fun getAdapters() {
-        with(Waterfall(emptyList())) {
-            assertThat(adapters.isEmpty())
-        }
-        
-        val stubs = stubbedAdapters(2)
-        with(Waterfall(stubs)) {
-            assertThat(adapters.size).isEqualTo(2)
-            assertThat(adapters[0]).isSameAs(stubs[0])
-            assertThat(adapters[1]).isSameAs(stubs[1])
-        }
-    }
-    
-    @Test
     fun resetAndGetFirst() {
         var stubs = stubbedAdapters(2)
-        with(Waterfall(stubs)) {
+        with(Waterfall(stubs, 1)) {
             assertThat(resetAndGetFirst()).isSameAs(stubs[0])
             assertThat(adapters[0]).isSameAs(stubs[0])
             assertThat(adapters[1]).isSameAs(stubs[1])
@@ -51,7 +37,7 @@ class WaterfallTest {
         stubs = stubbedAdapters(3)
         stubs[0].updateScore(AdRequestResult.NoFill)
         stubs[2].updateScore(AdRequestResult.NoFill)
-        with(Waterfall(stubs)) {
+        with(Waterfall(stubs, 1)) {
             assertThat(resetAndGetFirst()).isSameAs(stubs[1])
             assertThat(adapters[1]).isSameAs(stubs[0])
             assertThat(adapters[2]).isSameAs(stubs[2])
@@ -61,21 +47,49 @@ class WaterfallTest {
     @Test
     fun getNext() {
         val stubs = stubbedAdapters(2)
-        with(Waterfall(stubs)) {
+        with(Waterfall(stubs, 1)) {
             assertThat(next).isSameAs(stubs[1])
             assertThat(next).isNull()
         }
     }
     
     @Test
-    fun removeAndGetNext() {
+    fun score() {
+        val stubs = stubbedAdapters(3)
+        with(Waterfall(stubs, 1)) {
+            with(resetAndGetFirst()!!) {
+                score(this, AdRequestResult.NoFill)
+                score(this, AdRequestResult.NoFill)
+                assertThat(this.requests).isEqualTo(0)
+            }
+            
+            score(next!!, AdRequestResult.Error)
+            
+            with(next!!) {
+                score(this, AdRequestResult.Loaded)
+                assertThat(this.requests).isEqualTo(1)
+            }
+            
+            resetAndGetFirst()
+            
+            assertThat(adapters).isEqualTo(listOf(stubs[2], stubs[0]))
+        }
+    }
+    
+    @Test
+    fun remove() {
         val stubs = stubbedAdapters(2)
-        with(Waterfall(stubs)) {
-            assertThat(removeAndGetNext()).isSameAs(stubs[1])
+        with(Waterfall(stubs, 1)) {
+            remove(resetAndGetFirst())
             assertThat(adapters.size).isEqualTo(1)
             
-            assertThat(removeAndGetNext()).isNull()
+            with(next) {
+                assertThat(this).isSameAs(stubs[1])
+                remove(this)
+            }
+            
             assertThat(adapters.isEmpty())
+            assertThat(next).isNull()
         }
     }
 }

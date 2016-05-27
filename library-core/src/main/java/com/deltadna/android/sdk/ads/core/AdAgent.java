@@ -21,6 +21,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.util.Log;
 
@@ -35,6 +36,9 @@ import java.util.Locale;
 
 class AdAgent implements MediationListener {
     
+    private static final String TAG = BuildConfig.LOG_TAG
+            + ' '
+            + AdAgent.class.getSimpleName();
     private static final int LOAD_TIMEOUT_MILLIS = 15 * 1000;
     private static final int WATERFALL_RESTART_DELAY_MILLIS = 60 * 1000;
     
@@ -64,11 +68,11 @@ class AdAgent implements MediationListener {
     
     private final AdAgentListener listener;
     private final Waterfall waterfall;
-    private final int maxPerNetwork;
+    
+    long lastShownTime;
+    int shownCount;
     
     private MediationAdapter currentAdapter;
-    private long lastRequestStart = -1L;
-    private long lastRequestEnd = -1L;
     
     private Activity activity;
     private JSONObject configuration;
@@ -76,21 +80,20 @@ class AdAgent implements MediationListener {
     private State state;
     private boolean adWasClicked;
     private boolean adDidLeaveApplication;
-
+    
+    private long lastRequestStart;
+    private long lastRequestEnd;
+    
+    @Nullable
     private String adPoint;
     
-    AdAgent(AdAgentListener listener,
-            Waterfall waterfall,
-            int maxPerNetwork) {
-        
+    AdAgent(AdAgentListener listener, Waterfall waterfall) {
         this.listener = listener;
         this.waterfall = waterfall;
-        this.maxPerNetwork = maxPerNetwork;
         
         currentAdapter = waterfall.resetAndGetFirst();
         if (currentAdapter == null) {
-            Log.e(  BuildConfig.LOG_TAG,
-                    "No ad providers supplied, ads will not be available");
+            Log.w(TAG, "No ad providers supplied, ads will not be available");
         }
         
         this.state = State.READY;
@@ -134,48 +137,50 @@ class AdAgent implements MediationListener {
         return currentAdapter;
     }
 
-    void setAdPoint(String adPoint) {
+    void setAdPoint(@Nullable String adPoint) {
         this.adPoint = adPoint;
     }
-
+    
+    @Nullable
     String getAdPoint() {
         return adPoint;
     }
     
     void onResume() {
-        for (MediationAdapter adapter : waterfall.getAdapters()) {
+        for (MediationAdapter adapter : waterfall.adapters) {
             adapter.onResume();
         }
     }
     
     void onPause() {
-        for (MediationAdapter adapter : waterfall.getAdapters()) {
+        for (MediationAdapter adapter : waterfall.adapters) {
             adapter.onPause();
         }
     }
     
     void onDestroy() {
-        for (MediationAdapter adapter : waterfall.getAdapters()) {
+        for (MediationAdapter adapter : waterfall.adapters) {
             adapter.onDestroy();
         }
     }
     
     @Override
-    public void onAdLoaded(MediationAdapter mediationAdapter) {
+    public void onAdLoaded(MediationAdapter adapter) {
         // some adapters keep loading without being requested to
-        if (mediationAdapter.equals(currentAdapter)) {
-            Log.d(BuildConfig.LOG_TAG, "Ad loaded for " + mediationAdapter);
+        if (adapter.equals(currentAdapter)) {
+            Log.d(TAG, "Ad loaded for " + adapter);
             
             handler.removeCallbacks(loadTimeout);
             
             lastRequestEnd = System.currentTimeMillis();
             listener.onAdLoaded(
-                    this, mediationAdapter, lastRequestEnd - lastRequestStart);
+                    this, adapter, lastRequestEnd - lastRequestStart);
             
             state = State.LOADED;
+            
+            waterfall.score(adapter, AdRequestResult.Loaded);
         } else {
-            Log.w(  BuildConfig.LOG_TAG,
-                    "Unexpected adapter " + mediationAdapter);
+            Log.w(TAG, "Unexpected adapter " + adapter);
         }
     }
     
@@ -187,7 +192,7 @@ class AdAgent implements MediationListener {
         
         // some adapters keep loading without being requested to
         if (adapter.equals(currentAdapter)) {
-            Log.d(BuildConfig.LOG_TAG, String.format(
+            Log.d(TAG, String.format(
                     Locale.US,
                     "Ad failed to load for %s due to %s with reason %s",
                     adapter,
@@ -210,58 +215,50 @@ class AdAgent implements MediationListener {
             }
             state = State.READY;
             
-            if (result.remove()) {
-                Log.d( BuildConfig.LOG_TAG, "Removing " + adapter);
-                currentAdapter = waterfall.removeAndGetNext();
-            } else {
-                Log.d(BuildConfig.LOG_TAG, String.format(
-                        Locale.US,
-                        "Updating %s score due to %s",
-                        adapter,
-                        result));
-                
-                currentAdapter.updateScore(result);
-                currentAdapter = waterfall.getNext();
-            }
+            waterfall.score(adapter, result);
+            changeToNextAdapter(false);
             
             if (currentAdapter != null) {
                 requestAd();
             } else {
-                Log.d(BuildConfig.LOG_TAG, "Reached end of waterfall");
+                Log.d(TAG, "Reached end of waterfall");
                 
-                currentAdapter = waterfall.resetAndGetFirst();
+                changeToNextAdapter(true);
                 handler.postDelayed(requestAd, WATERFALL_RESTART_DELAY_MILLIS);
             }
         } else {
-            Log.w(BuildConfig.LOG_TAG, "Unexpected adapter " + adapter);
+            Log.w(TAG, "Unexpected adapter " + adapter);
         }
     }
     
     @Override
     public void onAdShowing(MediationAdapter mediationAdapter) {
-        Log.d(BuildConfig.LOG_TAG, "Ad showing for " + mediationAdapter);
+        Log.d(TAG, "Ad showing for " + mediationAdapter);
         listener.onAdOpened(this, mediationAdapter);
         
         state = State.SHOWING;
     }
     
     @Override
-    public void onAdFailedToShow(MediationAdapter mediationAdapter, AdClosedResult adClosedResult) {
-        Log.d(BuildConfig.LOG_TAG, String.format(
+    public void onAdFailedToShow(
+            MediationAdapter adapter,
+            AdClosedResult result) {
+        
+        Log.d(TAG, String.format(
                 Locale.US,
                 "Ad failed to show for %s due to %s",
-                mediationAdapter,
-                adClosedResult));
+                adapter,
+                result));
         listener.onAdFailedToOpen(
                 this,
                 currentAdapter,
                 "Ad failed to show",
-                adClosedResult);
+                result);
         
-        // TODO should the adapter be scored negatively?
         state = State.READY;
         
-        changeToNextAdapter();
+        waterfall.remove(adapter);
+        changeToNextAdapter(true);
         requestAd();
     }
     
@@ -269,7 +266,7 @@ class AdAgent implements MediationListener {
     public void onAdClicked(MediationAdapter mediationAdapter) {
         adWasClicked = true;
     }
-
+    
     @Override
     public void onAdLeftApplication(MediationAdapter mediationAdapter) {
         adDidLeaveApplication = true;
@@ -277,26 +274,19 @@ class AdAgent implements MediationListener {
     
     @Override
     public void onAdClosed(MediationAdapter adapter, boolean complete) {
-        Log.d(BuildConfig.LOG_TAG, "Ad closed for " + adapter);
+        Log.d(TAG, "Ad closed for " + adapter);
         listener.onAdClosed(this, adapter, complete);
         
         state = State.READY;
         
-        changeToNextAdapter();
+        changeToNextAdapter(true);
         requestAd();
     }
     
-    /**
-     * Uses the current adapter if it can still perform a request, else resets
-     * the waterfall and uses the top one.
-     */
-    private void changeToNextAdapter() {
-        if (currentAdapter.getRequests() >= maxPerNetwork) {
-            Log.d(  BuildConfig.LOG_TAG,
-                    "Reached max requests for " + currentAdapter);
-            
-            currentAdapter = waterfall.resetAndGetFirst();
-        }
+    private void changeToNextAdapter(boolean reset) {
+        currentAdapter = (reset) ?
+                waterfall.resetAndGetFirst()
+                : waterfall.getNext();
     }
     
     private void requestAd() {
@@ -305,35 +295,25 @@ class AdAgent implements MediationListener {
                     .getSystemService(Context.CONNECTIVITY_SERVICE))
                     .getActiveNetworkInfo();
             
-            if (!network.isConnected()) {
-                onAdFailedToLoad(currentAdapter, AdRequestResult.Network, "No connection");
+            if (network == null || !network.isConnected()) {
+                onAdFailedToLoad(
+                        currentAdapter,
+                        AdRequestResult.Network,
+                        "No connection");
+            } else if (state == State.READY) {
+                Log.d(TAG, "Requesting next ad from " + currentAdapter);
+                
+                state = State.LOADING;
+                lastRequestStart = System.currentTimeMillis();
+                
+                handler.postDelayed(loadTimeout, LOAD_TIMEOUT_MILLIS);
+                currentAdapter.requestAd(activity, this, configuration);
             } else {
-                if (state == State.READY) {
-                    Log.d(  BuildConfig.LOG_TAG,
-                            "Requesting next ad from " + currentAdapter);
-                    
-                    state = State.LOADING;
-                    lastRequestStart = System.currentTimeMillis();
-                    
-                    currentAdapter.incrementRequests();
-                    if (currentAdapter.getRequests() >= maxPerNetwork) {
-                        Log.d(BuildConfig.LOG_TAG, String.format(
-                                Locale.US,
-                                "Updating %s score due to %s",
-                                currentAdapter,
-                                AdRequestResult.MaxRequests));
-                        currentAdapter.updateScore(AdRequestResult.MaxRequests);
-                    }
-                    
-                    handler.postDelayed(loadTimeout, LOAD_TIMEOUT_MILLIS);
-                    currentAdapter.requestAd(activity, this, configuration);
-                } else {
-                    Log.w(  BuildConfig.LOG_TAG,
-                            "Not ready to request next ad from " + currentAdapter);
-                }
+                Log.w(TAG, "Not ready to request next ad from "
+                        + currentAdapter);
             }
         } else {
-            Log.w(BuildConfig.LOG_TAG, "No adapter to request next ad from");
+            Log.w(TAG, "No adapter to request ad from");
         }
     }
 }

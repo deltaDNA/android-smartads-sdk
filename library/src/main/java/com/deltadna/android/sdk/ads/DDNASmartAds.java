@@ -18,7 +18,6 @@ package com.deltadna.android.sdk.ads;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
 
@@ -41,12 +40,25 @@ public final class DDNASmartAds {
     
     private static DDNASmartAds instance = null;
     
-    private WeakReference<AdRegistrationListener> registrationListener =
-            new WeakReference<>(null);
     @Nullable
     private Ads ads;
     
-    private DDNASmartAds() {}
+    private WeakReference<AdRegistrationListener> registrationListener =
+            new WeakReference<>(null);
+    
+    /**
+     * Returns the {@link DDNASmartAds} singleton instance, initialising it if
+     * called the first time.
+     *
+     * @return singleton instance
+     */
+    public static synchronized DDNASmartAds instance() {
+        if (instance == null) {
+            instance = new DDNASmartAds();
+        }
+        
+        return instance;
+    }
     
     /**
      * Registers for ads.
@@ -56,11 +68,10 @@ public final class DDNASmartAds {
     public void registerForAds(Activity activity) {
         if (ads == null) {
             ads = new Ads(activity);
-            ads.setAdRegistrationListener(registrationListener.get());
-            ads.registerForAds();
-        } else {
-            Log.w(BuildConfig.LOG_TAG, "Already registered for ads");
         }
+        
+        ads.setAdRegistrationListener(registrationListener.get());
+        ads.registerForAds();
     }
     
     /**
@@ -97,6 +108,7 @@ public final class DDNASmartAds {
     public void onDestroy() {
         if (ads != null) {
             ads.onDestroy();
+            ads = null;
         }
     }
     
@@ -105,11 +117,5 @@ public final class DDNASmartAds {
         return ads;
     }
     
-    public static synchronized DDNASmartAds instance() {
-        if (instance == null) {
-            instance = new DDNASmartAds();
-        }
-        
-        return instance;
-    }
+    private DDNASmartAds() {}
 }

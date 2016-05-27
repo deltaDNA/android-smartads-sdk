@@ -22,35 +22,20 @@ package com.deltadna.android.sdk.ads.bindings;
  */
 public enum AdRequestResult {
     
-    Loaded( 0b000000, 0) {
-        @Override
-        protected boolean demote(int code) {
-            return false;
-        }
-    },
+    Loaded( 0b000000, 0),
     NoFill( 0b000001, -1),
     Network(0b000010, -1),
     Timeout(0b000100, -1),
     MaxRequests(
             0b001000, -1),
     Configuration(
-            0b000000, 0) {
-        @Override
-        protected boolean demote(int code) {
-            return false;
-        }
-        
+            0b010000, -1) {
         @Override
         public boolean remove() {
             return true;
         }
     },
-    Error(  0b000000, 0) {
-        @Override
-        protected boolean demote(int code) {
-            return false;
-        }
-        
+    Error(  0b100000, -1) {
         @Override
         public boolean remove() {
             return true;
@@ -69,11 +54,7 @@ public enum AdRequestResult {
         return false;
     }
     
-    public int computeScore(int code) {
-        return demote(code) ? penalty : 0;
-    }
-    
-    protected boolean demote(int code) {
-        return (code & mask) == mask;
+    public final int computeScore(int code) {
+        return ((code & mask) == mask) ? penalty : 0;
     }
 }
