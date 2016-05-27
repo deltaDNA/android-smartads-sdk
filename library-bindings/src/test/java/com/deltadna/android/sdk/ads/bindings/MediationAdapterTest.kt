@@ -42,7 +42,7 @@ class MediationAdapterTest {
             incrementRequests()
             assertThat(requests).isEqualTo(1)
             reset(0)
-            assertThat(requests).isEqualTo(0)
+            assertThat(requests).isEqualTo(1)
         }
     }
     

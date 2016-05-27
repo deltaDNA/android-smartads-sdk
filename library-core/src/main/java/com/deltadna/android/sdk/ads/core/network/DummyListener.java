@@ -16,18 +16,10 @@
 
 package com.deltadna.android.sdk.ads.core.network;
 
-public abstract class DummyListener {
-
-    public void onAdReady() {
-
-    }
-
-    public void onAdFailed(int errorCode) {
-
-    }
-
-    public void onAdClosed() {
-
-    }
-
+interface DummyListener {
+    
+    void onAdLoaded();
+    void onAdFailedToLoad(int errorCode);
+    void onAdOpened();
+    void onAdClosed();
 }

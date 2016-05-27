@@ -18,10 +18,12 @@ package com.deltadna.android.sdk.ads
 
 import com.deltadna.android.sdk.Engagement
 import com.deltadna.android.sdk.ads.listeners.InterstitialAdsListener
+import com.github.salomonbrys.kotson.jsonObject
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import org.json.JSONObject
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.runners.MockitoJUnitRunner
@@ -29,93 +31,95 @@ import org.mockito.runners.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class InterstitialAdTest {
     
+    private val ads = mock<Ads>()
+    
+    @Before
+    fun before() {
+        DDNASmartAds.instance().inject(ads)
+    }
+    
+    @After
+    fun after() {
+        DDNASmartAds.instance().scrubAds()
+        reset(ads)
+    }
+    
+    @Test
+    fun createChecksIfAllowed() {
+        with(KEngagement()) {
+            InterstitialAd.create()
+            InterstitialAd.create(this)
+            
+            verify(ads).isInterstitialAdAllowed(isNull())
+            verify(ads).isInterstitialAdAllowed(same(this))
+        }
+    }
+    
+    @Test
+    fun createdWhenAllowed() {
+        whenever(ads.isInterstitialAdAllowed(any())).then { true }
+        
+        assertThat(InterstitialAd.create()!!.params).isNull()
+        
+        with(mock<Engagement<*>>()) {
+            whenever(this.getJson()).then { null }
+            
+            assertThat(InterstitialAd.create(this)!!.params).isNull()
+        }
+        
+        with(mock<Engagement<*>>()) {
+            whenever(getJson()).then { JSONObject() }
+            
+            assertThat(InterstitialAd.create(this)!!.params).isNull()
+        }
+        
+        with(mock<Engagement<*>>()) {
+            whenever(getJson()).then {
+                jsonObject("parameters" to jsonObject()).convert()
+            }
+            
+            assertThat(InterstitialAd.create(this)!!.params!!.toString())
+                    .isEqualTo(JSONObject().toString())
+        }
+    }
+    
+    @Test
+    fun notCreatedWhenDisallowed() {
+        whenever(ads.isInterstitialAdAllowed(any())).then { false }
+        
+        assertThat(InterstitialAd.create()).isNull()
+        assertThat(InterstitialAd.create(mock<Engagement<*>>())).isNull()
+    }
+    
     @Test
     fun create() {
-        assertThat(InterstitialAd.create())
-                .isNotNull()
-        assertThat(InterstitialAd.create(mock<InterstitialAdsListener>()))
-                .isNotNull()
+        whenever(ads.isInterstitialAdAllowed(any()))
+                .thenReturn(true, false, true, false)
+        
+        assertThat(InterstitialAd.create()).isNotNull()
+        assertThat(InterstitialAd.create()).isNull()
+        assertThat(InterstitialAd.create(KEngagement())).isNotNull()
+        assertThat(InterstitialAd.create(KEngagement())).isNull()
     }
     
     @Test
-    fun createWithFailedEngagement() {
-        with(mock<Engagement<*>>()) {
-            whenever(isSuccessful()).thenReturn(false)
-            
-            assertThat(InterstitialAd.create(this)).isNotNull()
-        }
+    fun isReady() {
+        whenever(ads.isInterstitialAdAllowed(any())).then { true }
+        
+        InterstitialAd.create()!!.isReady
+        
+        verify(ads).isInterstitialAdAvailable
     }
     
     @Test
-    fun createWithMissingParameters() {
-        with(mock<Engagement<*>>()) {
-            whenever(isSuccessful()).thenReturn(true)
-            val json = with(mock<JSONObject>()) {
-                whenever(has("parameters")).thenReturn(false)
-                this
-            }
-            whenever(getJson()).thenReturn(json)
+    fun show() {
+        whenever(ads.isInterstitialAdAllowed(any())).then { true }
+        
+        with(mock<InterstitialAdsListener>()) {
+            InterstitialAd.create(this)!!.show()
             
-            assertThat(InterstitialAd.create(this)).isNotNull()
-        }
-    }
-    
-    @Test
-    fun createWithoutAdShowPoint() {
-        with(mock<Engagement<*>>()) {
-            whenever(isSuccessful()).thenReturn(true)
-            val parameters = with(mock<JSONObject>()) {
-                whenever(has("adShowPoint")).thenReturn(false)
-                this
-            }
-            val json = with(mock<JSONObject>()) {
-                whenever(has("parameters")).thenReturn(true)
-                whenever(getJSONObject("parameters")).thenReturn(parameters)
-                this
-            }
-            whenever(getJson()).thenReturn(json)
-            
-            assertThat(InterstitialAd.create(this)).isNotNull()
-        }
-    }
-    
-    @Test
-    fun createWithAdShowPointFalse() {
-        with(mock<Engagement<*>>()) {
-            whenever(isSuccessful()).thenReturn(true)
-            val parameters = with(mock<JSONObject>()) {
-                whenever(has("adShowPoint")).thenReturn(true)
-                whenever(getBoolean("adShowPoint")).thenReturn(false)
-                this
-            }
-            val json = with(mock<JSONObject>()) {
-                whenever(has("parameters")).thenReturn(true)
-                whenever(getJSONObject("parameters")).thenReturn(parameters)
-                this
-            }
-            whenever(getJson()).thenReturn(json)
-            
-            assertThat(InterstitialAd.create(this)).isNull()
-        }
-    }
-    
-    @Test
-    fun createWithAdShowPointTrue() {
-        with(mock<Engagement<*>>()) {
-            whenever(isSuccessful()).thenReturn(true)
-            val parameters = with(mock<JSONObject>()) {
-                whenever(has("adShowPoint")).thenReturn(true)
-                whenever(getBoolean("adShowPoint")).thenReturn(true)
-                this
-            }
-            val json = with(mock<JSONObject>()) {
-                whenever(has("parameters")).thenReturn(true)
-                whenever(getJSONObject("parameters")).thenReturn(parameters)
-                this
-            }
-            whenever(getJson()).thenReturn(json)
-            
-            assertThat(InterstitialAd.create(this)).isNotNull()
+            verify(ads).setInterstitialAdsListener(same(this))
+            verify(ads).showInterstitialAd(isNull())
         }
     }
 }

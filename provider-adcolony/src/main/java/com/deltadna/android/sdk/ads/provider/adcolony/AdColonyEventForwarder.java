@@ -25,7 +25,7 @@ import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.jirbo.adcolony.AdColonyAd;
 import com.jirbo.adcolony.AdColonyAdListener;
 
-final class AdColonyEventForwarder implements AdColonyAdListener {
+class AdColonyEventForwarder implements AdColonyAdListener {
     
     private final MediationListener listener;
     private final MediationAdapter adapter;
@@ -41,32 +41,37 @@ final class AdColonyEventForwarder implements AdColonyAdListener {
     }
     
     @Override
+    public void onAdColonyAdStarted(AdColonyAd adColonyAd) {
+        if (adColonyAd.noFill()) {
+            Log.w(BuildConfig.LOG_TAG, "No fill");
+            
+            showing = false;
+            
+            listener.onAdFailedToLoad(
+                    adapter,
+                    AdRequestResult.NoFill,
+                    "AdColony no fill");
+        } else {
+            showing = true;
+            
+            listener.onAdShowing(adapter);
+        }
+    }
+    
+    @Override
     public void onAdColonyAdAttemptFinished(AdColonyAd adColonyAd) {
-        if(adColonyAd.shown()) {
-            listener.onAdClosed(adapter, !(adColonyAd.canceled() || adColonyAd.skipped()));
+        if (adColonyAd.shown()) {
+            listener.onAdClosed(
+                    adapter,
+                    !(adColonyAd.canceled() || adColonyAd.skipped()));
         } else {
             listener.onAdFailedToShow(adapter, AdClosedResult.ERROR);
         }
         
         showing = false;
     }
-
-    @Override
-    public void onAdColonyAdStarted(AdColonyAd adColonyAd) {
-        showing = true;
-        
-        if (adColonyAd.noFill()) {
-            Log.w(BuildConfig.LOG_TAG, "No fill");
-            listener.onAdFailedToLoad(
-                    adapter,
-                    AdRequestResult.NoFill,
-                    "AdColony no fill");
-        } else {
-            listener.onAdShowing(adapter);
-        }
-    }
     
-    protected boolean isShowing() {
+    boolean isShowing() {
         return showing;
     }
 }

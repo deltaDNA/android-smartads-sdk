@@ -19,37 +19,46 @@ package com.deltadna.android.sdk.ads.core.network;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 
-public class DummyMediationInterstitialEventForwarder extends DummyListener {
-
-    private MediationListener mediationListener;
-    private DummyAdapter adapter;
-
-    public DummyMediationInterstitialEventForwarder(MediationListener listener, DummyAdapter adapter) {
-        this.mediationListener = listener;
+class DummyEventForwarder implements DummyListener {
+    
+    private final MediationListener listener;
+    private final DummyAdapter adapter;
+    
+    DummyEventForwarder(MediationListener listener, DummyAdapter adapter) {
+        this.listener = listener;
         this.adapter = adapter;
     }
-
+    
     @Override
-    public void onAdReady() {
-        mediationListener.onAdLoaded(adapter);
+    public void onAdLoaded() {
+        listener.onAdLoaded(adapter);
     }
-
+    
     @Override
-    public void onAdFailed(int errorCode) {
-
-        // Translate error codes
+    public void onAdFailedToLoad(int errorCode) {
         switch (errorCode) {
-            case DummyInterstitial.BAD_REQUEST:
-                mediationListener.onAdFailedToLoad(adapter, AdRequestResult.Error, "Dummy error: " + errorCode);
+            case DummyInterstitial.REQUEST_FAIL:
+                listener.onAdFailedToLoad(
+                        adapter,
+                        AdRequestResult.Error,
+                        "Dummy error: " + errorCode);
                 break;
+            
             default:
-                mediationListener.onAdFailedToLoad(adapter, AdRequestResult.Error, "Dummy error: " + errorCode);
-                break;
+                listener.onAdFailedToLoad(
+                        adapter,
+                        AdRequestResult.Error,
+                        "Dummy error: " + errorCode);
         }
     }
-
+    
+    @Override
+    public void onAdOpened() {
+        listener.onAdShowing(adapter);
+    }
+    
     @Override
     public void onAdClosed() {
-        mediationListener.onAdClosed(adapter, true);
+        listener.onAdClosed(adapter, true);
     }
 }

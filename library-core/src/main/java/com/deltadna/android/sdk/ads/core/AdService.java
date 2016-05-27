@@ -18,10 +18,19 @@ package com.deltadna.android.sdk.ads.core;
 
 import android.support.annotation.Nullable;
 
+import org.json.JSONObject;
+
 @UnityInterOp
 public interface AdService {
     
     void init(String decisionPoint);
+    
+    boolean isInterstitialAdAllowed(
+            @Nullable String decisionPoint,
+            @Nullable JSONObject engagementParameters);
+    boolean isRewardedAdAllowed(
+            @Nullable String decisionPoint,
+            @Nullable JSONObject engagementParameters);
     
     boolean isInterstitialAdAvailable();
     boolean isRewardedAdAvailable();

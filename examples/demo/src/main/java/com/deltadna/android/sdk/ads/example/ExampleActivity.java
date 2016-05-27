@@ -78,30 +78,51 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
     @Override
     public void onRegisteredForInterstitial() {
         Log.d(BuildConfig.LOG_TAG, "Registered for interstitial ads");
+        
+        findViewById(R.id.show_interstitial_ad).setEnabled(true);
+        findViewById(R.id.show_engage_interstitial_ad).setEnabled(true);
     }
     
     @Override
     public void onFailedToRegisterForInterstitial(String reason) {
         Log.d(BuildConfig.LOG_TAG, "Failed to register for interstitial ads");
+        
+        findViewById(R.id.show_interstitial_ad).setEnabled(false);
+        findViewById(R.id.show_engage_interstitial_ad).setEnabled(false);
     }
     
     @Override
     public void onRegisteredForRewarded() {
         Log.d(BuildConfig.LOG_TAG, "Registered for rewarded ads");
+        
+        findViewById(R.id.show_rewarded_ad).setEnabled(true);
+        findViewById(R.id.show_engage_rewarded_ad).setEnabled(true);
     }
     
     @Override
     public void onFailedToRegisterForRewarded(String reason) {
         Log.d(BuildConfig.LOG_TAG, "Failed to register for rewarded ads");
+        
+        findViewById(R.id.show_rewarded_ad).setEnabled(false);
+        findViewById(R.id.show_engage_rewarded_ad).setEnabled(false);
     }
     
     // view callbacks
     
-    public void onShowInterstitialAd(View view) {
-        InterstitialAd.create().show();
+    public void onRegisterForAds(View view) {
+        DDNASmartAds.instance().registerForAds(this);
     }
     
-    public void onEngageInterstitialAd(View view) {
+    public void onShowInterstitialAd(View view) {
+        InterstitialAd ad = InterstitialAd.create();
+        if (ad != null) {
+            ad.show();
+        } else {
+            Log.w(BuildConfig.LOG_TAG, "Interstitial ad not created");
+        }
+    }
+    
+    public void onShowEngageInterstitialAd(View view) {
         DDNA.instance().requestEngagement(
                 new Engagement("testAdPoint"),
                 new EngageListener<Engagement>() {
@@ -124,7 +145,7 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
     }
     
     public void onShowRewardedAd(View view) {
-        RewardedAd.create(new RewardedAdsListener() {
+        RewardedAd ad = RewardedAd.create(new RewardedAdsListener() {
             @Override
             public void onOpened() {
                 Log.d(BuildConfig.LOG_TAG, "Rewarded ad opened");
@@ -140,7 +161,12 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
             public void onClosed(boolean completed) {
                 Log.d(BuildConfig.LOG_TAG, "Rewarded ad closed");
             }
-        }).show();
+        });
+        if (ad != null) {
+            ad.show();
+        } else {
+            Log.w(BuildConfig.LOG_TAG, "Rewarded ad not created");
+        }
     }
     
     public void onShowEngageRewardedAd(View view) {

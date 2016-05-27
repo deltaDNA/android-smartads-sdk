@@ -18,10 +18,12 @@ package com.deltadna.android.sdk.ads
 
 import com.deltadna.android.sdk.Engagement
 import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener
+import com.github.salomonbrys.kotson.jsonObject
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import org.json.JSONObject
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.runners.MockitoJUnitRunner
@@ -29,91 +31,95 @@ import org.mockito.runners.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class RewardedAdTest {
     
+    private val ads = mock<Ads>()
+    
+    @Before
+    fun before() {
+        DDNASmartAds.instance().inject(ads)
+    }
+    
+    @After
+    fun after() {
+        DDNASmartAds.instance().scrubAds()
+        reset(ads)
+    }
+    
+    @Test
+    fun createChecksIfAllowed() {
+        with(KEngagement()) {
+            RewardedAd.create()
+            RewardedAd.create(this)
+            
+            verify(ads).isRewardedAdAllowed(isNull())
+            verify(ads).isRewardedAdAllowed(same(this))
+        }
+    }
+    
+    @Test
+    fun createdWhenAllowed() {
+        whenever(ads.isRewardedAdAllowed(any())).then { true }
+        
+        assertThat(RewardedAd.create()!!.params).isNull()
+        
+        with(mock<Engagement<*>>()) {
+            whenever(this.getJson()).then { null }
+            
+            assertThat(RewardedAd.create(this)!!.params).isNull()
+        }
+        
+        with(mock<Engagement<*>>()) {
+            whenever(getJson()).then { JSONObject() }
+            
+            assertThat(RewardedAd.create(this)!!.params).isNull()
+        }
+        
+        with(mock<Engagement<*>>()) {
+            whenever(getJson()).then {
+                jsonObject("parameters" to jsonObject()).convert()
+            }
+            
+            assertThat(RewardedAd.create(this)!!.params!!.toString())
+                    .isEqualTo(JSONObject().toString())
+        }
+    }
+    
+    @Test
+    fun notCreatedWhenDisallowed() {
+        whenever(ads.isRewardedAdAllowed(any())).then { false }
+        
+        assertThat(RewardedAd.create()).isNull()
+        assertThat(RewardedAd.create(mock<Engagement<*>>())).isNull()
+    }
+    
     @Test
     fun create() {
+        whenever(ads.isRewardedAdAllowed(any()))
+                .thenReturn(true, false, true, false)
+        
         assertThat(RewardedAd.create()).isNotNull()
-        assertThat(RewardedAd.create(mock<RewardedAdsListener>())).isNotNull()
+        assertThat(RewardedAd.create()).isNull()
+        assertThat(RewardedAd.create(KEngagement())).isNotNull()
+        assertThat(RewardedAd.create(KEngagement())).isNull()
     }
     
     @Test
-    fun createWithFailedEngagement() {
-        with(mock<Engagement<*>>()) {
-            whenever(isSuccessful()).thenReturn(false)
-            
-            assertThat(RewardedAd.create(this)).isNotNull()
-        }
+    fun isReady() {
+        whenever(ads.isRewardedAdAllowed(any())).then { true }
+        
+        RewardedAd.create()!!.isReady
+        
+        verify(ads).isRewardedAdAvailable
     }
     
     @Test
-    fun createWithMissingParameters() {
-        with(mock<Engagement<*>>()) {
-            whenever(isSuccessful()).thenReturn(true)
-            val json = with(mock<JSONObject>()) {
-                whenever(has("parameters")).thenReturn(false)
-                this
-            }
-            whenever(getJson()).thenReturn(json)
+    fun show() {
+        whenever(ads.isRewardedAdAllowed(any())).then { true }
+        
+        with(mock<RewardedAdsListener>()) {
+            RewardedAd.create(this)!!.show()
             
-            assertThat(RewardedAd.create(this)).isNotNull()
-        }
-    }
-    
-    @Test
-    fun createWithoutAdShowPoint() {
-        with(mock<Engagement<*>>()) {
-            whenever(isSuccessful()).thenReturn(true)
-            val parameters = with(mock<JSONObject>()) {
-                whenever(has("adShowPoint")).thenReturn(false)
-                this
-            }
-            val json = with(mock<JSONObject>()) {
-                whenever(has("parameters")).thenReturn(true)
-                whenever(getJSONObject("parameters")).thenReturn(parameters)
-                this
-            }
-            whenever(getJson()).thenReturn(json)
-            
-            assertThat(RewardedAd.create(this)).isNotNull()
-        }
-    }
-    
-    @Test
-    fun createWithAdShowPointFalse() {
-        with(mock<Engagement<*>>()) {
-            whenever(isSuccessful()).thenReturn(true)
-            val parameters = with(mock<JSONObject>()) {
-                whenever(has("adShowPoint")).thenReturn(true)
-                whenever(getBoolean("adShowPoint")).thenReturn(false)
-                this
-            }
-            val json = with(mock<JSONObject>()) {
-                whenever(has("parameters")).thenReturn(true)
-                whenever(getJSONObject("parameters")).thenReturn(parameters)
-                this
-            }
-            whenever(getJson()).thenReturn(json)
-            
-            assertThat(RewardedAd.create(this)).isNull()
-        }
-    }
-    
-    @Test
-    fun createWithAdShowPointTrue() {
-        with(mock<Engagement<*>>()) {
-            whenever(isSuccessful()).thenReturn(true)
-            val parameters = with(mock<JSONObject>()) {
-                whenever(has("adShowPoint")).thenReturn(true)
-                whenever(getBoolean("adShowPoint")).thenReturn(true)
-                this
-            }
-            val json = with(mock<JSONObject>()) {
-                whenever(has("parameters")).thenReturn(true)
-                whenever(getJSONObject("parameters")).thenReturn(parameters)
-                this
-            }
-            whenever(getJson()).thenReturn(json)
-            
-            assertThat(RewardedAd.create(this)).isNotNull()
+            verify(ads).setRewardedAdsListener(same(this))
+            verify(ads).showRewardedAd(isNull())
         }
     }
 }

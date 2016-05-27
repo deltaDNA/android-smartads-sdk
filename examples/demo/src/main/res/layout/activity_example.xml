@@ -43,25 +43,39 @@ limitations under the License.
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/register_for_ads"
+            android:onClick="onRegisterForAds"/>
+        
+        <Button
+            android:id="@+id/show_interstitial_ad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/show_interstitial_ad"
+            android:enabled="false"
             android:onClick="onShowInterstitialAd"/>
         
         <Button
+            android:id="@+id/show_rewarded_ad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/show_rewarded_ad"
+            android:enabled="false"
             android:onClick="onShowRewardedAd"/>
         
         <Button
+            android:id="@+id/show_engage_interstitial_ad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/engage_interstitial_ad"
-            android:onClick="onEngageInterstitialAd"/>
+            android:enabled="false"
+            android:onClick="onShowEngageInterstitialAd"/>
         
         <Button
+            android:id="@+id/show_engage_rewarded_ad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/engage_rewarded_ad"
+            android:enabled="false"
             android:onClick="onShowEngageRewardedAd"/>
         
         <Button

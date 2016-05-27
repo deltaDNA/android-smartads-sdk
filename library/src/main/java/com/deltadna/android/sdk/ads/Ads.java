@@ -33,13 +33,14 @@ import com.deltadna.android.sdk.ads.listeners.InterstitialAdsListener;
 import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener;
 import com.deltadna.android.sdk.ads.exceptions.EngagementFailureException;
 import com.deltadna.android.sdk.listeners.EngageListener;
+import com.deltadna.android.sdk.listeners.SessionListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
-final class Ads implements AdServiceListener {
+class Ads implements AdServiceListener, SessionListener {
     
     private static final String DECISION_POINT = "advertising";
     
@@ -54,6 +55,8 @@ final class Ads implements AdServiceListener {
     
     Ads(Activity activity) {
         service = AdServiceWrapper.create(activity, this);
+        
+        DDNA.instance().register(this);
     }
     
     void setAdRegistrationListener(
@@ -76,6 +79,22 @@ final class Ads implements AdServiceListener {
     
     void registerForAds() {
         service.init(DECISION_POINT);
+    }
+    
+    boolean isInterstitialAdAllowed(@Nullable Engagement engagement) {
+        return service.isInterstitialAdAllowed(
+                (engagement == null) ? null : engagement.getDecisionPoint(),
+                (engagement == null || engagement.getJson() == null)
+                        ? null
+                        : engagement.getJson().optJSONObject("parameters"));
+    }
+    
+    boolean isRewardedAdAllowed(@Nullable Engagement engagement) {
+        return service.isRewardedAdAllowed(
+                (engagement == null) ? null : engagement.getDecisionPoint(),
+                (engagement == null || engagement.getJson() == null)
+                        ? null
+                        : engagement.getJson().optJSONObject("parameters"));
     }
     
     boolean isInterstitialAdAvailable() {
@@ -241,6 +260,11 @@ final class Ads implements AdServiceListener {
                         listener.onFailure(t);
                     }
                 });
+    }
+    
+    @Override
+    public void onSessionUpdated() {
+        registerForAds();
     }
     
     private <T> void on(WeakReference<T> reference, WeakAction<T> action) {

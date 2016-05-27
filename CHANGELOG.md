@@ -1,5 +1,17 @@
 # Change Log
 
+## [1.2.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.0) (2016-05-27)
+Fixed creation of ads to take session and time limits into account.  
+Fixed session and time limits not being independent between interstitial and rewarded ads.  
+Fixed configuration and limits not being updated when the session changes.  
+Fixed ad networks not being cycled correctly.  
+Fixed configuration not being read correctly.  
+
+## [1.1.4](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.4) (2016-05-11)
+Updated AdColony library dependency to fix bugs.  
+Fixed AdColony reporting wrong ad shown state.  
+Fixed minimum interval between ads not being respected.
+
 ## [1.1.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.1.3) (2016-05-09)
 Fixed crash when requesting ads without a network connection.
 
