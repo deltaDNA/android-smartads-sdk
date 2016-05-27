@@ -579,8 +579,8 @@ final class AdServiceImpl implements AdService {
             adDebugMode = adConfiguration.optBoolean("adRecordAdRequests", true);
             
             final int adFloorPrice = adConfiguration.optInt("adFloorPrice");
-            final int demoteOnCode = adConfiguration.optInt("onDemoteRequestCode");
-            final int maxPerNetwork = adConfiguration.optInt("maxPerNetwork");
+            final int demoteOnCode = adConfiguration.optInt("adDemoteOnRequestCode");
+            final int maxPerNetwork = adConfiguration.optInt("adMaxPerNetwork");
             adMinimumInterval = adConfiguration.optInt("adMinimumInterval", -1);
             adMaxPerSession = adConfiguration.optInt("adMaxPerSession", -1);
             

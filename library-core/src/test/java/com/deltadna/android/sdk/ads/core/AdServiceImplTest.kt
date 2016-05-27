@@ -232,8 +232,8 @@ class AdServiceImplTest {
                         jsonObject("parameters" to jsonObject(
                                 "adShowSession" to adShowSession,
                                 "adFloorPrice" to adFloorPrice,
-                                "onDemoteRequestCode" to onDemoteRequestCode,
-                                "maxPerNetwork" to maxPerNetwork,
+                                "adDemoteOnRequestCode" to onDemoteRequestCode,
+                                "adMaxPerNetwork" to maxPerNetwork,
                                 "adMinimumInterval" to adMinimumInterval,
                                 "adMaxPerSession" to adMaxPerSession,
                                 "adProviders" to jsonArray(
