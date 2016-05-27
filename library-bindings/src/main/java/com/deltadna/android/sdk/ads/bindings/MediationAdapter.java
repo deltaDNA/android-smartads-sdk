@@ -67,7 +67,6 @@ public abstract class MediationAdapter implements Comparable<MediationAdapter> {
     public final void reset(int waterfallIndex) {
         this.waterfallIndex = waterfallIndex;
         
-        requests = 0;
         score = 0;
     }
     

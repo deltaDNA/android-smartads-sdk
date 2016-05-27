@@ -34,6 +34,7 @@ final class WaterfallFactory {
             JSONArray providers,
             int adFloorPrice,
             int demoteOnCode,
+            int maxRequests,
             AdProviderType type) {
         
         final List<MediationAdapter> adapters =
@@ -83,7 +84,7 @@ final class WaterfallFactory {
             }
         }
         
-        return new Waterfall(adapters);
+        return new Waterfall(adapters, maxRequests);
     }
     
     private WaterfallFactory() {}

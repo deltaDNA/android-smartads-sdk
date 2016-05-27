@@ -19,59 +19,93 @@ package com.deltadna.android.sdk.ads.core;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
+import com.deltadna.android.sdk.ads.core.utils.Preconditions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 final class Waterfall {
     
-    private final List<MediationAdapter> adapters;
+    private static final String TAG = BuildConfig.LOG_TAG
+            + ' '
+            + Waterfall.class.getSimpleName();
     
-    private int index;
+    final List<MediationAdapter> adapters;
+    private final int maxRequests;
     
-    Waterfall(List<MediationAdapter> adapters) {
+    private int position;
+    
+    Waterfall(List<MediationAdapter> adapters, int maxRequests) {
+        Preconditions.checkArg(
+                adapters != null && !adapters.isEmpty(),
+                "adapters cannot be null or empty");
+        
         this.adapters = new ArrayList<>(adapters);
-    }
-    
-    List<MediationAdapter> getAdapters() {
-        return adapters;
+        this.maxRequests = maxRequests;
     }
     
     @Nullable
     MediationAdapter resetAndGetFirst() {
-        Log.d(  BuildConfig.LOG_TAG,
-                "Resetting waterfall " + Arrays.toString(adapters.toArray()));
+        Log.d(TAG, "Resetting waterfall " + Arrays.toString(adapters.toArray()));
         
         Collections.sort(adapters);
         for (int i = 0; i < adapters.size(); i++) {
             adapters.get(i).reset(i);
         }
         
-        Log.d(  BuildConfig.LOG_TAG,
-                "Reset waterfall " + Arrays.toString(adapters.toArray()));
+        Log.d(TAG, "Reset waterfall " + Arrays.toString(adapters.toArray()));
         
-        index = 0;
-        return adapters.isEmpty() ? null : adapters.get(index);
+        position = 0;
+        return adapters.isEmpty() ? null : adapters.get(position);
     }
     
     @Nullable
     MediationAdapter getNext() {
-        return (adapters.size() > ++index) ? adapters.get(index) : null;
+        return (position + 1 < adapters.size())
+                ? adapters.get(++position)
+                : null;
     }
     
-    @Nullable
-    MediationAdapter removeAndGetNext() {
-        if (index < adapters.size()) {
-            adapters.remove(index);
-        } else {
-            Log.w(  BuildConfig.LOG_TAG,
-                    "Failed to remove adapter at index " + index);
+    void score(MediationAdapter adapter, AdRequestResult result) {
+        Log.d(TAG, String.format(
+                Locale.US,
+                "Updating %s score due to %s",
+                adapter,
+                result));
+        adapter.updateScore(result);
+        
+        if (result.remove()) {
+            Log.d(TAG, "Removing " + adapter);
+            remove(adapter);
         }
         
-        return (adapters.size() > index) ? adapters.get(index) : null;
+        if (result == AdRequestResult.Loaded) {
+            adapter.incrementRequests();
+            
+            if (maxRequests > 0 && adapter.getRequests() >= maxRequests) {
+                Log.d(TAG, String.format(
+                        Locale.US,
+                        "Updating %s score due to %s",
+                        adapter,
+                        AdRequestResult.MaxRequests));
+                adapter.updateScore(AdRequestResult.MaxRequests);
+            }
+        }
+    }
+    
+    void remove(MediationAdapter adapter) {
+        final int index = adapters.indexOf(adapter);
+        Preconditions.checkArg(index != -1, "Failed to find adapter");
+        
+        adapters.remove(index);
+        if (position >= index) {
+            position--;
+        }
     }
     
     @Override

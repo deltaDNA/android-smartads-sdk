@@ -591,16 +591,14 @@ final class AdServiceImpl implements AdService {
                         interstitialProviders,
                         adFloorPrice,
                         demoteOnCode,
+                        maxPerNetwork,
                         AdProviderType.INTERSTITIAL);
                 
-                if (waterfall.getAdapters().isEmpty()) {
+                if (waterfall.adapters.isEmpty()) {
                     listener.onFailedToRegisterForInterstitialAds(
                             "Invalid ad configuration");
                 } else {
-                    interstitialAgent = new AdAgent(
-                            agentListener,
-                            waterfall,
-                            maxPerNetwork);
+                    interstitialAgent = new AdAgent(agentListener, waterfall);
                     interstitialAgent.requestAd(activity, adConfiguration);
                     
                     listener.onRegisteredForInterstitialAds();
@@ -617,16 +615,14 @@ final class AdServiceImpl implements AdService {
                         rewardedProviders,
                         adFloorPrice,
                         demoteOnCode,
+                        maxPerNetwork,
                         AdProviderType.REWARDED);
                 
-                if (waterfall.getAdapters().isEmpty()) {
+                if (waterfall.adapters.isEmpty()) {
                     listener.onFailedToRegisterForRewardedAds(
                             "Invalid ad configuration");
                 } else {
-                    rewardedAgent = new AdAgent(
-                            agentListener,
-                            waterfall,
-                            maxPerNetwork);
+                    rewardedAgent = new AdAgent(agentListener, waterfall);
                     rewardedAgent.requestAd(activity, adConfiguration);
 
                     listener.onRegisteredForRewardedAds();

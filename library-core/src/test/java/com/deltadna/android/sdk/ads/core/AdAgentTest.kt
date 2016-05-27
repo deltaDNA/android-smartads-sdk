@@ -59,6 +59,7 @@ class AdAgentTest {
             requestAd(activity, config)
             
             assertThat(isAdLoaded).isTrue()
+            assertThat(adapters[0].requests).isEqualTo(1)
             verify(listener).onAdLoaded(same(this), same(adapters[0]), any())
             verifyNoMoreInteractions(listener)
         }
@@ -74,6 +75,7 @@ class AdAgentTest {
             requestAd(activity, config)
             
             assertThat(isAdLoaded).isFalse()
+            assertThat(adapters[0].requests).isEqualTo(0)
             verify(listener).onAdFailedToLoad(
                     same(this), 
                     same(adapters[0]),
@@ -144,6 +146,7 @@ class AdAgentTest {
             
             requestAd(activity, config)
             
+            assertThat(adapters[0].requests)
             inOrder(listener) {
                 // first adapter first run
                 verify(listener).onAdLoaded(
@@ -319,7 +322,7 @@ class AdAgentTest {
             maxPerNetwork: Int = 1,
             block: AdAgent.(List<MediationAdapter>) -> Unit) {
         block.invoke(
-                AdAgent(listener, Waterfall(adapters), maxPerNetwork),
+                AdAgent(listener, Waterfall(adapters, maxPerNetwork)),
                 adapters)
     }
     

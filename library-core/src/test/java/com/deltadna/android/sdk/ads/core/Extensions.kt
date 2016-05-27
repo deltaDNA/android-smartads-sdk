@@ -23,7 +23,6 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import org.json.JSONObject
 import org.robolectric.RuntimeEnvironment
-import org.robolectric.Shadows
 
 // *
 

@@ -36,13 +36,6 @@ class AdRequestResultTest {
     }
     
     @Test
-    fun demote() {
-        arrayOf(Loaded, Configuration, Error).forEach {
-            assertThat(it.demote(0))
-        }
-    }
-    
-    @Test
     fun computeScore() {
         assertThat(NoFill.computeScore(0b0)).isEqualTo(0)
         assertThat(NoFill.computeScore(0b10)).isEqualTo(0)
