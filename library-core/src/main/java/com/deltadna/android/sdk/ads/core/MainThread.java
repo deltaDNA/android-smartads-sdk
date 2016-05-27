@@ -63,7 +63,7 @@ final class MainThread {
                         try {
                             value.set(method.invoke(target, args));
                         } catch (Throwable t) {
-                            throw new RuntimeException(t);
+                            throw new IllegalStateException(t);
                         } finally {
                             latch.countDown();
                         }

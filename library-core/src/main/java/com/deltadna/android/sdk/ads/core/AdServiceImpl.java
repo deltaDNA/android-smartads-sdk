@@ -330,9 +330,9 @@ final class AdServiceImpl implements AdService {
                     
                     if (isAdAllowed(agent, adPoint, null)) {
                         showAd(agent, null);
-                    } else if (agent == interstitialAgent) {
+                    } else if (agent.equals(interstitialAgent)) {
                         listener.onInterstitialAdFailedToOpen("Not allowed");
-                    } else if (agent == rewardedAgent) {
+                    } else if (agent.equals(rewardedAgent)) {
                         listener.onRewardedAdFailedToOpen("Not allowed");
                     }
                 }
