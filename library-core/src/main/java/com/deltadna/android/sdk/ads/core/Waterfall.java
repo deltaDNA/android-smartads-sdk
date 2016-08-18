@@ -41,10 +41,6 @@ final class Waterfall {
     private int position;
     
     Waterfall(List<MediationAdapter> adapters, int maxRequests) {
-        Preconditions.checkArg(
-                adapters != null && !adapters.isEmpty(),
-                "adapters cannot be null or empty");
-        
         this.adapters = new ArrayList<>(adapters);
         this.maxRequests = maxRequests;
     }

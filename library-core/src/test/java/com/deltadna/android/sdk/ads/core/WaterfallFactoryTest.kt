@@ -29,7 +29,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class WaterfallFactoryTest {
     
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun noAdaptersBuilt() {
         WaterfallFactory.create(
                 JSONArray(),

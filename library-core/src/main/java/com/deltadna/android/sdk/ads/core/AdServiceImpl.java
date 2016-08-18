@@ -595,6 +595,8 @@ final class AdServiceImpl implements AdService {
                         AdProviderType.INTERSTITIAL);
                 
                 if (waterfall.adapters.isEmpty()) {
+                    Log.w(BuildConfig.LOG_TAG, "Interstitial adapters empty");
+                    
                     listener.onFailedToRegisterForInterstitialAds(
                             "Invalid ad configuration");
                 } else {
@@ -619,6 +621,8 @@ final class AdServiceImpl implements AdService {
                         AdProviderType.REWARDED);
                 
                 if (waterfall.adapters.isEmpty()) {
+                    Log.w(BuildConfig.LOG_TAG, "Rewarded adapters empty");
+                    
                     listener.onFailedToRegisterForRewardedAds(
                             "Invalid ad configuration");
                 } else {

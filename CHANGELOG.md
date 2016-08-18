@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.2.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.1)(18-08-2016)
+Fixed crash when no networks are added from the configuration.  
+
 ## [1.2.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.0) (2016-05-27)
 Fixed creation of ads to take session and time limits into account.  
 Fixed session and time limits not being independent between interstitial and rewarded ads.  
