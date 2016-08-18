@@ -330,9 +330,9 @@ final class AdServiceImpl implements AdService {
                     
                     if (isAdAllowed(agent, adPoint, null)) {
                         showAd(agent, null);
-                    } else if (agent == interstitialAgent) {
+                    } else if (agent.equals(interstitialAgent)) {
                         listener.onInterstitialAdFailedToOpen("Not allowed");
-                    } else if (agent == rewardedAgent) {
+                    } else if (agent.equals(rewardedAgent)) {
                         listener.onRewardedAdFailedToOpen("Not allowed");
                     }
                 }
@@ -595,6 +595,8 @@ final class AdServiceImpl implements AdService {
                         AdProviderType.INTERSTITIAL);
                 
                 if (waterfall.adapters.isEmpty()) {
+                    Log.w(BuildConfig.LOG_TAG, "Interstitial adapters empty");
+                    
                     listener.onFailedToRegisterForInterstitialAds(
                             "Invalid ad configuration");
                 } else {
@@ -619,6 +621,8 @@ final class AdServiceImpl implements AdService {
                         AdProviderType.REWARDED);
                 
                 if (waterfall.adapters.isEmpty()) {
+                    Log.w(BuildConfig.LOG_TAG, "Rewarded adapters empty");
+                    
                     listener.onFailedToRegisterForRewardedAds(
                             "Invalid ad configuration");
                 } else {
