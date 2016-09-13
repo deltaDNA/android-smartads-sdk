@@ -114,7 +114,7 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
     
     @Override
     public String getProviderVersionString() {
-        return Version.VALUE;
+        return AppLovinSdk.VERSION;
     }
     
     @Override

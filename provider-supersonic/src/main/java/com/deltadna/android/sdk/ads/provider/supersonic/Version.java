@@ -18,7 +18,7 @@ package com.deltadna.android.sdk.ads.provider.supersonic;
 
 final class Version {
     
-    static final String VALUE = "6.3.7";
+    static final String VALUE = "6.4.16";
     
     private Version() {}
 }

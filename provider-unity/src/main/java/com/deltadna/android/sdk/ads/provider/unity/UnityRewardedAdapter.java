@@ -17,21 +17,17 @@
 package com.deltadna.android.sdk.ads.provider.unity;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.unity3d.ads.android.UnityAds;
+import com.unity3d.ads.UnityAds;
 
 import org.json.JSONObject;
 
 public final class UnityRewardedAdapter extends MediationAdapter {
-    
-    private final Handler handler = new Handler(Looper.getMainLooper());
     
     private final String gameId;
     @Nullable
@@ -39,6 +35,9 @@ public final class UnityRewardedAdapter extends MediationAdapter {
     private final boolean testMode;
     
     private boolean initialised;
+    
+    @Nullable
+    private Activity activity;
     
     public UnityRewardedAdapter(
             int eCPM,
@@ -63,14 +62,11 @@ public final class UnityRewardedAdapter extends MediationAdapter {
         
         if (!initialised) {
             try {
-                UnityAds.init(
+                UnityAds.initialize(
                         activity,
                         gameId,
-                        new UnityRewardedEventForwarder(listener, this));
-                if (zoneId != null) {
-                    UnityAds.setZone(zoneId);
-                }
-                UnityAds.setTestMode(testMode);
+                        new UnityRewardedEventForwarder(listener, this),
+                        testMode);
                 
                 initialised = true;
             } catch (Exception e) {
@@ -81,10 +77,10 @@ public final class UnityRewardedAdapter extends MediationAdapter {
                         "Invalid Unity configuration: " + e);
             }
         } else {
-            UnityAds.changeActivity(activity);
-            
-            if (UnityAds.canShow()) {
-                listener.onAdLoaded(UnityRewardedAdapter.this);
+            if (zoneId != null && UnityAds.isReady(zoneId)) {
+                listener.onAdLoaded(this);
+            } else if (UnityAds.isReady()) {
+                listener.onAdLoaded(this);
             } else {
                 Log.w(BuildConfig.LOG_TAG, "No fill");
                 listener.onAdFailedToLoad(
@@ -93,12 +89,20 @@ public final class UnityRewardedAdapter extends MediationAdapter {
                         "Unity no fill");
             }
         }
+        
+        this.activity = activity;
     }
     
     @Override
     public void showAd() {
-        if(UnityAds.canShow()) {
-            UnityAds.show();
+        if (zoneId != null) {
+            if (UnityAds.isReady(zoneId) && activity != null) {
+                UnityAds.show(activity, zoneId);
+            }
+        } else {
+            if (UnityAds.isReady() && activity != null) {
+                UnityAds.show(activity);
+            }
         }
     }
     
@@ -109,12 +113,12 @@ public final class UnityRewardedAdapter extends MediationAdapter {
     
     @Override
     public String getProviderVersionString() {
-        return UnityAds.getSDKVersion();
+        return UnityAds.getVersion();
     }
     
     @Override
     public void onDestroy() {
-        handler.removeCallbacksAndMessages(null);
+        activity = null;
     }
     
     @Override

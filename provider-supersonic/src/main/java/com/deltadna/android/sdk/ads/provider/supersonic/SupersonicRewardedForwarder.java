@@ -57,20 +57,16 @@ final class SupersonicRewardedForwarder implements RewardedVideoListener {
         
         final AdRequestResult result;
         switch (error.getErrorCode()) {
-            case SupersonicError.ERROR_CODE_NO_CONFIGURATION_AVAILABLE:
-            case SupersonicError.ERROR_CODE_USING_CACHED_CONFIGURATION:
-            case SupersonicError.ERROR_CODE_APP_KEY_NOT_SET:
-            case SupersonicError.ERROR_CODE_APP_KEY_INCORRECT:
-            case SupersonicError.ERROR_CODE_KEY_NOT_SET_FOR_PROVIDER:
-            case SupersonicError.ERROR_CODE_INVALID_KEY_VALUE:
-                result = AdRequestResult.Configuration;
+            case SupersonicError.ERROR_CODE_NO_ADS_TO_SHOW:
+            case SupersonicError.ERROR_REACHED_CAP_LIMIT:
+                result = AdRequestResult.NoFill;
                 break;
             
-            case SupersonicError.ERROR_CODE_UNSUPPORTED_SDK_VERSION:
-            case SupersonicError.ERROR_CODE_ADAPTER_INIT_FAILED:
-            case SupersonicError.ERROR_CODE_GENERIC:
-            case SupersonicError.ERROR_CODE_SHOW_VIDEO_FAILED:
-                result = AdRequestResult.Error;
+            case SupersonicError.ERROR_CODE_NO_CONFIGURATION_AVAILABLE:
+            case SupersonicError.ERROR_CODE_USING_CACHED_CONFIGURATION:
+            case SupersonicError.ERROR_CODE_KEY_NOT_SET:
+            case SupersonicError.ERROR_CODE_INVALID_KEY_VALUE:
+                result = AdRequestResult.Configuration;
                 break;
             
             default:

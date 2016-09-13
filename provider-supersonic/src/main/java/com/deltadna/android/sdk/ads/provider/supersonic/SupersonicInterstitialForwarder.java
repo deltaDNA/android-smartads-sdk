@@ -45,7 +45,7 @@ final class SupersonicInterstitialForwarder implements InterstitialListener {
     }
     
     @Override
-    public void onInterstitialInitFail(SupersonicError error) {
+    public void onInterstitialInitFailed(SupersonicError error) {
         Log.w(BuildConfig.LOG_TAG, String.format(
                 Locale.US,
                 "Interstitial init fail with code %d and message %s",
@@ -54,19 +54,16 @@ final class SupersonicInterstitialForwarder implements InterstitialListener {
         
         final AdRequestResult result;
         switch (error.getErrorCode()) {
-            case SupersonicError.ERROR_CODE_NO_CONFIGURATION_AVAILABLE:
-            case SupersonicError.ERROR_CODE_USING_CACHED_CONFIGURATION:
-            case SupersonicError.ERROR_CODE_APP_KEY_NOT_SET:
-            case SupersonicError.ERROR_CODE_APP_KEY_INCORRECT:
-            case SupersonicError.ERROR_CODE_KEY_NOT_SET_FOR_PROVIDER:
-            case SupersonicError.ERROR_CODE_INVALID_KEY_VALUE:
-                result = AdRequestResult.Configuration;
+            case SupersonicError.ERROR_CODE_NO_ADS_TO_SHOW:
+            case SupersonicError.ERROR_REACHED_CAP_LIMIT:
+                result = AdRequestResult.NoFill;
                 break;
             
-            case SupersonicError.ERROR_CODE_UNSUPPORTED_SDK_VERSION:
-            case SupersonicError.ERROR_CODE_ADAPTER_INIT_FAILED:
-            case SupersonicError.ERROR_CODE_GENERIC:
-                result = AdRequestResult.Error;
+            case SupersonicError.ERROR_CODE_NO_CONFIGURATION_AVAILABLE:
+            case SupersonicError.ERROR_CODE_USING_CACHED_CONFIGURATION:
+            case SupersonicError.ERROR_CODE_KEY_NOT_SET:
+            case SupersonicError.ERROR_CODE_INVALID_KEY_VALUE:
+                result = AdRequestResult.Configuration;
                 break;
             
             default:
@@ -79,16 +76,18 @@ final class SupersonicInterstitialForwarder implements InterstitialListener {
     }
     
     @Override
-    public void onInterstitialAvailability(boolean available) {
-        if (available) {
-            listener.onAdLoaded(adapter);
-        } else {
-            listener.onAdFailedToLoad(
-                    adapter,
-                    AdRequestResult.NoFill,
-                    "Interstitial ad not available");
-        }
+    public void onInterstitialReady() {
+        listener.onAdLoaded(adapter);
     }
+    
+    @Override
+    public void onInterstitialLoadFailed(SupersonicError error) {
+        // the errors are the same, so use the same logic
+        onInterstitialInitFailed(error);
+    }
+    
+    @Override
+    public void onInterstitialOpen() {}
     
     @Override
     public void onInterstitialShowSuccess() {
@@ -96,7 +95,7 @@ final class SupersonicInterstitialForwarder implements InterstitialListener {
     }
     
     @Override
-    public void onInterstitialShowFail(SupersonicError error) {
+    public void onInterstitialShowFailed(SupersonicError error) {
         Log.w(BuildConfig.LOG_TAG, String.format(
                 Locale.US,
                 "Interstitial show fail with code %d and message %s",
@@ -107,12 +106,12 @@ final class SupersonicInterstitialForwarder implements InterstitialListener {
     }
     
     @Override
-    public void onInterstitialAdClicked() {
+    public void onInterstitialClick() {
         listener.onAdClicked(adapter);
     }
     
     @Override
-    public void onInterstitialAdClosed() {
+    public void onInterstitialClose() {
         listener.onAdClosed(adapter, true);
     }
 }
