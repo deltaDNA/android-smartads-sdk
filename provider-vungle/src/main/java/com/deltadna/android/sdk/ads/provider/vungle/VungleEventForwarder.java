@@ -25,10 +25,21 @@ import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.vungle.publisher.EventListener;
 
-import java.util.Locale;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 final class VungleEventForwarder implements EventListener {
     
+    /**
+     * Single thread onto which we redirect the Vungle callback invocation, as
+     * these come back on random background threads.
+     */
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     /**
      * Main thread {@link Handler} onto which we redirect listener invocations.
      */
@@ -37,22 +48,30 @@ final class VungleEventForwarder implements EventListener {
     private final MediationListener listener;
     private final MediationAdapter adapter;
     
+    private boolean available;
+    
+    private CompleteTask completeTask;
+    private Future<Boolean> completeResult;
+    
     VungleEventForwarder(MediationListener listener, MediationAdapter adapter) {
         this.listener = listener;
         this.adapter = adapter;
     }
     
     @Override
-    public void onAdEnd(
-            final boolean wasSuccessfulView,
-            final boolean wasCallToActionClicked) {
+    public void onAdEnd(final boolean wasCallToActionClicked) {
+        Log.d(BuildConfig.LOG_TAG, "Ad end with wasCallToActionClicked "
+                + wasCallToActionClicked);
         
-        Log.d(BuildConfig.LOG_TAG, String.format(
-                Locale.US,
-                "Ad end with view/clicked: %s/%s",
-                wasCallToActionClicked,
-                wasCallToActionClicked));
+        boolean complete;
+        try {
+            complete = completeResult.get();
+        } catch (InterruptedException | ExecutionException e) {
+            Log.w(BuildConfig.LOG_TAG, e);
+            complete = false;
+        }
         
+        final boolean completeFinal = complete;
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -60,7 +79,7 @@ final class VungleEventForwarder implements EventListener {
                     listener.onAdClicked(adapter);
                 }
                 
-                listener.onAdClosed(adapter, wasSuccessfulView);
+                listener.onAdClosed(adapter, completeFinal);
             }
         });
     }
@@ -68,6 +87,9 @@ final class VungleEventForwarder implements EventListener {
     @Override
     public void onAdStart() {
         Log.d(BuildConfig.LOG_TAG, "Ad start");
+        
+        completeTask = new CompleteTask();
+        completeResult = executor.submit(completeTask);
         
         handler.post(new Runnable() {
             @Override
@@ -94,12 +116,39 @@ final class VungleEventForwarder implements EventListener {
     
     @Override
     public synchronized void onAdPlayableChanged(final boolean isAdPlayable) {
-        Log.d(BuildConfig.LOG_TAG, "Ad playable changed to " + isAdPlayable);
+        Log.d(BuildConfig.LOG_TAG, "Ad playable changed to "
+                + isAdPlayable);
+        
+        available = isAdPlayable;
     }
     
     @Override
     public void onVideoView(
             final boolean isCompletedView,
-            int watchedMillis,
-            int videoMillis) {}
+            int watchedMillis, 
+            int videoMillis) {
+        
+        completeTask.setResult(isCompletedView);
+    }
+    
+    synchronized boolean isAvailable() {
+        return available;
+    }
+    
+    private static final class CompleteTask implements Callable<Boolean> {
+        
+        private final CountDownLatch latch = new CountDownLatch(1);
+        private final AtomicBoolean complete = new AtomicBoolean();
+        
+        @Override
+        public Boolean call() throws Exception {
+            latch.await();
+            return complete.get();
+        }
+        
+        void setResult(boolean complete) {
+            this.complete.set(complete);
+            latch.countDown();
+        }
+    }
 }
