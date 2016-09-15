@@ -96,7 +96,7 @@ final class AdServiceImpl implements AdService {
             postAdShowEvent(
                     null,
                     null,
-                    AdShowResult.NOT_READY);
+                    AdShowResult.NO_AD_AVAILABLE);
             return false;
         } else {
             return isAdAllowed(
@@ -115,7 +115,7 @@ final class AdServiceImpl implements AdService {
             postAdShowEvent(
                     null,
                     null,
-                    AdShowResult.NOT_READY);
+                    AdShowResult.NO_AD_AVAILABLE);
             return false;
         } else {
             return isAdAllowed(
@@ -245,7 +245,7 @@ final class AdServiceImpl implements AdService {
             postAdShowEvent(
                     agent,
                     agent.getCurrentAdapter(),
-                    AdShowResult.NOT_READY);
+                    AdShowResult.NO_AD_AVAILABLE);
             return false;
         }
         

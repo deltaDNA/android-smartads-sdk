@@ -28,7 +28,7 @@ final class InMobiHelper {
     public static void initialise(Activity activity, String accountId) {
         if(!initialised) {
             Log.d(BuildConfig.LOG_TAG, "Initialising InMobi");
-            InMobiSdk.init(activity, accountId);
+            InMobiSdk.init(activity.getApplicationContext(), accountId);
             initialised = true;
         }
     }

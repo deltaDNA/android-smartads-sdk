@@ -25,14 +25,16 @@ final class FlurryHelper {
     private static boolean initialised;
     
     public static void initialise(Activity activity, String apiKey) {
-        if(!initialised) {
-            FlurryAgent.setLogEnabled(false);
-            FlurryAgent.init(activity, apiKey);
+        if (!initialised) {
+            new FlurryAgent.Builder().build(
+                    activity.getApplicationContext(),
+                    apiKey);
+            
             initialised = true;
         }
     }
     
-    public static boolean isInitialised() {
+    static boolean isInitialised() {
         return initialised;
     }
 }

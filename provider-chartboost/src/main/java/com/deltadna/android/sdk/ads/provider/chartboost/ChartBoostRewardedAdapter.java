@@ -91,7 +91,7 @@ public final class ChartBoostRewardedAdapter extends MediationAdapter {
 
     @Override
     public String getProviderVersionString() {
-        return "6.0.2";
+        return Chartboost.getSDKVersion();
     }
     
     @Override

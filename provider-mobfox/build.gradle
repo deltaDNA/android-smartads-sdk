@@ -28,12 +28,6 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile('com.adsdk.sdk:MobFox-Android-SDK:7.0.8') {
-        exclude group: 'com.google.android.gms', module: 'play-services'
-        // https://github.com/square/retrofit/issues/1431
-        exclude group: 'stax', module: 'stax'
-        exclude group: 'stax', module: 'stax-api'
-        exclude group: 'xpp3', module: 'xpp3'
-    }
+    compile files('libs/MobFox-Android-SDK-Core-2.1.6.jar')
     compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
 }

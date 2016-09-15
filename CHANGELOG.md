@@ -1,6 +1,9 @@
 # Change Log
 
-## [1.2.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.1)(18-08-2016)
+## [1.2.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.2) (2016-09-15)
+Updated ad network libraries.  
+
+## [1.2.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.1) (2016-08-18)
 Fixed crash when no networks are added from the configuration.  
 
 ## [1.2.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.0) (2016-05-27)
