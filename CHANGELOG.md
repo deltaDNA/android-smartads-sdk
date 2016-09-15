@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.2.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.2) (YYYY-MM-DD)
+## [1.2.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.2) (2016-09-15)
 Updated ad network libraries.  
 
 ## [1.2.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.1) (2016-08-18)
