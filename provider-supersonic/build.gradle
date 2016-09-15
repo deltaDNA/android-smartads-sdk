@@ -23,6 +23,7 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile files('libs/mediationsdk-6.3.7.jar')
+    compile files('libs/mediationsdk-6.4.16.jar')
+    // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
 }

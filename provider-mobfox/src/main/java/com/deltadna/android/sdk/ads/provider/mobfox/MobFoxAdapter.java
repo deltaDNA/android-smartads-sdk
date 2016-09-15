@@ -17,12 +17,11 @@
 package com.deltadna.android.sdk.ads.provider.mobfox;
 
 import android.app.Activity;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
-import com.adsdk.sdk.AdManager;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.mobfox.sdk.interstitialads.InterstitialAd;
 
 import org.json.JSONObject;
 
@@ -30,7 +29,8 @@ public final class MobFoxAdapter extends MediationAdapter {
     
     private final String publicationId;
     
-    private AdManager adManager;
+    @Nullable
+    private InterstitialAd ad;
     
     public MobFoxAdapter(
             int eCPM,
@@ -44,65 +44,44 @@ public final class MobFoxAdapter extends MediationAdapter {
     }
     
     @Override
-    public void requestAd(Activity activity, MediationListener listener, JSONObject configuration) {
-        try {
-            if (adManager == null) {
-                adManager = new AdManager(activity, "http://my.mobfox.com/request.php", publicationId, true);
-                adManager.setInterstitialAdsEnabled(true);
-                adManager.setVideoAdsEnabled(true);
-            }
-        } catch (Exception e) {
-            Log.e(BuildConfig.LOG_TAG, "Failed to initialise", e);
-            listener.onAdFailedToLoad(
-                    this,
-                    AdRequestResult.Configuration,
-                    "Invalid Configuration: " + e);
-        }
+    public void requestAd(
+            Activity activity,
+            MediationListener listener,
+            JSONObject configuration) {
         
-        try {
-            adManager.setListener(new MobFoxEventForwarder(listener, this));
-            adManager.requestAd();
-        } catch (Exception e) {
-            Log.e(BuildConfig.LOG_TAG, "Failed to request ad", e);
-            listener.onAdFailedToLoad(
-                    this,
-                    AdRequestResult.Error,
-                    "Failed to request MobFox ad: " + e);
-        }
+        ad = new InterstitialAd(activity.getApplicationContext());
+        ad.setListener(new MobFoxEventForwarder(listener, this));
+        ad.setInventoryHash(publicationId);
+        ad.load();
     }
-
+    
     @Override
     public void showAd() {
-        if(adManager != null && adManager.isAdLoaded()) {
-            adManager.showAd();
-        }
+        if (ad != null) ad.show();
     }
-
+    
     @Override
     public String getProviderString() {
-        return "MobFox";
+        return "MOBFOX";
     }
-
+    
     @Override
     public String getProviderVersionString() {
-        return "7.0.8";
+        return "2.1.6";
     }
     
     @Override
     public void onDestroy() {
-        if (adManager != null) {
-            adManager.release();
-            adManager = null;
-        }
+        if (ad != null) ad = null;
     }
     
     @Override
     public void onPause() {
-        // cannot forward
+        if (ad != null) ad.onPause();
     }
     
     @Override
     public void onResume() {
-        // cannot forward
+        if (ad != null) ad.onResume();
     }
 }

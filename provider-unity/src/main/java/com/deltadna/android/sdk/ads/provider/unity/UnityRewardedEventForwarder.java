@@ -21,14 +21,13 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.unity3d.ads.android.IUnityAdsListener;
+import com.unity3d.ads.IUnityAdsListener;
+import com.unity3d.ads.UnityAds;
 
 final class UnityRewardedEventForwarder implements IUnityAdsListener {
     
     private final MediationListener listener;
     private final MediationAdapter adapter;
-    
-    private boolean videoWatched;
     
     UnityRewardedEventForwarder(
             MediationListener listener,
@@ -39,36 +38,53 @@ final class UnityRewardedEventForwarder implements IUnityAdsListener {
     }
     
     @Override
-    public void onHide() {
-        listener.onAdClosed(adapter, videoWatched);
-    }
-    
-    @Override
-    public void onShow() {
-        videoWatched = false;
-        listener.onAdShowing(adapter);
-    }
-    
-    @Override
-    public void onVideoStarted() {}
-    
-    @Override
-    public void onVideoCompleted(String itemKey, boolean skipped) {
-        videoWatched = !skipped;
-    }
-    
-    @Override
-    public void onFetchCompleted() {
-        Log.d(BuildConfig.LOG_TAG, "Ad fetch completed");
+    public void onUnityAdsReady(String placementId) {
+        Log.d(BuildConfig.LOG_TAG, "Ad ready");
         listener.onAdLoaded(adapter);
     }
     
     @Override
-    public void onFetchFailed() {
-        Log.w(BuildConfig.LOG_TAG, "Ad fetch failed");
+    public void onUnityAdsError(UnityAds.UnityAdsError error, String message) {
+        Log.w(BuildConfig.LOG_TAG, "Ad error");
+        
+        final AdRequestResult reason;
+        switch (error) {
+            case NOT_INITIALIZED:
+            case INITIALIZE_FAILED:
+            case INVALID_ARGUMENT:
+            case INIT_SANITY_CHECK_FAIL:
+                reason = AdRequestResult.Configuration;
+                break;
+            
+            default:
+                reason = AdRequestResult.Error;
+        }
+        
         listener.onAdFailedToLoad(
                 adapter,
-                AdRequestResult.Error,
-                "Unity ad fetch failed");
+                reason,
+                message);
+    }
+    
+    @Override
+    public void onUnityAdsStart(String placementId) {
+        listener.onAdShowing(adapter);
+    }
+    
+    @Override
+    public void onUnityAdsFinish(
+            String placementId,
+            UnityAds.FinishState state) {
+        
+        switch (state) {
+            case ERROR:
+            case SKIPPED:
+                listener.onAdClosed(adapter, false);
+                break;
+            
+            case COMPLETED:
+                listener.onAdClosed(adapter, true);
+                break;
+        }
     }
 }

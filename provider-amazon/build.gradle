@@ -23,7 +23,7 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile 'com.amazon.android:mobile-ads:5.6.20'
+    compile 'com.amazon.android:mobile-ads:5.8.1'
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
 }

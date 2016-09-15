@@ -23,8 +23,8 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile files('libs/FlurryAds-6.0.0.jar')
-    compile files('libs/FlurryAnalytics-6.0.0.jar')
+    compile 'com.flurry.android:ads:6.5.0'
+    compile 'com.flurry.android:analytics:6.5.0'
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
 }

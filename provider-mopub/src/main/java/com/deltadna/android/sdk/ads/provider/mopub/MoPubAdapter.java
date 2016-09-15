@@ -22,6 +22,7 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.mopub.common.MoPub;
 import com.mopub.mobileads.MoPubInterstitial;
 
 import org.json.JSONObject;
@@ -86,7 +87,7 @@ public final class MoPubAdapter extends MediationAdapter {
     
     @Override
     public String getProviderVersionString() {
-        return "4.6.0";
+        return MoPub.SDK_VERSION;
     }
     
     @Override

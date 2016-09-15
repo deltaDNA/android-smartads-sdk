@@ -99,7 +99,7 @@ public final class AppLovinInterstitialAdapter extends MediationAdapter {
     
     @Override
     public String getProviderVersionString() {
-        return Version.VALUE;
+        return AppLovinSdk.VERSION;
     }
     
     @Override
