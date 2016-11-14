@@ -55,7 +55,6 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             0,
                             "appc804f742b8064114a9",
-                            "",
                             "vzbb9fa7accb4e4185b7"),
                     new AdMobAdapter(
                             0,

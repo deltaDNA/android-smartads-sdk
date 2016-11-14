@@ -57,7 +57,7 @@ class RewardedAdTest {
     
     @Test
     fun createdWhenAllowed() {
-        whenever(ads.isRewardedAdAllowed(any())).then { true }
+        whenever(ads.isRewardedAdAllowed(anyOrNull())).then { true }
         
         assertThat(RewardedAd.create()!!.params).isNull()
         
@@ -85,7 +85,7 @@ class RewardedAdTest {
     
     @Test
     fun notCreatedWhenDisallowed() {
-        whenever(ads.isRewardedAdAllowed(any())).then { false }
+        whenever(ads.isRewardedAdAllowed(anyOrNull())).then { false }
         
         assertThat(RewardedAd.create()).isNull()
         assertThat(RewardedAd.create(mock<Engagement<*>>())).isNull()
@@ -93,7 +93,7 @@ class RewardedAdTest {
     
     @Test
     fun create() {
-        whenever(ads.isRewardedAdAllowed(any()))
+        whenever(ads.isRewardedAdAllowed(anyOrNull()))
                 .thenReturn(true, false, true, false)
         
         assertThat(RewardedAd.create()).isNotNull()
@@ -104,7 +104,7 @@ class RewardedAdTest {
     
     @Test
     fun isReady() {
-        whenever(ads.isRewardedAdAllowed(any())).then { true }
+        whenever(ads.isRewardedAdAllowed(anyOrNull())).then { true }
         
         RewardedAd.create()!!.isReady
         
@@ -113,7 +113,7 @@ class RewardedAdTest {
     
     @Test
     fun show() {
-        whenever(ads.isRewardedAdAllowed(any())).then { true }
+        whenever(ads.isRewardedAdAllowed(anyOrNull())).then { true }
         
         with(mock<RewardedAdsListener>()) {
             RewardedAd.create(this)!!.show()

@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.2.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.3) (YYYY-MM-DD)
+Updated AdColony network library.
+Updated target Android version.
+
 ## [1.2.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.2) (2016-09-15)
 Updated ad network libraries.  
 
