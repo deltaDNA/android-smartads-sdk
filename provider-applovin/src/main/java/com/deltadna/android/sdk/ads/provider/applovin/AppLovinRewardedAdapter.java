@@ -109,7 +109,7 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "APPLOVIN-REWARDED";
+        return "APPLOVIN";
     }
     
     @Override

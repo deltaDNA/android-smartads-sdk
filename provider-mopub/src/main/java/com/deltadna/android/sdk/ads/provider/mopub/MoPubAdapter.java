@@ -82,7 +82,7 @@ public final class MoPubAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "MoPub";
+        return "MOPUB";
     }
     
     @Override

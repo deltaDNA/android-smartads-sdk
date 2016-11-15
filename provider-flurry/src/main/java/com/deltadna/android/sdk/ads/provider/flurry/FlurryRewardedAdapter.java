@@ -94,7 +94,7 @@ public final class FlurryRewardedAdapter extends MediationAdapter {
 
     @Override
     public String getProviderString() {
-        return "FLURRY-REWARDED";
+        return "FLURRY";
     }
 
     @Override
