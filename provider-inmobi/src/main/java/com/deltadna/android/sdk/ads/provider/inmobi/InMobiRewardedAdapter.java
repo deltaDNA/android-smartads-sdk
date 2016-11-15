@@ -92,7 +92,7 @@ public final class InMobiRewardedAdapter extends MediationAdapter {
 
     @Override
     public String getProviderString() {
-        return "INMOBI-REWARDED";
+        return "INMOBI";
     }
 
     @Override
