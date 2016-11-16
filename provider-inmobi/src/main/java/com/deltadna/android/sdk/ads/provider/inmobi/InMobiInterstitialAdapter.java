@@ -17,9 +17,8 @@
 package com.deltadna.android.sdk.ads.provider.inmobi;
 
 import android.app.Activity;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
-import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.inmobi.ads.InMobiInterstitial;
@@ -32,6 +31,7 @@ public final class InMobiInterstitialAdapter extends MediationAdapter {
     private final String accountId;
     private final Long placementId;
     
+    @Nullable
     private InMobiInterstitial interstitial;
     
     public InMobiInterstitialAdapter(
@@ -48,53 +48,37 @@ public final class InMobiInterstitialAdapter extends MediationAdapter {
     }
     
     @Override
-    public void requestAd(final Activity activity, final MediationListener listener, final JSONObject mediationParams) {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if(!InMobiHelper.isInitialised()) {
-                        InMobiHelper.initialise(activity, accountId);
-                    }
-                } catch (Exception e) {
-                    Log.e(BuildConfig.LOG_TAG, "Failed to initialise", e);
-                    listener.onAdFailedToLoad(
-                            InMobiInterstitialAdapter.this,
-                            AdRequestResult.Configuration,
-                            "Invalid InMobi configuration: " + e);
-                }
-                
-                try {
-                    interstitial = new InMobiInterstitial(
-                            activity,
-                            placementId,
-                            new InMobiInterstitialEventForwarder(
-                                    listener,
-                                    InMobiInterstitialAdapter.this));
-                    interstitial.load();
-                } catch (Exception e) {
-                    Log.e(BuildConfig.LOG_TAG, "Failed to request ad", e);
-                    listener.onAdFailedToLoad(
-                            InMobiInterstitialAdapter.this,
-                            AdRequestResult.Error,
-                            "Failed to request InMobi ad: " + e);
-                }
+    public void requestAd(
+            Activity activity,
+            MediationListener listener,
+            JSONObject mediationParams) {
+        
+        synchronized (InMobiHelper.class) {
+            if (!InMobiHelper.isInitialised()) {
+                InMobiHelper.initialise(activity, accountId);
             }
-        });
+        }
+        
+        interstitial = new InMobiInterstitial(
+                activity,
+                placementId,
+                new InMobiInterstitialEventForwarder(listener, this));
+        interstitial.load();
     }
-
+    
     @Override
     public void showAd() {
         if (interstitial != null && interstitial.isReady()) {
             interstitial.show();
+            interstitial = null;
         }
     }
-
+    
     @Override
     public String getProviderString() {
         return "INMOBI";
     }
-
+    
     @Override
     public String getProviderVersionString() {
         return InMobiSdk.getVersion();

@@ -32,6 +32,8 @@ import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter;
 import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
+import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter;
+import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter;
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicInterstitialAdapter;
@@ -75,6 +77,18 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             "awUGLVznHxpXiT6xATnSkZkXwCTapgzOaRexxchDXVlFzsB8Oza6WIeQU60InzhMPLIKz_XVUHmS7xaVuAcOTF",
                             false,
                             -1),
+                    new InMobiInterstitialAdapter(
+                            0,
+                            0,
+                            0,
+                            "d9518d128a124772b07a750fa98d1bbe",
+                            1447292217917L),
+                    new InMobiRewardedAdapter(
+                            0,
+                            0,
+                            0,
+                            "d9518d128a124772b07a750fa98d1bbe",
+                            1464837141675L),
                     new MobFoxAdapter(
                             0,
                             0,
