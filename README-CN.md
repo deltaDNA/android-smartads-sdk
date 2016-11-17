@@ -49,6 +49,7 @@ compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.2.5-SNAPSHOT'
 compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.2.5-SNAPSHOT'
 compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.2.5-SNAPSHOT'
 compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.2.5-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-thirdpresence:1.2.5-SNAPSHOT'
 compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.2.5-SNAPSHOT'
 compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.2.5-SNAPSHOT'
 ```
