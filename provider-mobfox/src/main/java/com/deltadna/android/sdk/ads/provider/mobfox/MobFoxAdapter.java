@@ -49,7 +49,7 @@ public final class MobFoxAdapter extends MediationAdapter {
             MediationListener listener,
             JSONObject configuration) {
         
-        ad = new InterstitialAd(activity.getApplicationContext());
+        ad = new InterstitialAd(activity);
         ad.setListener(new MobFoxEventForwarder(listener, this));
         ad.setInventoryHash(publicationId);
         ad.load();

@@ -2,6 +2,7 @@
 
 ## [1.2.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.3) (YYYY-MM-DD)
 Fixed Amazon ad events.  
+Fixed MobFox crash.  
 Updated analytics SDK dependency.  
 Updated AdColony network library.  
 Updated InMobi network library.  

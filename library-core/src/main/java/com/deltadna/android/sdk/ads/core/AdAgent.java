@@ -21,6 +21,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.util.Log;
@@ -49,7 +50,7 @@ class AdAgent implements MediationListener {
         SHOWING
     }
     
-    private final Handler handler = new Handler();
+    private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable loadTimeout = new Runnable() {
         @Override
         public void run() {
