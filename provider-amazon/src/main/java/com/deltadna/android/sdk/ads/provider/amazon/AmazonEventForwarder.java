@@ -22,7 +22,6 @@ import com.amazon.device.ads.Ad;
 import com.amazon.device.ads.AdError;
 import com.amazon.device.ads.AdProperties;
 import com.amazon.device.ads.DefaultAdListener;
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
@@ -34,6 +33,8 @@ final class AmazonEventForwarder extends DefaultAdListener {
     private MediationListener listener;
     private MediationAdapter adapter;
     
+    private boolean expired;
+    
     AmazonEventForwarder(MediationListener listener, MediationAdapter adapter) {
         this.listener = listener;
         this.adapter = adapter;
@@ -42,20 +43,22 @@ final class AmazonEventForwarder extends DefaultAdListener {
     @Override
     public void onAdLoaded(Ad ad, AdProperties adProperties) {
         super.onAdLoaded(ad, adProperties);
-        Log.d(BuildConfig.LOG_TAG, "Amazon Ad loaded");
+        Log.d(BuildConfig.LOG_TAG, "Ad loaded");
         listener.onAdLoaded(adapter);
     }
-
+    
     @Override
     public void onAdFailedToLoad(Ad ad, AdError error) {
         super.onAdFailedToLoad(ad, error);
-        Log.w(BuildConfig.LOG_TAG, "Ad failed to load");
+        Log.w(BuildConfig.LOG_TAG, String.format(
+                Locale.US,
+                "Ad failed to load: %s/%s",
+                error.getCode(),
+                error.getMessage()));
         
         final AdRequestResult adStatus;
         switch (error.getCode()) {
             case NETWORK_ERROR:
-                adStatus = AdRequestResult.Network;
-                break;
             case NETWORK_TIMEOUT:
                 adStatus = AdRequestResult.Network;
                 break;
@@ -86,22 +89,29 @@ final class AmazonEventForwarder extends DefaultAdListener {
                         error.getCode(),
                         error.getMessage()));
     }
-
+    
     @Override
     public void onAdExpanded(Ad ad) {
         super.onAdExpanded(ad);
+        Log.d(BuildConfig.LOG_TAG, "Ad expanded");
         listener.onAdClicked(adapter);
     }
-
+    
     @Override
     public void onAdDismissed(Ad ad) {
         super.onAdDismissed(ad);
+        Log.d(BuildConfig.LOG_TAG, "Ad dismissed");
         listener.onAdClosed(adapter, true);
     }
-
+    
     @Override
     public void onAdExpired(Ad ad) {
         super.onAdExpired(ad);
-        listener.onAdFailedToShow(adapter, AdClosedResult.EXPIRED);
+        Log.d(BuildConfig.LOG_TAG, "Ad expired");
+        expired = true;
+    }
+    
+    boolean isExpired() {
+        return expired;
     }
 }
