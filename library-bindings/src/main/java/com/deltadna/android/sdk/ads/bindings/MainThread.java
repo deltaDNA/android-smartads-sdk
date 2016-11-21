@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.deltadna.android.sdk.ads.core;
+package com.deltadna.android.sdk.ads.bindings;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -25,9 +25,9 @@ import java.lang.reflect.Proxy;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
-final class MainThread {
+public final class MainThread {
     
-    static <T> T redirect(T target, Class<T> cls) {
+    public static <T> T redirect(T target, Class<T> cls) {
         return (T) Proxy.newProxyInstance(
                 cls.getClassLoader(),
                 new Class[] { cls },
@@ -40,7 +40,7 @@ final class MainThread {
         private final Handler mainHandler = new Handler(mainLooper);
         
         private final Object target;
-
+        
         Redirector(Object target) {
             this.target = target;
         }
