@@ -17,6 +17,7 @@
 package com.deltadna.android.sdk.ads.provider.vungle
 
 import android.os.Build
+import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.nhaarman.mockito_kotlin.*
@@ -24,7 +25,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.Robolectric
 import org.robolectric.RobolectricGradleTestRunner
 import org.robolectric.annotation.Config
 
@@ -49,43 +49,49 @@ class VungleEventForwarderTest {
     }
     
     @Test
-    fun completedWithCorrectOrder() {
-        with(uut) {
-            onAdStart()
-            onVideoView(true, 0, 0)
-            onAdEnd(false)
+    fun onAdUnavailable() {
+        uut.onAdUnavailable("reason")
+        
+        verify(listener).onAdFailedToShow(
+                same(adapter),
+                eq(AdClosedResult.EXPIRED))
+    }
+    
+    @Test
+    fun notCompletedShowing() {
+        uut.onAdStart()
+        uut.onVideoView(false, 0, 0)
+        uut.onAdEnd(false)
+        
+        with(inOrder(listener)) {
+            verify(listener).onAdShowing(same(adapter))
+            verify(listener).onAdClosed(same(adapter), eq(false))
         }
+        verifyNoMoreInteractions(listener)
+    }
+    
+    @Test
+    fun completedShowing() {
+        uut.onAdStart()
+        uut.onVideoView(true, 0, 0)
+        uut.onAdEnd(false)
         
         with(inOrder(listener)) {
             verify(listener).onAdShowing(same(adapter))
             verify(listener).onAdClosed(same(adapter), eq(true))
         }
+        verifyNoMoreInteractions(listener)
     }
     
-    /**
-     * Vungle library will invoke the methods sometimes as defined here, due
-     * to the callbacks coming from random background threads.
-     */
     @Test
-    fun completedWithWrongOrder() {
-        with(uut) {
-            onAdStart()
-            
-            val thread = Thread({
-                onAdEnd(true)
-            })
-            thread.start()
-            
-            Thread.sleep(500)
-            onVideoView(true, 0, 0)
-            
-            thread
-        }.join()
-        
-        Robolectric.flushForegroundThreadScheduler()
+    fun completedShowingAndClicked() {
+        uut.onAdStart()
+        uut.onVideoView(true, 0, 0)
+        uut.onAdEnd(true)
         
         with(inOrder(listener)) {
             verify(listener).onAdShowing(same(adapter))
+            verify(listener).onAdClicked(same(adapter))
             verify(listener).onAdClosed(same(adapter), eq(true))
         }
     }

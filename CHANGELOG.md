@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.2.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.3) (2016-11-23)
+Fixed Amazon ad events.  
+Fixed MobFox crash.  
+Fixed Vungle misreporting ad completed watch status.  
+Updated analytics SDK dependency.  
+Updated AdColony network library.  
+Updated InMobi network library.  
+Updated MoPub network library.  
+Updated target Android version.  
+
 ## [1.2.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.2) (2016-09-15)
 Updated ad network libraries.  
 

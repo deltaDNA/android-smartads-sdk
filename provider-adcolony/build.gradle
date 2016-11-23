@@ -18,13 +18,25 @@ android {
     defaultConfig {
         buildConfigField('String', logTagName, "\"$logTagValue AdColony\"")
     }
+    
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+    
+    testOptions {
+        unitTests.all {
+            jvmArgs '-noverify'
+        }
+    }
 }
 
 dependencies {
     compile project(':library-bindings')
     compile "com.android.support:support-annotations:$supportVersion"
     
-    compile files('libs/adcolony-2.3.6.jar')
+    compile files('libs/adcolony-3.0.5.jar')
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
 }

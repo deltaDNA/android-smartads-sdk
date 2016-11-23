@@ -18,6 +18,7 @@ package com.deltadna.android.sdk.ads.provider.inmobi;
 
 import android.util.Log;
 
+import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
@@ -28,7 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 
 final class InMobiRewardedEventForwarder implements
-        InMobiInterstitial.InterstitialAdListener {
+        InMobiInterstitial.InterstitialAdListener2 {
     
     private final MediationListener listener;
     private final MediationAdapter adapter;
@@ -44,38 +45,20 @@ final class InMobiRewardedEventForwarder implements
     }
     
     @Override
-    public void onAdRewardActionCompleted(InMobiInterstitial inMobiInterstitial, Map<Object, Object> map) {
-        completed = true;
+    public void onAdReceived(InMobiInterstitial ad) {
+        Log.d(BuildConfig.LOG_TAG, "Ad received");
     }
-
+    
     @Override
-    public void onAdDisplayed(InMobiInterstitial inMobiInterstitial) {
-        completed = false;
-        listener.onAdShowing(adapter);
-    }
-
-    @Override
-    public void onAdDismissed(InMobiInterstitial inMobiInterstitial) {
-        listener.onAdClosed(adapter, completed);
-    }
-
-    @Override
-    public void onAdInteraction(InMobiInterstitial inMobiInterstitial, Map<Object, Object> map) {
-        listener.onAdClicked(adapter);
-    }
-
-    @Override
-    public void onAdLoadSucceeded(InMobiInterstitial inMobiInterstitial) {
-        Log.d(BuildConfig.LOG_TAG, "Ad load succeeded");
-        listener.onAdLoaded(adapter);
-    }
-
-    @Override
-    public void onAdLoadFailed(InMobiInterstitial inMobiInterstitial, InMobiAdRequestStatus inMobiAdRequestStatus) {
-        Log.w(BuildConfig.LOG_TAG, "Ad load failed: " + inMobiAdRequestStatus.getMessage());
+    public void onAdLoadFailed(
+            InMobiInterstitial ad,
+            InMobiAdRequestStatus status) {
+        
+        Log.w(  BuildConfig.LOG_TAG,
+                "Ad load failed: " + status.getMessage());
         
         final AdRequestResult adStatus;
-        switch (inMobiAdRequestStatus.getStatusCode()) {
+        switch (status.getStatusCode()) {
             case NETWORK_UNREACHABLE:
                 adStatus = AdRequestResult.Network;
                 break;
@@ -84,22 +67,7 @@ final class InMobiRewardedEventForwarder implements
                 adStatus = AdRequestResult.NoFill;
                 break;
             
-            case REQUEST_INVALID:
-                adStatus = AdRequestResult.Error;
-                break;
-            
-            case REQUEST_PENDING:
-            case REQUEST_TIMED_OUT:
-            case INTERNAL_ERROR:
-            case SERVER_ERROR:
-            case AD_ACTIVE:
-            case EARLY_REFRESH_REQUEST:
-                adStatus = AdRequestResult.Error;
-                break;
-            
             default:
-                Log.w(  BuildConfig.LOG_TAG,
-                        "Unknown case: " + inMobiAdRequestStatus.getStatusCode());
                 adStatus = AdRequestResult.Error;
         }
         
@@ -109,12 +77,56 @@ final class InMobiRewardedEventForwarder implements
                 String.format(
                         Locale.US,
                         "InMobi ad load failed: %s / %s",
-                        inMobiAdRequestStatus.getStatusCode(),
-                        inMobiAdRequestStatus.getMessage()));
+                        status.getStatusCode(),
+                        status.getMessage()));
     }
-
+    
     @Override
-    public void onUserLeftApplication(InMobiInterstitial inMobiInterstitial) {
+    public void onAdLoadSucceeded(InMobiInterstitial ad) {
+        Log.d(BuildConfig.LOG_TAG, "InMobi Ad loaded");
+        listener.onAdLoaded(adapter);
+    }
+    
+    @Override
+    public void onAdWillDisplay(InMobiInterstitial ad) {
+        Log.d(BuildConfig.LOG_TAG, "Ad will display");
+    }
+    
+    @Override
+    public void onAdDisplayed(InMobiInterstitial ad) {
+        Log.d(BuildConfig.LOG_TAG, "Ad displayed");
+        listener.onAdShowing(adapter);
+    }
+    
+    @Override
+    public void onAdDisplayFailed(InMobiInterstitial ad) {
+        Log.w(BuildConfig.LOG_TAG, "Ad display failed");
+        listener.onAdFailedToShow(adapter, AdClosedResult.ERROR);
+    }
+    
+    @Override
+    public void onAdInteraction(InMobiInterstitial ad, Map<Object, Object> map) {
+        Log.d(BuildConfig.LOG_TAG, "Ad interaction");
+        listener.onAdClicked(adapter);
+    }
+    
+    @Override
+    public void onAdDismissed(InMobiInterstitial ad) {
+        Log.d(BuildConfig.LOG_TAG, "Ad dismissed");
+        listener.onAdClosed(adapter, completed);
+    }
+    
+    @Override
+    public void onAdRewardActionCompleted(
+            InMobiInterstitial ad,
+            Map<Object, Object> map) {
+        Log.d(BuildConfig.LOG_TAG, "Ad reward action completed");
+        completed = true;
+    }
+    
+    @Override
+    public void onUserLeftApplication(InMobiInterstitial ad) {
+        Log.d(BuildConfig.LOG_TAG, "User left application");
         listener.onAdLeftApplication(adapter);
     }
 }

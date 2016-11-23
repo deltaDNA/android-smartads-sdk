@@ -30,8 +30,11 @@ import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter;
 import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter;
+import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
+import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter;
+import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter;
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicInterstitialAdapter;
@@ -55,13 +58,18 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             0,
                             "appc804f742b8064114a9",
-                            "",
                             "vzbb9fa7accb4e4185b7"),
                     new AdMobAdapter(
                             0,
                             0,
                             0,
                             "ca-app-pub-3117129396855330/6027943007"),
+                    new AmazonAdapter(
+                            0,
+                            0,
+                            0,
+                            "b156d556c85c4a918be92ee218708d4a",
+                            true),
                     new AppLovinInterstitialAdapter(
                             0,
                             0,
@@ -76,6 +84,18 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             "awUGLVznHxpXiT6xATnSkZkXwCTapgzOaRexxchDXVlFzsB8Oza6WIeQU60InzhMPLIKz_XVUHmS7xaVuAcOTF",
                             false,
                             -1),
+                    new InMobiInterstitialAdapter(
+                            0,
+                            0,
+                            0,
+                            "d9518d128a124772b07a750fa98d1bbe",
+                            1447292217917L),
+                    new InMobiRewardedAdapter(
+                            0,
+                            0,
+                            0,
+                            "d9518d128a124772b07a750fa98d1bbe",
+                            1464837141675L),
                     new MobFoxAdapter(
                             0,
                             0,
@@ -109,7 +129,7 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             0,
                             0,
-                            "55f6a0bf03f5ac182100067a"));
+                            "5832df18d614b1ab17000251"));
     private static final List<String> PROVIDER_NAMES;
     static {
         final List<String> names = new ArrayList<>(PROVIDERS.size());

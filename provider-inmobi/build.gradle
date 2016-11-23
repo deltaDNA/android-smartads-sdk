@@ -18,12 +18,19 @@ android {
     defaultConfig {
         buildConfigField('String', logTagName, "\"$logTagValue InMobi\"")
     }
+    
+    testOptions {
+        unitTests.all {
+            jvmArgs '-noverify'
+        }
+    }
 }
 
 dependencies {
     compile project(':library-bindings')
     
-    compile 'com.inmobi.monetization:inmobi-ads:5.3.1'
+    compile 'com.inmobi.monetization:inmobi-ads:6.0.3'
+    compile 'com.squareup.picasso:picasso:2.5.2'
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
 }

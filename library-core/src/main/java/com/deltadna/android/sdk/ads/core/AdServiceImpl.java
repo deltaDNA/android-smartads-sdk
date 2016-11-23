@@ -28,6 +28,7 @@ import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.MainThread;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.core.utils.Preconditions;
 
@@ -579,8 +580,8 @@ final class AdServiceImpl implements AdService {
             adDebugMode = adConfiguration.optBoolean("adRecordAdRequests", true);
             
             final int adFloorPrice = adConfiguration.optInt("adFloorPrice");
-            final int demoteOnCode = adConfiguration.optInt("adDemoteOnRequestCode");
-            final int maxPerNetwork = adConfiguration.optInt("adMaxPerNetwork");
+            final int demoteOnCode = 9;//adConfiguration.optInt("adDemoteOnRequestCode");
+            final int maxPerNetwork = 1;//adConfiguration.optInt("adMaxPerNetwork");
             adMinimumInterval = adConfiguration.optInt("adMinimumInterval", -1);
             adMaxPerSession = adConfiguration.optInt("adMaxPerSession", -1);
             

@@ -17,10 +17,12 @@
 package com.deltadna.android.sdk.ads.provider.amazon;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.amazon.device.ads.AdRegistration;
 import com.amazon.device.ads.InterstitialAd;
+import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
@@ -29,9 +31,16 @@ import org.json.JSONObject;
 
 public final class AmazonAdapter extends MediationAdapter {
     
+    private static boolean initialised;
+    
     private final String appKey;
     private final boolean testMode;
     
+    @Nullable
+    private MediationListener listener;
+    @Nullable
+    private AmazonEventForwarder forwarder;
+    @Nullable
     private InterstitialAd interstitial;
     
     public AmazonAdapter(
@@ -45,49 +54,82 @@ public final class AmazonAdapter extends MediationAdapter {
         
         this.appKey = appKey;
         this.testMode = testMode;
-        if(testMode) {
-            Log.i(BuildConfig.LOG_TAG, "Amazon set to have test ads enabled");
-        }
     }
     
     @Override
-    public void requestAd(Activity activity, MediationListener listener, JSONObject configuration) {
-        if(interstitial == null) {
-            try {
+    public void requestAd(
+            Activity activity,
+            MediationListener listener,
+            JSONObject configuration) {
+        
+        synchronized (AmazonAdapter.class) {
+            if (!initialised) {
                 Log.d(BuildConfig.LOG_TAG, "Initialising");
                 
-                AdRegistration.enableTesting(testMode);
-                AdRegistration.setAppKey(appKey);
+                try {
+                    AdRegistration.enableTesting(testMode);
+                    AdRegistration.setAppKey(appKey);
+                } catch (Exception e) {
+                    Log.w(BuildConfig.LOG_TAG, "Failed to initialise", e);
+                    listener.onAdFailedToLoad(
+                            this,
+                            AdRequestResult.Configuration,
+                            "Failed to initialise: " + e);
+                    return;
+                }
                 
-                interstitial = new InterstitialAd(activity);
-                interstitial.setListener(new AmazonEventForwarder(listener, this));
-            } catch (Exception e) {
-                Log.e(BuildConfig.LOG_TAG, "Failed to initialise", e);
-                listener.onAdFailedToLoad(
-                        this,
-                        AdRequestResult.Configuration,
-                        "Invalid AdMob configuration: " + e);
-                return;
+                initialised = true;
             }
         }
         
-        if(!interstitial.isLoading() && !interstitial.isShowing()) {
+        this.listener = listener;
+        
+        forwarder = new AmazonEventForwarder(listener, this);
+        try {
+            interstitial = new InterstitialAd(activity);
+            interstitial.setListener(forwarder);
+        } catch (Exception e) {
+            Log.w(BuildConfig.LOG_TAG, "Failed to create ad", e);
+            listener.onAdFailedToLoad(
+                    this,
+                    AdRequestResult.Error,
+                    "Failed to create ad: " + e);
+            return;
+        }
+        
+        if (!interstitial.isLoading() && !interstitial.isShowing()) {
             try {
                 interstitial.loadAd();
             } catch (Exception e) {
-                Log.w(BuildConfig.LOG_TAG, "Failed to request ad", e);
+                Log.w(BuildConfig.LOG_TAG, "Failed to load ad", e);
                 listener.onAdFailedToLoad(
                         this,
                         AdRequestResult.Error,
-                        "Failed to request AdMob ad: " + e);
+                        "Failed to load ad: " + e);
             }
         }
     }
     
     @Override
     public void showAd() {
-        if (interstitial != null && interstitial.isReady()) {
-            interstitial.showAd();
+        if (listener != null) {
+            if (interstitial == null) {
+                Log.w(BuildConfig.LOG_TAG, "Failed to show ad: null");
+                listener.onAdFailedToShow(this, AdClosedResult.ERROR);
+            } else if (forwarder != null && forwarder.isExpired()) {
+                Log.w(BuildConfig.LOG_TAG, "Failed to show ad: expired");
+                listener.onAdFailedToShow(this, AdClosedResult.EXPIRED);
+            } else if (!interstitial.isReady()) {
+                Log.w(BuildConfig.LOG_TAG, "Failed to show ad: not ready");
+                listener.onAdFailedToShow(this, AdClosedResult.NOT_READY);
+            } else {
+                if (!interstitial.showAd()) {
+                    Log.w(BuildConfig.LOG_TAG, "Failed to show ad");
+                    listener.onAdFailedToShow(this, AdClosedResult.ERROR);
+                } else {
+                    listener.onAdShowing(this);
+                }
+            }
         }
     }
     
@@ -95,7 +137,7 @@ public final class AmazonAdapter extends MediationAdapter {
     public String getProviderString() {
         return "AMAZON";
     }
-
+    
     @Override
     public String getProviderVersionString() {
         return AdRegistration.getVersion();
@@ -103,6 +145,8 @@ public final class AmazonAdapter extends MediationAdapter {
     
     @Override
     public void onDestroy() {
+        listener = null;
+        forwarder = null;
         interstitial = null;
     }
     

@@ -31,7 +31,7 @@ import org.mockito.runners.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class InterstitialAdTest {
     
-    private val ads = mock<Ads>()
+    private var ads = mock<Ads>()
     
     @Before
     fun before() {
@@ -57,7 +57,7 @@ class InterstitialAdTest {
     
     @Test
     fun createdWhenAllowed() {
-        whenever(ads.isInterstitialAdAllowed(any())).then { true }
+        whenever(ads.isInterstitialAdAllowed(anyOrNull())).then { true }
         
         assertThat(InterstitialAd.create()!!.params).isNull()
         
@@ -85,7 +85,7 @@ class InterstitialAdTest {
     
     @Test
     fun notCreatedWhenDisallowed() {
-        whenever(ads.isInterstitialAdAllowed(any())).then { false }
+        whenever(ads.isInterstitialAdAllowed(anyOrNull())).then { false }
         
         assertThat(InterstitialAd.create()).isNull()
         assertThat(InterstitialAd.create(mock<Engagement<*>>())).isNull()
@@ -93,7 +93,7 @@ class InterstitialAdTest {
     
     @Test
     fun create() {
-        whenever(ads.isInterstitialAdAllowed(any()))
+        whenever(ads.isInterstitialAdAllowed(anyOrNull()))
                 .thenReturn(true, false, true, false)
         
         assertThat(InterstitialAd.create()).isNotNull()
@@ -104,7 +104,7 @@ class InterstitialAdTest {
     
     @Test
     fun isReady() {
-        whenever(ads.isInterstitialAdAllowed(any())).then { true }
+        whenever(ads.isInterstitialAdAllowed(anyOrNull())).then { true }
         
         InterstitialAd.create()!!.isReady
         
@@ -113,7 +113,7 @@ class InterstitialAdTest {
     
     @Test
     fun show() {
-        whenever(ads.isInterstitialAdAllowed(any())).then { true }
+        whenever(ads.isInterstitialAdAllowed(anyOrNull())).then { true }
         
         with(mock<InterstitialAdsListener>()) {
             InterstitialAd.create(this)!!.show()

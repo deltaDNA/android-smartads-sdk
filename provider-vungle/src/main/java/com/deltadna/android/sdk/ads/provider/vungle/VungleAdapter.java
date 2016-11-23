@@ -17,11 +17,14 @@
 package com.deltadna.android.sdk.ads.provider.vungle;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.MainThread;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.vungle.publisher.EventListener;
 import com.vungle.publisher.VunglePub;
 
 import org.json.JSONObject;
@@ -30,6 +33,7 @@ public final class VungleAdapter extends MediationAdapter {
     
     private final String appId;
     
+    @Nullable
     private VunglePub vunglePub;
     
     public VungleAdapter(
@@ -44,23 +48,30 @@ public final class VungleAdapter extends MediationAdapter {
     }
     
     @Override
-    public void requestAd(Activity activity, MediationListener listener, JSONObject configuration) {
+    public void requestAd(
+            Activity activity,
+            MediationListener listener,
+            JSONObject configuration) {
+        
         if (vunglePub == null) {
             try {
                 vunglePub = VunglePub.getInstance();
                 vunglePub.init(activity, appId);
-                vunglePub.addEventListeners(
-                        new VungleEventForwarder(listener, this));
+                vunglePub.setEventListeners(MainThread.redirect(
+                        new VungleEventForwarder(listener, this),
+                        EventListener.class));
             } catch (Exception e) {
                 Log.w(BuildConfig.LOG_TAG, "Failed to initialise", e);
                 listener.onAdFailedToLoad(
                         this,
                         AdRequestResult.Configuration,
                         "Invalid Vungle configuration: " + e);
+                return;
             }
         }
         
         if (vunglePub != null && vunglePub.isAdPlayable()) {
+            Log.d(BuildConfig.LOG_TAG, "Ad loaded");
             listener.onAdLoaded(this);
         } else {
             Log.w(BuildConfig.LOG_TAG, "No fill");
@@ -70,19 +81,19 @@ public final class VungleAdapter extends MediationAdapter {
                     "Vungle no fill");
         }
     }
-
+    
     @Override
     public void showAd() {
-        if(vunglePub != null && vunglePub.isAdPlayable()) {
+        if (vunglePub != null && vunglePub.isAdPlayable()) {
             vunglePub.playAd();
         }
     }
-
+    
     @Override
     public String getProviderString() {
         return "VUNGLE";
     }
-
+    
     @Override
     public String getProviderVersionString() {
         return VunglePub.VERSION;
