@@ -32,7 +32,7 @@ public final class InMobiRewardedAdapter extends MediationAdapter {
     private final String accountId;
     private final Long placementId;
     
-    private InMobiInterstitial interstitial;
+    private InMobiInterstitial rewarded;
     
     public InMobiRewardedAdapter(
             int eCPM,
@@ -48,51 +48,35 @@ public final class InMobiRewardedAdapter extends MediationAdapter {
     }
     
     @Override
-    public void requestAd(final Activity activity, final MediationListener listener, final JSONObject mediationParams) {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if(!InMobiHelper.isInitialised()) {
-                        InMobiHelper.initialise(activity, accountId);
-                    }
-                } catch (Exception e) {
-                    Log.e(BuildConfig.LOG_TAG, "Failed to initialise", e);
-                    listener.onAdFailedToLoad(
-                            InMobiRewardedAdapter.this,
-                            AdRequestResult.Configuration,
-                            "Invalid InMobi configuration: " + e);
-                }
-                
-                try {
-                    interstitial = new InMobiInterstitial(
-                            activity,
-                            placementId,
-                            new InMobiRewardedEventForwarder(
-                                    listener,
-                                    InMobiRewardedAdapter.this));
-                    interstitial.load();
-                } catch (Exception e) {
-                    Log.e(BuildConfig.LOG_TAG, "Failed to request ad", e);
-                    listener.onAdFailedToLoad(
-                            InMobiRewardedAdapter.this,
-                            AdRequestResult.Error,
-                            "Failed to request InMobi ad: " + e);
-                }
+    public void requestAd(
+            Activity activity,
+            MediationListener listener,
+            JSONObject mediationParams) {
+        
+        synchronized (InMobiHelper.class) {
+            if (!InMobiHelper.isInitialised()) {
+                InMobiHelper.initialise(activity, accountId);
             }
-        });
+        }
+        
+        rewarded = new InMobiInterstitial(
+                activity,
+                placementId,
+                new InMobiRewardedEventForwarder(listener, this));
+        rewarded.load();
     }
-
+    
     @Override
     public void showAd() {
-        if (interstitial != null && interstitial.isReady()) {
-            interstitial.show();
+        if (rewarded != null && rewarded.isReady()) {
+            rewarded.show();
+            rewarded = null;
         }
     }
 
     @Override
     public String getProviderString() {
-        return "INMOBI-REWARDED";
+        return "INMOBI";
     }
 
     @Override
@@ -102,7 +86,7 @@ public final class InMobiRewardedAdapter extends MediationAdapter {
     
     @Override
     public void onDestroy() {
-        interstitial = null;
+        rewarded = null;
     }
     
     @Override

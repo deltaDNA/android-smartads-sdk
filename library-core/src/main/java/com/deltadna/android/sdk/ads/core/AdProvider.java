@@ -59,7 +59,6 @@ enum AdProvider {
                     demoteOnCode,
                     index,
                     config.getString("appId"),
-                    config.getString("clientOptions"),
                     config.getString("zoneId"));
         }
     },

@@ -16,26 +16,24 @@
 
 package com.deltadna.android.sdk.ads.provider.adcolony
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult
+import com.adcolony.sdk.AdColonyInterstitial
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
-import com.jirbo.adcolony.AdColonyAd
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockito_kotlin.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.runners.MockitoJUnitRunner
 
-import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockito_kotlin.*
-
 @RunWith(MockitoJUnitRunner::class)
 class AdColonyEventForwarderTest {
     
     private val listener = mock<MediationListener>()
     private val adapter = mock<MediationAdapter>()
-    private val ad = mock<AdColonyAd>()
+    private val ad = mock<AdColonyInterstitial>()
     
     private var uut = AdColonyEventForwarder(listener, adapter)
     
@@ -50,83 +48,79 @@ class AdColonyEventForwarderTest {
     }
     
     @Test
-    fun adStarted() {
-        whenever(ad.noFill()).thenReturn(false)
+    fun onRequestNotFilled() {
+        uut.onRequestNotFilled(mock())
         
-        with(uut) {
-            onAdColonyAdStarted(ad)
-            
-            assertThat(isShowing).isTrue()
+        verify(listener).onAdFailedToLoad(
+                same(adapter),
+                eq(AdRequestResult.NoFill),
+                any())
+        assertThat(uut.ad).isNull()
+    }
+    
+    @Test
+    fun onRequestFilled() {
+        uut.onRequestFilled(ad)
+        
+        verify(listener).onAdLoaded(same(adapter))
+        assertThat(uut.ad).isSameAs(ad)
+    }
+    
+    @Test
+    fun onOpened() {
+        uut.onRequestFilled(ad)
+        uut.onOpened(ad)
+        
+        inOrder(listener) {
+            verify(listener).onAdLoaded(same(adapter))
             verify(listener).onAdShowing(same(adapter))
         }
+        assertThat(uut.ad).isSameAs(ad)
     }
     
     @Test
-    fun adStartedNoFill() {
-        whenever(ad.noFill()).thenReturn(true)
+    fun onClicked() {
+        uut.onRequestFilled(ad)
+        uut.onOpened(ad)
+        uut.onClicked(ad)
         
-        with(uut) {
-            onAdColonyAdStarted(ad)
-            
-            assertThat(isShowing).isFalse()
-            verify(listener).onAdFailedToLoad(
-                    same(adapter),
-                    eq(AdRequestResult.NoFill),
-                    any())
+        inOrder(listener) {
+            verify(listener).onAdLoaded(same(adapter))
+            verify(listener).onAdShowing(same(adapter))
+            verify(listener).onAdClicked(same(adapter))
         }
+        assertThat(uut.ad).isSameAs(ad)
     }
     
     @Test
-    fun adFinished() {
-        whenever(ad.shown()).thenReturn(true)
-        whenever(ad.canceled()).thenReturn(false)
-        whenever(ad.skipped()).thenReturn(false)
+    fun onClosed() {
+        uut.onRequestFilled(ad)
+        uut.onOpened(ad)
+        uut.onClosed(ad)
         
-        with(uut) {
-            onAdColonyAdAttemptFinished(ad)
-            
-            assertThat(isShowing).isFalse()
+        inOrder(listener) {
+            verify(listener).onAdLoaded(same(adapter))
+            verify(listener).onAdShowing(same(adapter))
             verify(listener).onAdClosed(same(adapter), eq(true))
         }
+        assertThat(uut.ad).isNull()
     }
     
     @Test
-    fun adFinishedAndCancelled() {
-        whenever(ad.shown()).thenReturn(true)
-        whenever(ad.canceled()).thenReturn(true)
+    fun onLeftApplication() {
+        uut.onRequestFilled(ad)
+        uut.onOpened(ad)
+        uut.onLeftApplication(ad)
         
-        with(uut) {
-            onAdColonyAdAttemptFinished(ad)
-            
-            assertThat(isShowing).isFalse()
-            verify(listener).onAdClosed(same(adapter), eq(false))
+        inOrder(listener) {
+            verify(listener).onAdLoaded(same(adapter))
+            verify(listener).onAdShowing(same(adapter))
+            verify(listener).onAdLeftApplication(same(adapter))
         }
+        assertThat(uut.ad).isSameAs(ad)
     }
     
-    @Test
-    fun adFinishedAndSkipped() {
-        whenever(ad.shown()).thenReturn(true)
-        whenever(ad.skipped()).thenReturn(true)
-        
-        with(uut) {
-            onAdColonyAdAttemptFinished(ad)
-            
-            assertThat(isShowing).isFalse()
-            verify(listener).onAdClosed(same(adapter), eq(false))
-        }
-    }
-    
-    @Test
-    fun adFinishedWithoutShowing() {
-        whenever(ad.shown()).thenReturn(false)
-        
-        with(uut) {
-            onAdColonyAdAttemptFinished(ad)
-            
-            assertThat(isShowing).isFalse()
-            verify(listener).onAdFailedToShow(
-                    same(adapter),
-                    eq(AdClosedResult.ERROR))
-        }
+    private fun inOrder(vararg mocks: Any, block: org.mockito.InOrder.() -> Unit) {
+        block.invoke(org.mockito.Mockito.inOrder(*mocks))
     }
 }

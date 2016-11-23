@@ -86,7 +86,7 @@ public final class ChartBoostRewardedAdapter extends MediationAdapter {
 
     @Override
     public String getProviderString() {
-        return "CHARTBOOST-REWARDED";
+        return "CHARTBOOST";
     }
 
     @Override

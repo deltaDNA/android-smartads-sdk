@@ -73,7 +73,7 @@ public final class SupersonicRewardedAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "SUPERSONIC-REWARDED";
+        return "SUPERSONIC";
     }
     
     @Override

@@ -16,21 +16,23 @@
 
 package com.deltadna.android.sdk.ads.provider.adcolony;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
+import com.adcolony.sdk.AdColonyInterstitial;
+import com.adcolony.sdk.AdColonyInterstitialListener;
+import com.adcolony.sdk.AdColonyZone;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.jirbo.adcolony.AdColonyAd;
-import com.jirbo.adcolony.AdColonyAdListener;
 
-class AdColonyEventForwarder implements AdColonyAdListener {
+class AdColonyEventForwarder extends AdColonyInterstitialListener {
     
     private final MediationListener listener;
     private final MediationAdapter adapter;
     
-    private boolean showing;
+    @Nullable
+    private AdColonyInterstitial ad;
     
     AdColonyEventForwarder(
             MediationListener listener,
@@ -41,37 +43,54 @@ class AdColonyEventForwarder implements AdColonyAdListener {
     }
     
     @Override
-    public void onAdColonyAdStarted(AdColonyAd adColonyAd) {
-        if (adColonyAd.noFill()) {
-            Log.w(BuildConfig.LOG_TAG, "No fill");
-            
-            showing = false;
-            
-            listener.onAdFailedToLoad(
-                    adapter,
-                    AdRequestResult.NoFill,
-                    "AdColony no fill");
-        } else {
-            showing = true;
-            
-            listener.onAdShowing(adapter);
-        }
+    public void onRequestNotFilled(AdColonyZone zone) {
+        Log.w(BuildConfig.LOG_TAG, "Request not filled");
+        listener.onAdFailedToLoad(
+                adapter,
+                AdRequestResult.NoFill,
+                "AdColony no fill");
     }
     
     @Override
-    public void onAdColonyAdAttemptFinished(AdColonyAd adColonyAd) {
-        if (adColonyAd.shown()) {
-            listener.onAdClosed(
-                    adapter,
-                    !(adColonyAd.canceled() || adColonyAd.skipped()));
-        } else {
-            listener.onAdFailedToShow(adapter, AdClosedResult.ERROR);
-        }
+    public void onRequestFilled(AdColonyInterstitial ad) {
+        Log.d(BuildConfig.LOG_TAG, "Request filled");
         
-        showing = false;
+        this.ad = ad;
+        listener.onAdLoaded(adapter);
     }
     
-    boolean isShowing() {
-        return showing;
+    @Override
+    public void onOpened(AdColonyInterstitial ad) {
+        Log.d(BuildConfig.LOG_TAG, "Opened");
+        listener.onAdShowing(adapter);
+    }
+    
+    @Override
+    public void onClicked(AdColonyInterstitial ad) {
+        Log.d(BuildConfig.LOG_TAG, "Clicked");
+        listener.onAdClicked(adapter);
+    }
+    
+    @Override
+    public void onClosed(AdColonyInterstitial ad) {
+        Log.d(BuildConfig.LOG_TAG, "Closed");
+        
+        if (this.ad != null) {
+            this.ad.destroy();
+            this.ad = null;
+        }
+        
+        listener.onAdClosed(adapter, true);
+    }
+    
+    @Override
+    public void onLeftApplication(AdColonyInterstitial ad) {
+        Log.d(BuildConfig.LOG_TAG, "Left application");
+        listener.onAdLeftApplication(adapter);
+    }
+    
+    @Nullable
+    AdColonyInterstitial getAd() {
+        return ad;
     }
 }

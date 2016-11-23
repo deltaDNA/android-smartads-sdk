@@ -20,40 +20,34 @@ import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.adcolony.sdk.AdColony;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.jirbo.adcolony.AdColony;
-import com.jirbo.adcolony.AdColonyVideoAd;
 
 import org.json.JSONObject;
 
 public final class AdColonyAdapter extends MediationAdapter {
     
+    private static boolean initialised;
+    
     private final String appId;
-    private final String clientOptions;
-    private final String zoneIds;
+    private final String[] zoneIds;
     
     @Nullable
-    private Activity activity;
-    
-    private boolean initialised;
-    private AdColonyVideoAd videoAd;
-    private AdColonyAvailabilityMonitor availabilityMonitor;
+    private AdColonyEventForwarder forwarder;
     
     public AdColonyAdapter(
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
             String appId,
-            String clientOptions,
             String zoneIds) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.appId = appId;
-        this.clientOptions = clientOptions;
-        this.zoneIds = zoneIds;
+        this.zoneIds = zoneIds.split(",");
     }
     
     @Override
@@ -62,64 +56,32 @@ public final class AdColonyAdapter extends MediationAdapter {
             MediationListener listener,
             JSONObject configuration) {
         
-        this.activity = activity;
-        
-        final boolean wasInitialised = initialised;
         if (!initialised) {
-            availabilityMonitor = new AdColonyAvailabilityMonitor(listener, this);
-            
-            try {
-                AdColony.configure(activity, clientOptions, appId, zoneIds);
-                AdColony.addAdAvailabilityListener(availabilityMonitor);
-            } catch (Exception e) {
-                Log.w(BuildConfig.LOG_TAG, "Failed to initialise", e);
-                listener.onAdFailedToLoad(
-                        this,
-                        AdRequestResult.Configuration,
-                        "Failed to initialise AdColony: " + e);
-                return;
-            }
-            
-            initialised = true;
+            initialised = AdColony.configure(activity, appId, zoneIds);
         }
         
-        try {
-            final AdColonyEventForwarder forwarder =
-                    new AdColonyEventForwarder(listener, this);
-            availabilityMonitor.setForwarder(forwarder);
-            
-            videoAd = new AdColonyVideoAd();
-            videoAd.withListener(forwarder);
-            
-            /*
-             * AdColony doesn't trigger changes on its ad availability when the
-             * next ad has loaded, therefore we need to take the latest value
-             * on every attempt subsequent to initialisation.
-             */
-            if (wasInitialised) {
-                if (availabilityMonitor.isAvailable()) {
-                    listener.onAdLoaded(this);
-                } else {
-                    Log.w(BuildConfig.LOG_TAG, "No fill");
-                    listener.onAdFailedToLoad(
-                            this,
-                            AdRequestResult.NoFill,
-                            availabilityMonitor.getReason());
-                }
-            }
-        } catch (Exception e) {
-            Log.w(BuildConfig.LOG_TAG, "Failed to load ad", e);
+        if (!initialised) {
+            Log.w(BuildConfig.LOG_TAG, "Not initialised");
             listener.onAdFailedToLoad(
                     this,
-                    AdRequestResult.Error,
-                    "Failed to load AdColony ad: " + e);
+                    AdRequestResult.Configuration,
+                    "Failed to initialise AdColony");
+        } else {
+            forwarder = new AdColonyEventForwarder(listener, this);
+            if (!AdColony.requestInterstitial(zoneIds[0], forwarder)) {
+                Log.w(BuildConfig.LOG_TAG, "Requesting interstitial failed");
+                listener.onAdFailedToLoad(
+                        this,
+                        AdRequestResult.Error,
+                        "Failed to request interstitial from AdColony");
+            }
         }
     }
     
     @Override
     public void showAd() {
-        if (initialised && videoAd != null && videoAd.isReady()) {
-            videoAd.show();
+        if (forwarder != null && forwarder.getAd() != null) {
+            forwarder.getAd().show();
         }
     }
     
@@ -130,26 +92,19 @@ public final class AdColonyAdapter extends MediationAdapter {
     
     @Override
     public String getProviderVersionString() {
-        return "2.3.6";
+        return "3.0.5";
     }
     
     @Override
     public void onDestroy() {
-        videoAd = null;
-        activity = null;
-    }
-    
-    @Override
-    public void onPause() {
-        if (initialised) {
-            AdColony.pause();
+        if (forwarder != null && forwarder.getAd() != null) {
+            forwarder.getAd().destroy();
         }
     }
     
     @Override
-    public void onResume() {
-        if (initialised && activity != null) {
-            AdColony.resume(activity);
-        }
-    }
+    public void onPause() {}
+    
+    @Override
+    public void onResume() {}
 }

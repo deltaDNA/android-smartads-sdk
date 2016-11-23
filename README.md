@@ -36,21 +36,21 @@ allprojects {
 In your app's build script
 ```groovy
 compile 'com.deltadna.android:deltadna-sdk:VERSION'
-compile 'com.deltadna.android:deltadna-smartads:1.2.2'
+compile 'com.deltadna.android:deltadna-smartads:1.2.3'
 
 // ad providers
-compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.2.2'
-compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.2.2'
-compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.2.2'
-compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.2.2'
-compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.2.2'
-compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.2.2'
-compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.2.2'
-compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.2.2'
-compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.2.2'
-compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.2.2'
-compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.2.2'
-compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.2.2'
+compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.2.3'
+compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.2.3'
+compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.2.3'
+compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.2.3'
+compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.2.3'
+compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.2.3'
+compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.2.3'
+compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.2.3'
+compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.2.3'
+compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.2.3'
+compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.2.3'
+compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.2.3'
 ```
 Any combination of the above ad providers can be defined in your build script, depending on which ad networks you would like to use in your application.
 
@@ -152,7 +152,7 @@ There is no need to add additional directives in your ProGuard configuration if 
     ```java
     compile 'com.google.android.gms:play-services-maps:8.4.0'
     ```
-    We have verified so far that versions 8.* can be used instead of version 7.8.
+    We have verified so far that versions 8, 9, and 10 can be used instead of version 7.8.
 2.  I'm getting a `TransformException` on the `transformClassesWithDexForDebug` task when my project is being built.
     
     This can happen if you have included more ad providers which can result in your app containing more than 65K methods. Ad providers can either be removed to decrease the method count, or an [official workaround](http://developer.android.com/tools/building/multidex.html#mdex-gradle) can be implemented.
