@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.2.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.3) (YYYY-MM-DD)
+## [1.2.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.3) (2016-11-23)
 Fixed Amazon ad events.  
 Fixed MobFox crash.  
 Fixed Vungle misreporting ad completed watch status.  
