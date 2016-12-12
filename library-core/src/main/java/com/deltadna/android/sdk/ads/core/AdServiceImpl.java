@@ -545,10 +545,9 @@ final class AdServiceImpl implements AdService {
             Log.d(BuildConfig.LOG_TAG, "Engage request succeeded: " + result);
             
             if (!result.has("parameters")) {
-                listener.onFailedToRegisterForInterstitialAds(
+                Log.w(  BuildConfig.LOG_TAG,
                         "Invalid Engage response, missing 'parameters' key");
-                listener.onFailedToRegisterForRewardedAds(
-                        "Invalid Engage response, missing 'parameters' key");
+                scheduleConfigurationRequest();
                 return;
             }
             
@@ -635,7 +634,10 @@ final class AdServiceImpl implements AdService {
         @Override
         public void onFailure(Throwable t) {
             Log.w(BuildConfig.LOG_TAG, "Engage request failed", t);
-            
+            scheduleConfigurationRequest();
+        }
+        
+        private void scheduleConfigurationRequest() {
             handler.postDelayed(
                     new Runnable() {
                         @Override
