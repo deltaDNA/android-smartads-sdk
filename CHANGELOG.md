@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.2.4](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.4) (YYYY-MM-DD)
+## [1.2.4](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.4) (2016-12-12)
 Fixed ad configuration retries for some network cases.  
 Fixed max requests and demote code not being read from configuration.  
 Updated analytics SDK dependency.  
