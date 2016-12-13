@@ -633,7 +633,7 @@ final class AdServiceImpl implements AdService {
         
         @Override
         public void onFailure(Throwable t) {
-            Log.w(BuildConfig.LOG_TAG, "Engage request failed", t);
+            Log.w(BuildConfig.LOG_TAG, "Engage request failed: " + t);
             scheduleConfigurationRequest();
         }
         
