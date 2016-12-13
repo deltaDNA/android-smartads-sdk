@@ -17,9 +17,6 @@
 package com.deltadna.android.sdk.ads.core;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
@@ -51,7 +48,6 @@ final class AdServiceImpl implements AdService {
     private final Activity activity;
     private final AdServiceListener listener;
     
-    private final ConnectivityManager connectivity;
     private final AdAgentListener agentListener;
     
     private String decisionPoint;
@@ -73,8 +69,6 @@ final class AdServiceImpl implements AdService {
         this.activity = activity;
         this.listener = MainThread.redirect(listener, AdServiceListener.class);
         
-        connectivity = (ConnectivityManager)
-                activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         agentListener = new AgentListener();
     }
     
@@ -551,10 +545,9 @@ final class AdServiceImpl implements AdService {
             Log.d(BuildConfig.LOG_TAG, "Engage request succeeded: " + result);
             
             if (!result.has("parameters")) {
-                listener.onFailedToRegisterForInterstitialAds(
+                Log.w(  BuildConfig.LOG_TAG,
                         "Invalid Engage response, missing 'parameters' key");
-                listener.onFailedToRegisterForRewardedAds(
-                        "Invalid Engage response, missing 'parameters' key");
+                scheduleConfigurationRequest();
                 return;
             }
             
@@ -580,8 +573,8 @@ final class AdServiceImpl implements AdService {
             adDebugMode = adConfiguration.optBoolean("adRecordAdRequests", true);
             
             final int adFloorPrice = adConfiguration.optInt("adFloorPrice");
-            final int demoteOnCode = 9;//adConfiguration.optInt("adDemoteOnRequestCode");
-            final int maxPerNetwork = 1;//adConfiguration.optInt("adMaxPerNetwork");
+            final int demoteOnCode = adConfiguration.optInt("adDemoteOnRequestCode");
+            final int maxPerNetwork = adConfiguration.optInt("adMaxPerNetwork");
             adMinimumInterval = adConfiguration.optInt("adMinimumInterval", -1);
             adMaxPerSession = adConfiguration.optInt("adMaxPerSession", -1);
             
@@ -640,26 +633,21 @@ final class AdServiceImpl implements AdService {
         
         @Override
         public void onFailure(Throwable t) {
-            Log.w(BuildConfig.LOG_TAG, "Engage request failed", t);
-            
-            final NetworkInfo info = connectivity.getActiveNetworkInfo();
-            if (info == null || !info.isConnected()) {
-                handler.postDelayed(
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.d(  BuildConfig.LOG_TAG,
-                                        "Retrying to register for ads");
-                                requestAdConfiguration();
-                            }
-                        },
-                        TIME_ONE_SECOND);
-            } else {
-                listener.onFailedToRegisterForInterstitialAds(
-                        "Failed to initialise ad service");
-                listener.onFailedToRegisterForRewardedAds(
-                        "Failed to initialise ad service");
-            }
+            Log.w(BuildConfig.LOG_TAG, "Engage request failed: " + t);
+            scheduleConfigurationRequest();
+        }
+        
+        private void scheduleConfigurationRequest() {
+            handler.postDelayed(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(  BuildConfig.LOG_TAG,
+                                    "Retrying to register for ads");
+                            requestAdConfiguration();
+                        }
+                    },
+                    TIME_ONE_SECOND);
         }
     }
 }

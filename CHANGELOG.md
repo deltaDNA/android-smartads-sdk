@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.2.4](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.4) (2016-12-12)
+Fixed ad configuration retries for some network cases.  
+Fixed max requests and demote code not being read from configuration.  
+Updated analytics SDK dependency.  
+
 ## [1.2.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.3) (2016-11-23)
 Fixed Amazon ad events.  
 Fixed MobFox crash.  
