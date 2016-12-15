@@ -146,7 +146,7 @@ class AdAgentTest {
             
             requestAd(activity, config)
             
-            assertThat(adapters[0].requests)
+            assertThat(adapters[0].requests).isEqualTo(2)
             inOrder(listener) {
                 // first adapter first run
                 verify(listener).onAdLoaded(
@@ -162,6 +162,22 @@ class AdAgentTest {
                 verify(listener).onAdLoaded(
                         same(this@withAgent), same(adapters[1]), any())
             }
+        }
+    }
+    
+    @Test
+    fun requestAdUnexpectedAdapterReportsLoaded() {
+        withAgent(spiedAdapters(2)) { adapters ->
+            doAnswer {
+                onAdLoaded(adapters[1])
+                onAdLoaded(adapters[0])
+            }.whenever(adapters[0]).requestAd(activity, this, config)
+            
+            requestAd(activity, config)
+            
+            verify(listener).onAdLoaded(
+                    same(this@withAgent), same(adapters[0]), any())
+            verifyNoMoreInteractions(listener)
         }
     }
     
