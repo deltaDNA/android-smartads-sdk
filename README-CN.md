@@ -36,21 +36,21 @@ allprojects {
 在你APP的构建脚本
 ```groovy
 compile 'com.deltadna.android:deltadna-sdk:VERSION'
-compile 'com.deltadna.android:deltadna-smartads:1.2.5-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads:1.2.5'
 
 // 广告提供商
-compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.2.5-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.2.5-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.2.5-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.2.5-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.2.5-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.2.5-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.2.5-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.2.5-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.2.5-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.2.5-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.2.5-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.2.5-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.2.5'
+compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.2.5'
+compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.2.5'
+compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.2.5'
+compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.2.5'
+compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.2.5'
+compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.2.5'
+compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.2.5'
+compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.2.5'
+compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.2.5'
+compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.2.5'
+compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.2.5'
 ```
 上述广告提供商的任何组合都可以在你的构建脚本中定义，这取决于你想在你的应用程序中使用哪个广告网络。
 
