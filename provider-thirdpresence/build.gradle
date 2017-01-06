@@ -23,7 +23,7 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile 'com.thirdpresence.adsdk.sdk:thirdpresence-ad-sdk:1.4.0@aar'
+    compile 'com.thirdpresence.adsdk.sdk:thirdpresence-ad-sdk:1.5.1'
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
 }
