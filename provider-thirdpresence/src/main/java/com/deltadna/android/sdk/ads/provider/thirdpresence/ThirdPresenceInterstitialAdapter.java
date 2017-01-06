@@ -134,7 +134,7 @@ public final class ThirdPresenceInterstitialAdapter extends MediationAdapter {
     
     @Override
     public String getProviderVersionString() {
-        return "1.4.0";
+        return "1.5.1";
     }
     
     @Override
