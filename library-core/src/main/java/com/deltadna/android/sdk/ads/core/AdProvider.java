@@ -364,7 +364,7 @@ enum AdProvider {
             return new UnityRewardedAdapter(
                     eCPM,
                     demoteOnCode,
-                    adFloorPrice,
+                    index,
                     config.getString("gameId"),
                     config.optString("zoneId", null),
                     config.optBoolean("testMode", false));
@@ -383,7 +383,7 @@ enum AdProvider {
             return new VungleAdapter(
                     eCPM,
                     demoteOnCode,
-                    adFloorPrice,
+                    index,
                     config.getString("appId"));
         }
     },
