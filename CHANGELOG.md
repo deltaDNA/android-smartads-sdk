@@ -1,7 +1,10 @@
 # Change Log
 
-## [1.2.5](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.5) (YYYY-MM-DD)
+## [1.2.6](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.6) (YYYY-MM-DD)
 Added Thirdpresence ad network.  
+Fixed some adapters not respecting the waterfall index.  
+
+## [1.2.5](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.5) (2016-12-19)
 Updated Chartboost network library.  
 
 ## [1.2.4](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.4) (2016-12-12)
