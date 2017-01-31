@@ -31,6 +31,8 @@ import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter;
 import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter;
 import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter;
+import com.deltadna.android.sdk.ads.provider.applovin.AppLovinInterstitialAdapter;
+import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
@@ -68,6 +70,20 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             "b156d556c85c4a918be92ee218708d4a",
                             true),
+                    new AppLovinInterstitialAdapter(
+                            0,
+                            0,
+                            0,
+                            "awUGLVznHxpXiT6xATnSkZkXwCTapgzOaRexxchDXVlFzsB8Oza6WIeQU60InzhMPLIKz_XVUHmS7xaVuAcOTF",
+                            false,
+                            -1),
+                    new AppLovinRewardedAdapter(
+                            0,
+                            0,
+                            0,
+                            "awUGLVznHxpXiT6xATnSkZkXwCTapgzOaRexxchDXVlFzsB8Oza6WIeQU60InzhMPLIKz_XVUHmS7xaVuAcOTF",
+                            false,
+                            -1),
                     new InMobiInterstitialAdapter(
                             0,
                             0,
