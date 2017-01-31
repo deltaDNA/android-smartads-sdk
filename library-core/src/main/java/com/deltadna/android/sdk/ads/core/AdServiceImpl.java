@@ -483,8 +483,6 @@ final class AdServiceImpl implements AdService {
         
         @Override
         public void onAdOpened(AdAgent agent, MediationAdapter adapter) {
-            agent.shownCount++;
-            
             if (agent.equals(interstitialAgent)) {
                 Log.d(BuildConfig.LOG_TAG, "Interstitial ad opened");
                 listener.onInterstitialAdOpened();
@@ -521,8 +519,6 @@ final class AdServiceImpl implements AdService {
                 AdAgent agent,
                 MediationAdapter adapter,
                 boolean complete) {
-            
-            agent.lastShownTime = System.currentTimeMillis();
             
             if (agent.equals(interstitialAgent)) {
                 Log.d(BuildConfig.LOG_TAG, "Interstitial ad closed");
@@ -594,7 +590,10 @@ final class AdServiceImpl implements AdService {
                     listener.onFailedToRegisterForInterstitialAds(
                             "Invalid ad configuration");
                 } else {
-                    interstitialAgent = new AdAgent(agentListener, waterfall);
+                    interstitialAgent = new AdAgent(
+                            agentListener,
+                            waterfall,
+                            adMaxPerSession);
                     interstitialAgent.requestAd(activity, adConfiguration);
                     
                     listener.onRegisteredForInterstitialAds();
@@ -620,9 +619,12 @@ final class AdServiceImpl implements AdService {
                     listener.onFailedToRegisterForRewardedAds(
                             "Invalid ad configuration");
                 } else {
-                    rewardedAgent = new AdAgent(agentListener, waterfall);
+                    rewardedAgent = new AdAgent(
+                            agentListener,
+                            waterfall,
+                            adMaxPerSession);
                     rewardedAgent.requestAd(activity, adConfiguration);
-
+                    
                     listener.onRegisteredForRewardedAds();
                 }
             } else {

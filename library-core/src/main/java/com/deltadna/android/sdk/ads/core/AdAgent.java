@@ -69,6 +69,7 @@ class AdAgent implements MediationListener {
     
     private final AdAgentListener listener;
     private final Waterfall waterfall;
+    private final int adMaxPerSession;
     
     long lastShownTime;
     int shownCount;
@@ -88,9 +89,13 @@ class AdAgent implements MediationListener {
     @Nullable
     private String adPoint;
     
-    AdAgent(AdAgentListener listener, Waterfall waterfall) {
+    AdAgent(AdAgentListener listener,
+            Waterfall waterfall, 
+            int adMaxPerSession) {
+        
         this.listener = listener;
         this.waterfall = waterfall;
+        this.adMaxPerSession = adMaxPerSession;
         
         currentAdapter = waterfall.resetAndGetFirst();
         if (currentAdapter == null) {
@@ -237,6 +242,7 @@ class AdAgent implements MediationListener {
         Log.d(TAG, "Ad showing for " + mediationAdapter);
         listener.onAdOpened(this, mediationAdapter);
         
+        shownCount++;
         state = State.SHOWING;
     }
     
@@ -278,6 +284,7 @@ class AdAgent implements MediationListener {
         Log.d(TAG, "Ad closed for " + adapter);
         listener.onAdClosed(this, adapter, complete);
         
+        lastShownTime = System.currentTimeMillis();
         state = State.READY;
         
         changeToNextAdapter(true);
@@ -291,6 +298,11 @@ class AdAgent implements MediationListener {
     }
     
     private void requestAd() {
+        if (adMaxPerSession != -1 && shownCount >= adMaxPerSession) {
+            Log.d(TAG, "Not requesting next ad due to session limit");
+            return;
+        }
+        
         if (currentAdapter != null) {
             final NetworkInfo network = ((ConnectivityManager) activity
                     .getSystemService(Context.CONNECTIVITY_SERVICE))
