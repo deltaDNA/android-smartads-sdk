@@ -48,7 +48,6 @@ dependencies {
     compile project(':provider-adcolony')
     compile project(':provider-admob')
     compile project(':provider-amazon')
-    compile project(':provider-applovin')
     compile project(':provider-inmobi')
     compile project(':provider-mobfox')
     compile project(':provider-mopub')
