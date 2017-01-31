@@ -32,6 +32,7 @@ import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicRewardedAdapter
+import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter
 import com.google.common.truth.Truth.assertThat
@@ -172,6 +173,20 @@ class AdProviderTest {
                 .isInstanceOf(SupersonicRewardedAdapter::class.java)
         
         assertThat(SUPERSONIC.rewarded()).isSameAs(SUPERSONIC_REWARDED)
+    }
+    
+    @Test
+    fun thirdpresence() {
+        assertThat(THIRDPRESENCE.createAdapter(
+                1,
+                2,
+                3,
+                4,
+                JSONObject()
+                        .put("accountName", "accountName")
+                        .put("placementId", "placementId")
+                        .put("testMode", true)))
+                .isInstanceOf(ThirdPresenceInterstitialAdapter::class.java)
     }
     
     @Test

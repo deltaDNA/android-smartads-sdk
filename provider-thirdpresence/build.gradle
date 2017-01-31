@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-android {}
+android {
+    defaultConfig {
+        buildConfigField('String', logTagName, "\"$logTagValue Thirdpresence\"")
+    }
+}
 
 dependencies {
     compile project(':library-bindings')
     
-    provided project(':provider-admob')
-    provided project(':provider-adcolony')
-    provided project(':provider-amazon')
-    provided project(':provider-applovin')
-    provided project(':provider-chartboost')
-    provided project(':provider-flurry')
-    provided project(':provider-inmobi')
-    provided project(':provider-mobfox')
-    provided project(':provider-mopub')
-    provided project(':provider-supersonic')
-    provided project(':provider-thirdpresence')
-    provided project(':provider-unity')
-    provided project(':provider-vungle')
+    compile('com.thirdpresence.adsdk.sdk:thirdpresence-ad-sdk:1.5.1') {
+        exclude group: 'com.android.support', module: 'support-compat'
+        exclude group: 'com.android.support', module: 'support-core-utils'
+    }
+    compile "com.android.support:support-v4:$supportVersion"
+    
+    // needed for advertising id retrieval
+    compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
 }

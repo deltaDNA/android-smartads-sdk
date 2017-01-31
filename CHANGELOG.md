@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.3.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.3.0) (YYYY-MM-DD)
+Added Thirdpresence ad network.  
+
 ## [1.2.6](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.6) (YYYY-MM-DD)
 Fixed some adapters not respecting the waterfall index.  
 

@@ -35,6 +35,7 @@ import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter;
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicRewardedAdapter;
+import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter;
 
@@ -349,6 +350,25 @@ enum AdProvider {
                     index,
                     config.getString("appKey"),
                     config.getBoolean("log"));
+        }
+    },
+    
+    THIRDPRESENCE("com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceInterstitialAdapter") {
+        @Override
+        MediationAdapter createAdapter(
+                int eCPM,
+                int adFloorPrice,
+                int demoteOnCode,
+                int index,
+                JSONObject config) throws JSONException {
+            
+            return new ThirdPresenceInterstitialAdapter(
+                    eCPM,
+                    demoteOnCode,
+                    index,
+                    config.getString("accountName"),
+                    config.getString("placementId"),
+                    config.optBoolean("testMode"));
         }
     },
     
