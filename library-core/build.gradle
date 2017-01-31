@@ -22,7 +22,6 @@ dependencies {
     provided project(':provider-admob')
     provided project(':provider-adcolony')
     provided project(':provider-amazon')
-    provided project(':provider-applovin')
     provided project(':provider-chartboost')
     provided project(':provider-flurry')
     provided project(':provider-inmobi')
