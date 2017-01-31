@@ -224,6 +224,25 @@ class AdAgentTest {
     }
     
     @Test
+    fun requestAdMaxPerSessionReached() {
+        withAgent(spiedAdapters(1), maxPerSession = 1) { adapters ->
+            doAnswer {
+                onAdLoaded(adapters[0])
+                onAdShowing(adapters[0])
+                onAdClosed(adapters[0], true)
+            }.whenever(adapters[0]).requestAd(activity, this, config)
+            
+            requestAd(activity, config)
+            
+            assertThat(isAdLoaded).isFalse()
+            verify(listener).onAdLoaded(same(this), same(adapters[0]), any())
+            verify(listener).onAdOpened(same(this), same(adapters[0]))
+            verify(listener).onAdClosed(same(this), same(adapters[0]), any())
+            verifyNoMoreInteractions(listener)
+        }
+    }
+    
+    @Test
     fun showAdWhenLoaded() {
         withAgent(spiedAdapters(1)) { adapters ->
             doAnswer {
@@ -335,10 +354,13 @@ class AdAgentTest {
     
     private fun withAgent(
             adapters: List<MediationAdapter>,
-            maxPerNetwork: Int = 1,
+                maxPerNetwork: Int = 1,
+            maxPerSession: Int = -1,
             block: AdAgent.(List<MediationAdapter>) -> Unit) {
         block.invoke(
-                AdAgent(listener, Waterfall(adapters, maxPerNetwork)),
+                AdAgent(listener,
+                        Waterfall(adapters, maxPerNetwork),
+                        maxPerSession),
                 adapters)
     }
     

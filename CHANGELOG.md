@@ -2,6 +2,7 @@
 
 ## [1.2.6](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.6) (YYYY-MM-DD)
 Fixed some adapters not respecting the waterfall index.  
+Fixed ad requests being made after session limit has been reached.  
 
 ## [1.2.5](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.5) (2016-12-19)
 Updated Chartboost network library.  
