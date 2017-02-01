@@ -76,6 +76,7 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             0,
                             "ElG63iTpOQfZvG4kizCGhhXZQiWt37hIszOvfyi3MNdFdh-KeAbKt7vHrQ9uXrBNpZHTV-WtL87-r6IUGvp80h",
+                            "Interstitial",
                             false,
                             -1),
                     new AppLovinRewardedAdapter(
@@ -83,6 +84,7 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             0,
                             "ElG63iTpOQfZvG4kizCGhhXZQiWt37hIszOvfyi3MNdFdh-KeAbKt7vHrQ9uXrBNpZHTV-WtL87-r6IUGvp80h",
+                            "Rewarded",
                             false,
                             -1),
                     new InMobiInterstitialAdapter(

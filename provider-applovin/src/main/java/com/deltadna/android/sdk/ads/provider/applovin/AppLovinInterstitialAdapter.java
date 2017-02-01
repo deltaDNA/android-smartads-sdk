@@ -32,11 +32,13 @@ import org.json.JSONObject;
 public final class AppLovinInterstitialAdapter extends MediationAdapter {
     
     private final String key;
+    private final String placement;
     private final boolean verboseLogging;
     private final long adRefreshSeconds;
     
     @Nullable
     private AppLovinSdk sdk;
+    
     @Nullable
     private AppLovinInterstitialAdDialog interstitial;
     
@@ -45,12 +47,14 @@ public final class AppLovinInterstitialAdapter extends MediationAdapter {
             int demoteOnCode,
             int waterfallIndex,
             String key,
+            String placement,
             boolean verboseLogging,
             long adRefreshSeconds) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.key = key;
+        this.placement = placement;
         this.verboseLogging = verboseLogging;
         this.adRefreshSeconds = adRefreshSeconds;
     }
@@ -62,16 +66,16 @@ public final class AppLovinInterstitialAdapter extends MediationAdapter {
             JSONObject configuration) {
         
         if (sdk == null) {
+            Log.d(BuildConfig.LOG_TAG, "Initialising AppLovin SDK");
+            
             final AppLovinSdkSettings settings = new AppLovinSdkSettings();
             settings.setVerboseLogging(verboseLogging);
             settings.setBannerAdRefreshSeconds(adRefreshSeconds);
             
             sdk = AppLovinSdk.getInstance(
                     key,
-                    new AppLovinSdkSettings(),
+                    settings,
                     activity.getApplicationContext());
-        } else {
-            Log.w(BuildConfig.LOG_TAG, "SDK has already been initialised");
         }
         
         final AppLovinEventForwarder forwarder =
@@ -88,7 +92,7 @@ public final class AppLovinInterstitialAdapter extends MediationAdapter {
     @Override
     public void showAd() {
         if (interstitial != null && interstitial.isAdReadyToDisplay()) {
-            interstitial.show();
+            interstitial.show(placement);
         }
     }
     
@@ -105,7 +109,10 @@ public final class AppLovinInterstitialAdapter extends MediationAdapter {
     @Override
     public void onDestroy() {
         if (interstitial != null && interstitial.isShowing()) {
-            interstitial.dismiss();
+            if (interstitial.isShowing()) {
+                interstitial.dismiss();
+            }
+            
             interstitial = null;
         }
     }

@@ -36,6 +36,7 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
             + AppLovinRewardedAdapter.class.getSimpleName();
     
     private final String key;
+    private final String placement;
     private final boolean verboseLogging;
     private final long adRefreshSeconds;
     
@@ -54,12 +55,14 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
             int demoteOnCode,
             int waterfallIndex,
             String key,
+            String placement,
             boolean verboseLogging,
             long adRefreshSeconds) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.key = key;
+        this.placement = placement;
         this.verboseLogging = verboseLogging;
         this.adRefreshSeconds = adRefreshSeconds;
     }
@@ -71,6 +74,8 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
             JSONObject configuration) {
         
         if (sdk == null) {
+            Log.d(BuildConfig.LOG_TAG, "Initialising AppLovin SDK");
+            
             final AppLovinSdkSettings settings = new AppLovinSdkSettings();
             settings.setVerboseLogging(verboseLogging);
             settings.setBannerAdRefreshSeconds(adRefreshSeconds);
@@ -78,7 +83,7 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
             try {
                 sdk = AppLovinSdk.getInstance(
                         key,
-                        new AppLovinSdkSettings(),
+                        settings,
                         activity.getApplicationContext());
             } catch (Exception e) {
                 Log.e(TAG, "Failed initialisation", e);
@@ -88,8 +93,6 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
                         "Failed initialisation " + e);
                 return;
             }
-        } else {
-            Log.w(TAG, "SDK has already been initialised");
         }
         
         this.activity = activity;
@@ -103,7 +106,13 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
     @Override
     public void showAd() {
         if (rewarded != null && rewarded.isAdReadyToDisplay()) {
-            rewarded.show(activity, null, forwarder, forwarder, forwarder);
+            rewarded.show(
+                    activity,
+                    placement,
+                    null,
+                    forwarder,
+                    forwarder,
+                    forwarder);
         }
     }
     
