@@ -75,14 +75,14 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             0,
                             0,
-                            "awUGLVznHxpXiT6xATnSkZkXwCTapgzOaRexxchDXVlFzsB8Oza6WIeQU60InzhMPLIKz_XVUHmS7xaVuAcOTF",
+                            "ElG63iTpOQfZvG4kizCGhhXZQiWt37hIszOvfyi3MNdFdh-KeAbKt7vHrQ9uXrBNpZHTV-WtL87-r6IUGvp80h",
                             false,
                             -1),
                     new AppLovinRewardedAdapter(
                             0,
                             0,
                             0,
-                            "awUGLVznHxpXiT6xATnSkZkXwCTapgzOaRexxchDXVlFzsB8Oza6WIeQU60InzhMPLIKz_XVUHmS7xaVuAcOTF",
+                            "ElG63iTpOQfZvG4kizCGhhXZQiWt37hIszOvfyi3MNdFdh-KeAbKt7vHrQ9uXrBNpZHTV-WtL87-r6IUGvp80h",
                             false,
                             -1),
                     new InMobiInterstitialAdapter(

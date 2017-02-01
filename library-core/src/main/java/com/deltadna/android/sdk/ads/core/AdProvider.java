@@ -112,7 +112,7 @@ enum AdProvider {
                     eCPM,
                     demoteOnCode,
                     index,
-                    config.getString("key"),
+                    config.getString("sdkKey"),
                     config.optBoolean("verboseLogging", false),
                     config.optLong("adRefreshSeconds", -1));
         }
@@ -137,7 +137,7 @@ enum AdProvider {
                     eCPM,
                     demoteOnCode,
                     index,
-                    config.getString("key"),
+                    config.getString("sdkKey"),
                     config.optBoolean("verboseLogging", false),
                     config.optLong("adRefreshSeconds"));
         }
