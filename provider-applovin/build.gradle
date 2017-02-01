@@ -23,7 +23,7 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile files('libs/applovin-sdk-6.3.2.jar')
+    compile files('libs/applovin-sdk-6.4.2.jar')
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
 }
