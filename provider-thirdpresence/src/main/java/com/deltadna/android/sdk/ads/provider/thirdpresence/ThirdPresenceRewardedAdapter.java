@@ -32,7 +32,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class ThirdPresenceInterstitialAdapter extends MediationAdapter {
+public final class ThirdPresenceRewardedAdapter extends MediationAdapter {
     
     private final String placementId;
     
@@ -44,11 +44,11 @@ public final class ThirdPresenceInterstitialAdapter extends MediationAdapter {
     @Nullable
     private MediationListener listener;
     @Nullable
-    ThirdPresenceInterstitialEventForwarder forwarder;
+    ThirdPresenceRewardedEventForwarder forwarder;
     @Nullable
     private VideoAd ad;
     
-    public ThirdPresenceInterstitialAdapter(
+    public ThirdPresenceRewardedAdapter(
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
@@ -80,7 +80,7 @@ public final class ThirdPresenceInterstitialAdapter extends MediationAdapter {
         
         this.activity = activity;
         this.listener = listener;
-        forwarder = new ThirdPresenceInterstitialEventForwarder(listener, this);
+        forwarder = new ThirdPresenceRewardedEventForwarder(listener, this);
         
         try {
             ad = VideoAdManager.getInstance().create(
@@ -113,7 +113,7 @@ public final class ThirdPresenceInterstitialAdapter extends MediationAdapter {
                             "Completed: " + forwarder.hasCompleted());
                     
                     listener.onAdClosed(
-                            ThirdPresenceInterstitialAdapter.this,
+                            ThirdPresenceRewardedAdapter.this,
                             forwarder.hasCompleted());
                     
                     activity = null;

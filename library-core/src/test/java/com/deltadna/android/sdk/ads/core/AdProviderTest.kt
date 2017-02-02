@@ -34,7 +34,7 @@ import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicRewardedAdapter
-import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceInterstitialAdapter
+import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter
 import com.google.common.truth.Truth.assertThat
@@ -212,7 +212,7 @@ class AdProviderTest {
                         .put("accountName", "accountName")
                         .put("placementId", "placementId")
                         .put("testMode", true)))
-                .isInstanceOf(ThirdPresenceInterstitialAdapter::class.java)
+                .isInstanceOf(ThirdPresenceRewardedAdapter::class.java)
     }
     
     @Test

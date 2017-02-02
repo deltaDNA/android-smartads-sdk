@@ -35,7 +35,7 @@ import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter;
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicRewardedAdapter;
-import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceInterstitialAdapter;
+import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter;
 
@@ -355,7 +355,7 @@ enum AdProvider {
         }
     },
     
-    THIRDPRESENCE("com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceInterstitialAdapter") {
+    THIRDPRESENCE("com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceRewardedAdapter") {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
@@ -364,7 +364,7 @@ enum AdProvider {
                 int index,
                 JSONObject config) throws JSONException {
             
-            return new ThirdPresenceInterstitialAdapter(
+            return new ThirdPresenceRewardedAdapter(
                     eCPM,
                     demoteOnCode,
                     index,

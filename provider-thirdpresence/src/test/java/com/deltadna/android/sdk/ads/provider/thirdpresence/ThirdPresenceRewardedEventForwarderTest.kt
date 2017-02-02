@@ -29,17 +29,17 @@ import org.junit.runner.RunWith
 import org.mockito.runners.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class ThirdPresenceInterstitialEventForwarderTest {
+class ThirdPresenceRewardedEventForwarderTest {
     
     private val listener = mock<MediationListener>()
     private val adapter = mock<MediationAdapter>()
-    private val ad = mock<ThirdPresenceInterstitialEventForwarder>()
+    private val ad = mock<ThirdPresenceRewardedEventForwarder>()
     
-    private var uut = ThirdPresenceInterstitialEventForwarder(listener, adapter)
+    private var uut = ThirdPresenceRewardedEventForwarder(listener, adapter)
     
     @Before
     fun before() {
-        uut = ThirdPresenceInterstitialEventForwarder(listener, adapter)
+        uut = ThirdPresenceRewardedEventForwarder(listener, adapter)
     }
     
     @After

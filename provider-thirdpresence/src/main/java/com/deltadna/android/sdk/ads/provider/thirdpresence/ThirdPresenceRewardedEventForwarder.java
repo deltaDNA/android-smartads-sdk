@@ -25,14 +25,14 @@ import com.thirdpresence.adsdk.sdk.VideoAd;
 
 import java.util.Locale;
 
-class ThirdPresenceInterstitialEventForwarder implements VideoAd.Listener {
+class ThirdPresenceRewardedEventForwarder implements VideoAd.Listener {
     
     private final MediationListener listener;
     private final MediationAdapter adapter;
     
     private boolean complete;
     
-    ThirdPresenceInterstitialEventForwarder(
+    ThirdPresenceRewardedEventForwarder(
             MediationListener listener,
             MediationAdapter adapter) {
         
