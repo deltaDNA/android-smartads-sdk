@@ -23,7 +23,6 @@ import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter
 import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter
 import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter
-import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryInterstitialAdapter
