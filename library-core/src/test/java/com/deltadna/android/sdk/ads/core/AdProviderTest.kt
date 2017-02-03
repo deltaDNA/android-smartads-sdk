@@ -22,7 +22,7 @@ import com.deltadna.android.sdk.ads.core.AdProviderType.REWARDED
 import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter
 import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter
 import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter
-import com.deltadna.android.sdk.ads.provider.applovin.AppLovinInterstitialAdapter
+import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostRewardedAdapter
@@ -78,18 +78,6 @@ class AdProviderTest {
     @Test
     fun appLovin() {
         assertThat(APPLOVIN.createAdapter(
-                1, 2, 3, 4,
-                JSONObject()
-                        .put("sdkKey", "sdkKey")
-                        .put("placement", "placement")
-                        .put("verboseLogging", true)
-                        .put("adRefreshSeconds", 1)))
-                .isInstanceOf(AppLovinInterstitialAdapter::class.java)
-    }
-    
-    @Test
-    fun appLovinRewarded() {
-        assertThat(APPLOVIN_REWARDED.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
                         .put("sdkKey", "sdkKey")

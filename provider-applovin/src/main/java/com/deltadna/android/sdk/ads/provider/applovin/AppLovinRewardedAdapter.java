@@ -20,20 +20,16 @@ import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.applovin.adview.AppLovinIncentivizedInterstitial;
+import com.applovin.adview.AppLovinInterstitialAd;
+import com.applovin.adview.AppLovinInterstitialAdDialog;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkSettings;
-import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 
 import org.json.JSONObject;
 
 public final class AppLovinRewardedAdapter extends MediationAdapter {
-    
-    private static final String TAG = BuildConfig.LOG_TAG
-            + ' '
-            + AppLovinRewardedAdapter.class.getSimpleName();
     
     private final String key;
     private final String placement;
@@ -44,11 +40,7 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
     private AppLovinSdk sdk;
     
     @Nullable
-    private Activity activity;
-    @Nullable
-    private AppLovinEventForwarder forwarder;
-    @Nullable
-    private AppLovinIncentivizedInterstitial rewarded;
+    private AppLovinInterstitialAdDialog interstitial;
     
     public AppLovinRewardedAdapter(
             int eCPM,
@@ -80,39 +72,27 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
             settings.setVerboseLogging(verboseLogging);
             settings.setBannerAdRefreshSeconds(adRefreshSeconds);
             
-            try {
-                sdk = AppLovinSdk.getInstance(
-                        key,
-                        settings,
-                        activity.getApplicationContext());
-            } catch (Exception e) {
-                Log.e(TAG, "Failed initialisation", e);
-                listener.onAdFailedToLoad(
-                        this,
-                        AdRequestResult.Configuration,
-                        "Failed initialisation " + e);
-                return;
-            }
+            sdk = AppLovinSdk.getInstance(
+                    key,
+                    settings,
+                    activity.getApplicationContext());
         }
         
-        this.activity = activity;
-        forwarder = new AppLovinEventForwarder(listener, this);
+        final AppLovinEventForwarder forwarder =
+                new AppLovinEventForwarder(listener, this);
         
         //noinspection ConstantConditions
-        rewarded = AppLovinIncentivizedInterstitial.create(sdk);
-        rewarded.preload(forwarder);
+        interstitial = AppLovinInterstitialAd.create(sdk, activity);
+        interstitial.setAdLoadListener(forwarder);
+        interstitial.setAdDisplayListener(forwarder);
+        interstitial.setAdVideoPlaybackListener(forwarder);
+        interstitial.setAdClickListener(forwarder);
     }
     
     @Override
     public void showAd() {
-        if (rewarded != null && rewarded.isAdReadyToDisplay()) {
-            rewarded.show(
-                    activity,
-                    placement,
-                    null,
-                    forwarder,
-                    forwarder,
-                    forwarder);
+        if (interstitial != null && interstitial.isAdReadyToDisplay()) {
+            interstitial.show(placement);
         }
     }
     
@@ -128,13 +108,13 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
     
     @Override
     public void onDestroy() {
-        if (rewarded != null) {
-            rewarded.dismiss();
-            rewarded = null;
+        if (interstitial != null && interstitial.isShowing()) {
+            if (interstitial.isShowing()) {
+                interstitial.dismiss();
+            }
+            
+            interstitial = null;
         }
-        
-        activity = null;
-        forwarder = null;
     }
     
     @Override

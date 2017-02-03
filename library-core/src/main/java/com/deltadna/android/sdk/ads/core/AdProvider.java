@@ -23,7 +23,6 @@ import com.deltadna.android.sdk.ads.core.network.DummyAdapter;
 import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter;
 import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter;
 import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter;
-import com.deltadna.android.sdk.ads.provider.applovin.AppLovinInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostRewardedAdapter;
@@ -99,33 +98,7 @@ enum AdProvider {
         }
     },
     
-    APPLOVIN("com.deltadna.android.sdk.ads.provider.applovin.AppLovinInterstitialAdapter") {
-        @Override
-        MediationAdapter createAdapter(
-                int eCPM,
-                int adFloorPrice,
-                int demoteOnCode,
-                int index,
-                JSONObject config) throws JSONException {
-            
-            return new AppLovinInterstitialAdapter(
-                    eCPM,
-                    demoteOnCode,
-                    index,
-                    config.getString("sdkKey"),
-                    config.getString("placement"),
-                    config.optBoolean("verboseLogging", false),
-                    config.optLong("adRefreshSeconds", -1));
-        }
-        
-        @Nullable
-        @Override
-        AdProvider rewarded() {
-            return APPLOVIN_REWARDED;
-        }
-    },
-    
-    APPLOVIN_REWARDED(APPLOVIN.cls) {
+    APPLOVIN("com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter") {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
@@ -141,7 +114,7 @@ enum AdProvider {
                     config.getString("sdkKey"),
                     config.getString("placement"),
                     config.optBoolean("verboseLogging", false),
-                    config.optLong("adRefreshSeconds"));
+                    config.optLong("adRefreshSeconds", -1));
         }
     },
     
