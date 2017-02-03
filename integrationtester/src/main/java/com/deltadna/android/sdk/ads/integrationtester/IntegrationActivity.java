@@ -126,7 +126,7 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             0,
                             "tpr-deltadna",
-                            "i1cldefg80",
+                            "ikqa0wifqa",
                             true),
                     new UnityRewardedAdapter(
                             0,

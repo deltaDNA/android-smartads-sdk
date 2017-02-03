@@ -58,15 +58,11 @@ public final class ThirdPresenceRewardedAdapter extends MediationAdapter {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
-        this.placementId = (testMode) ? "sa7nvltbrn" : placementId;
+        this.placementId = placementId;
         
         environment = new HashMap<>();
-        environment.put(
-                VideoAd.Environment.KEY_ACCOUNT,
-                (testMode) ? "sdk-demo" : accountName);
-        environment.put(
-                VideoAd.Environment.KEY_PLACEMENT_ID,
-                placementId);
+        environment.put(VideoAd.Environment.KEY_ACCOUNT, accountName);
+        environment.put(VideoAd.Environment.KEY_PLACEMENT_ID, placementId);
         parameters = new HashMap<>();
         
         TLog.enabled = testMode;
