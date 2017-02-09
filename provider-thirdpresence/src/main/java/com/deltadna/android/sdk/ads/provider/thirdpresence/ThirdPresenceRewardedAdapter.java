@@ -40,8 +40,6 @@ public final class ThirdPresenceRewardedAdapter extends MediationAdapter {
     private final Map<String, String> parameters;
     
     @Nullable
-    private Activity activity;
-    @Nullable
     private MediationListener listener;
     @Nullable
     ThirdPresenceRewardedEventForwarder forwarder;
@@ -74,7 +72,6 @@ public final class ThirdPresenceRewardedAdapter extends MediationAdapter {
             MediationListener listener,
             JSONObject configuration) {
         
-        this.activity = activity;
         this.listener = listener;
         forwarder = new ThirdPresenceRewardedEventForwarder(listener, this);
         
@@ -102,7 +99,7 @@ public final class ThirdPresenceRewardedAdapter extends MediationAdapter {
                 && ad != null
                 && ad.isAdLoaded()) {
             
-            ad.displayAd(activity, new Runnable() {
+            ad.displayAd(null, new Runnable() {
                 @Override
                 public void run() {
                     Log.d(  BuildConfig.LOG_TAG,
@@ -112,7 +109,6 @@ public final class ThirdPresenceRewardedAdapter extends MediationAdapter {
                             ThirdPresenceRewardedAdapter.this,
                             forwarder.hasCompleted());
                     
-                    activity = null;
                     listener = null;
                     forwarder = null;
                     
@@ -135,7 +131,6 @@ public final class ThirdPresenceRewardedAdapter extends MediationAdapter {
     
     @Override
     public void onDestroy() {
-        activity = null;
         listener = null;
         forwarder = null;
         ad = null;
