@@ -18,6 +18,7 @@ package com.deltadna.android.sdk.ads.provider.applovin;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.applovin.adview.AppLovinInterstitialAd;
@@ -32,6 +33,7 @@ import org.json.JSONObject;
 public final class AppLovinRewardedAdapter extends MediationAdapter {
     
     private final String key;
+    @Nullable
     private final String placement;
     private final boolean verboseLogging;
     private final long adRefreshSeconds;
@@ -47,7 +49,7 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
             int demoteOnCode,
             int waterfallIndex,
             String key,
-            String placement,
+            @Nullable String placement,
             boolean verboseLogging,
             long adRefreshSeconds) {
         
@@ -92,7 +94,11 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
     @Override
     public void showAd() {
         if (interstitial != null && interstitial.isAdReadyToDisplay()) {
-            interstitial.show(placement);
+            if (TextUtils.isEmpty(placement)) {
+                interstitial.show();
+            } else {
+                interstitial.show(placement);
+            }
         }
     }
     

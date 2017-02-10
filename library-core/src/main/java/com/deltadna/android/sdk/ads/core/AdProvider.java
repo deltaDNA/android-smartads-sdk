@@ -112,7 +112,7 @@ enum AdProvider {
                     demoteOnCode,
                     index,
                     config.getString("sdkKey"),
-                    config.getString("placement"),
+                    config.optString("placement"),
                     config.optBoolean("verboseLogging", false),
                     config.optLong("adRefreshSeconds", -1));
         }
