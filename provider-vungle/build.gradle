@@ -36,7 +36,7 @@ dependencies {
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
     
-    compile 'com.android.support:support-v4:18.0.0'
+    compile "com.android.support:support-v4:$supportVersion"
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.squareup.dagger:dagger:1.2.2'
 }
