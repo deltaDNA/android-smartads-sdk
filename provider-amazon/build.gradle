@@ -25,5 +25,5 @@ dependencies {
     
     compile 'com.amazon.android:mobile-ads:5.8.1.1'
     // needed for advertising id retrieval
-    compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
+    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

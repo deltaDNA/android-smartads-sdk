@@ -29,5 +29,5 @@ dependencies {
     compile project(':library-bindings')
     
     compile files('libs/MobFox-Android-SDK-Core-2.1.6.jar')
-    compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
+    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

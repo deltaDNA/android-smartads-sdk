@@ -25,5 +25,5 @@ dependencies {
     
     compile files('libs/chartboost-6.6.1.jar')
     // needed for advertising id retrieval
-    compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
+    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

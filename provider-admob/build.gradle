@@ -23,5 +23,5 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile "com.google.android.gms:play-services-ads:$playServicesVersion"
+    compile "com.google.firebase:firebase-ads:$playServicesVersion"
 }

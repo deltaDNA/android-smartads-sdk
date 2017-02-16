@@ -30,5 +30,5 @@ dependencies {
     compile "com.android.support:support-v4:$supportVersion"
     
     // needed for advertising id retrieval
-    compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
+    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

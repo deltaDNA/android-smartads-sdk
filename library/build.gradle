@@ -28,5 +28,5 @@ configurations.all {
 dependencies {
     compile project(':library-core')
     
-    compile 'com.deltadna.android:deltadna-sdk:4.2.5'
+    compile 'com.deltadna.android:deltadna-sdk:4.3.0-SNAPSHOT'
 }

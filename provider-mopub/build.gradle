@@ -25,5 +25,5 @@ dependencies {
     
     compile 'com.mopub:mopub-sdk-interstitial:4.11.0'
     // needed for advertising id retrieval
-    compile "com.google.android.gms:play-services-analytics:$playServicesVersion"
+    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }
