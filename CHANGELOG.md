@@ -4,6 +4,7 @@
 Added AppLovin ad network.
 Added Thirdpresence ad network.  
 Updated Google Play Services dependencies.  
+Updated AdMob dependency.  
 Updated AdColony dependency.  
 Updated Vungle dependency.  
 
