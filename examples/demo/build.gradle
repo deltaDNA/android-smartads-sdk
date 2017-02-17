@@ -17,6 +17,8 @@
 android {
     defaultConfig {
         applicationId 'com.deltadna.android.sdk.ads.example'
+        
+        multiDexEnabled true
     }
     
     dexOptions {
@@ -97,6 +99,7 @@ dependencies {
     vungleCompile project(':provider-vungle')
     
     compile "com.android.support:appcompat-v7:$supportVersion"
+    compile 'com.android.support:multidex:1.0.1'
 }
 
 nimbledroid {

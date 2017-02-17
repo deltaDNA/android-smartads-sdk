@@ -16,11 +16,11 @@
 
 package com.deltadna.android.sdk.ads.example;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.deltadna.android.sdk.DDNA;
 
-public class ExampleApplication extends Application {
+public class ExampleApplication extends MultiDexApplication {
     
     @Override
     public void onCreate() {
