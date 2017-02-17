@@ -23,7 +23,7 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile files('libs/unity-ads-2.0.4-classes.jar')
+    compile files('libs/unity-ads-2.0.8-classes.jar')
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

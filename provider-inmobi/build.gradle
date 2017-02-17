@@ -29,7 +29,7 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile 'com.inmobi.monetization:inmobi-ads:6.0.3'
+    compile 'com.inmobi.monetization:inmobi-ads:6.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     // needed for advertising id retrieval (and GoogleApiAvailability)
     compile "com.google.android.gms:play-services-base:$playServicesVersion"

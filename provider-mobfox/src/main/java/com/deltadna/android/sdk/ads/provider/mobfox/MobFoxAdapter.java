@@ -67,7 +67,7 @@ public final class MobFoxAdapter extends MediationAdapter {
     
     @Override
     public String getProviderVersionString() {
-        return "2.1.6";
+        return "3.2.3";
     }
     
     @Override

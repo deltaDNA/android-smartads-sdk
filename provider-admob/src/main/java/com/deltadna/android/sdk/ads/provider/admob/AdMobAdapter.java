@@ -90,7 +90,7 @@ final public class AdMobAdapter extends MediationAdapter {
     
     @Override
     public String getProviderVersionString() {
-        return "7.8.0";
+        return "10.2.0";
     }
     
     @Override
