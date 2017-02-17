@@ -3,6 +3,9 @@
 ## [1.3.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.3.0) (YYYY-MM-DD)
 Added AppLovin ad network.
 Added Thirdpresence ad network.  
+Updated Google Play Services dependencies.  
+Updated AdColony dependency.  
+Updated Vungle dependency.  
 
 ## [1.2.6](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.2.6) (2017-01-31)
 Fixed some adapters not respecting the waterfall index.  

@@ -36,7 +36,7 @@ dependencies {
     compile project(':library-bindings')
     compile "com.android.support:support-annotations:$supportVersion"
     
-    compile files('libs/adcolony-3.0.5.jar')
-    // needed for advertising id retrieval
-    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
+    compile files('libs/adcolony-3.0.7.jar')
+    // needed for advertising id retrieval (and GoogleApiAvailability)
+    compile "com.google.android.gms:play-services-base:$playServicesVersion"
 }

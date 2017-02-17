@@ -92,7 +92,7 @@ public final class AdColonyAdapter extends MediationAdapter {
     
     @Override
     public String getProviderVersionString() {
-        return "3.0.5";
+        return "3.0.7";
     }
     
     @Override

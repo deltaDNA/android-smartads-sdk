@@ -16,13 +16,11 @@
 
 android {
     defaultConfig {
-        applicationId "com.deltadna.android.sdk.ads.example"
-        
-        multiDexEnabled true
+        applicationId 'com.deltadna.android.sdk.ads.example'
     }
     
     dexOptions {
-        javaMaxHeapSize "2048M"
+        javaMaxHeapSize '2048M'
     }
     
     signingConfigs {
@@ -65,11 +63,6 @@ android {
         unity {}
         vungle {}
     }
-    
-    lintOptions {
-        // workaround for missing stax dependency (mobfox)
-        disable 'InvalidPackage'
-    }
 }
 
 dependencies {
@@ -103,7 +96,6 @@ dependencies {
     unityCompile project(':provider-unity')
     vungleCompile project(':provider-vungle')
     
-    compile 'com.android.support:multidex:1.0.1'
     compile "com.android.support:appcompat-v7:$supportVersion"
 }
 

@@ -32,11 +32,10 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile files('libs/vungle-publisher-adaptive-id-3.3.4.jar')
-    // needed for advertising id retrieval
-    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
+    compile files('libs/vungle-publisher-adaptive-id-3.3.5.jar')
+    // needed for advertising id retrieval (and GooglePlayServicesUtil)
+    compile "com.google.android.gms:play-services-base:$playServicesVersion"
     
-    compile "com.android.support:support-v4:$supportVersion"
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.squareup.dagger:dagger:1.2.2'
+    compile 'com.google.dagger:dagger:2.1'
+    compile 'javax.inject:javax.inject:1'
 }

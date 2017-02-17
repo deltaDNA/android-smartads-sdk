@@ -16,7 +16,11 @@
 
 android {
     defaultConfig {
-        applicationId "com.deltadna.android.sdk.ads.integrationtester"
+        applicationId 'com.deltadna.android.sdk.ads.integrationtester'
+    }
+    
+    dexOptions {
+        javaMaxHeapSize '2048M'
     }
     
     signingConfigs {

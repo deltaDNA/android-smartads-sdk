@@ -13,13 +13,13 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
-import org.robolectric.RobolectricGradleTestRunner
 import org.robolectric.annotation.Config
 
 import com.google.common.truth.Truth.assertThat
 import org.json.JSONObject
+import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricGradleTestRunner::class)
+@RunWith(RobolectricTestRunner::class)
 @Config(constants = BuildConfig::class,
         sdk = intArrayOf(Build.VERSION_CODES.LOLLIPOP))
 class AdServiceImplTest {
