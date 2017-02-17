@@ -34,7 +34,6 @@ android {
 
 dependencies {
     compile project(':library-bindings')
-    compile "com.android.support:support-annotations:$supportVersion"
     
     compile files('libs/adcolony-3.0.7.jar')
     // needed for advertising id retrieval (and GoogleApiAvailability)

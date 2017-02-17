@@ -29,5 +29,6 @@ dependencies {
     compile project(':library-bindings')
     
     compile files('libs/MobFox-Android-SDK-Core-3.2.3.jar')
+    // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }
