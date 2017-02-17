@@ -57,7 +57,7 @@ class ThirdPresenceRewardedEventForwarder implements VideoAd.Listener {
         
         switch (eventName) {
             case VideoAd.Events.AD_ERROR:
-                switch (arg1.toLowerCase()) {
+                switch (arg1.toLowerCase(Locale.US)) {
                     case "no fill":
                         listener.onAdFailedToLoad(
                                 adapter,

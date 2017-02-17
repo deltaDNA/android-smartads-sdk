@@ -24,7 +24,7 @@ buildscript {
         // N.B in 'AdvertisingIdClient' class has been moved in 8.* to 'basement' package
         // https://developers.google.com/android/reference/com/google/android/gms/ads/identifier/AdvertisingIdClient
         playServicesVersion = '10.0.1'
-        supportVersion = '25.1.0'
+        supportVersion = '25.1.1'
         
         logTagName  = 'LOG_TAG'
         logTagValue = 'deltaDNA'
