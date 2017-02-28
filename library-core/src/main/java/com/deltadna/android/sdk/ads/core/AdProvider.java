@@ -113,8 +113,7 @@ enum AdProvider {
                     index,
                     config.getString("sdkKey"),
                     config.optString("placement"),
-                    config.optBoolean("verboseLogging", false),
-                    config.optLong("adRefreshSeconds", -1));
+                    config.optBoolean("verboseLogging", false));
         }
     },
     
@@ -423,7 +422,7 @@ enum AdProvider {
     /**
      * Gets the rewarded counterpart of this provider.
      *
-     * @return the rewarded ad provider
+     * @return the rewarded ad provider, may be {@code null} if not present
      */
     @Nullable
     AdProvider rewarded() {

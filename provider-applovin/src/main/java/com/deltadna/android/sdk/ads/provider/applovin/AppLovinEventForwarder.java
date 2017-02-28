@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 deltaDNA Ltd. All rights reserved.
+ * Copyright (c) 2017 deltaDNA Ltd. All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.deltadna.android.sdk.ads.provider.applovin;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.applovin.sdk.AppLovinAd;
@@ -37,19 +38,27 @@ final class AppLovinEventForwarder implements
     private final MediationListener listener;
     private final MediationAdapter adapter;
     
+    @Nullable
+    private PollingLoadChecker checker;
+    
     private boolean complete;
     
-    AppLovinEventForwarder(
-            MediationListener listener,
-            MediationAdapter adapter) {
-        
+    AppLovinEventForwarder(MediationListener listener, MediationAdapter adapter) {
         this.listener = listener;
         this.adapter = adapter;
+    }
+    
+    void setChecker(@Nullable PollingLoadChecker checker) {
+        this.checker = checker;
     }
     
     @Override
     public void adReceived(AppLovinAd appLovinAd) {
         Log.d(BuildConfig.LOG_TAG, "Ad received");
+        
+        if (checker != null) {
+            checker.stop();
+        }
         listener.onAdLoaded(adapter);
     }
     
@@ -86,6 +95,10 @@ final class AppLovinEventForwarder implements
                 result = AdRequestResult.Error;
         }
         
+        if (checker != null) {
+            checker.stop();
+        }
+        
         listener.onAdFailedToLoad(
                 adapter,
                 result,
@@ -100,21 +113,25 @@ final class AppLovinEventForwarder implements
     
     @Override
     public void adHidden(AppLovinAd appLovinAd) {
+        Log.d(BuildConfig.LOG_TAG, "Ad hidden");
         listener.onAdClosed(adapter, complete);
     }
     
     @Override
     public void videoPlaybackBegan(AppLovinAd appLovinAd) {
+        Log.d(BuildConfig.LOG_TAG, "Video playback began");
         complete = false;
     }
     
     @Override
     public void videoPlaybackEnded(AppLovinAd appLovinAd, double v, boolean b) {
+        Log.d(BuildConfig.LOG_TAG, "Video playback ended");
         complete = b;
     }
     
     @Override
     public void adClicked(AppLovinAd appLovinAd) {
+        Log.d(BuildConfig.LOG_TAG, "Ad clicked");
         listener.onAdClicked(adapter);
     }
 }

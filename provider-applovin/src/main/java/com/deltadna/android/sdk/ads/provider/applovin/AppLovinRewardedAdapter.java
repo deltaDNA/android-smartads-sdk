@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 deltaDNA Ltd. All rights reserved.
+ * Copyright (c) 2017 deltaDNA Ltd. All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,14 @@ import com.deltadna.android.sdk.ads.bindings.MediationListener;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.InvocationTargetException;
+
 public final class AppLovinRewardedAdapter extends MediationAdapter {
     
     private final String key;
     @Nullable
     private final String placement;
     private final boolean verboseLogging;
-    private final long adRefreshSeconds;
     
     @Nullable
     private AppLovinSdk sdk;
@@ -50,15 +51,13 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
             int waterfallIndex,
             String key,
             @Nullable String placement,
-            boolean verboseLogging,
-            long adRefreshSeconds) {
+            boolean verboseLogging) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.key = key;
         this.placement = placement;
         this.verboseLogging = verboseLogging;
-        this.adRefreshSeconds = adRefreshSeconds;
     }
     
     @Override
@@ -72,12 +71,30 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
             
             final AppLovinSdkSettings settings = new AppLovinSdkSettings();
             settings.setVerboseLogging(verboseLogging);
-            settings.setBannerAdRefreshSeconds(adRefreshSeconds);
             
             sdk = AppLovinSdk.getInstance(
                     key,
                     settings,
-                    activity.getApplicationContext());
+                    activity);
+            
+            try {
+                /*
+                 * This is actually true, it's just that the underlying
+                 * implementation checks the activity by looking at the stack
+                 * trace, so as soon as we're deep enough or running inside a
+                 * handler it fails. AppLovinSdkImpl is the class with the
+                 * implementation.
+                 */
+                sdk.getClass()
+                        .getMethod("setInitializedInMainActivity", boolean.class)
+                        .invoke(sdk, true);
+            } catch (NoSuchMethodException e) {
+                Log.w(BuildConfig.LOG_TAG, e);
+            } catch (InvocationTargetException e) {
+                Log.w(BuildConfig.LOG_TAG, e);
+            } catch (IllegalAccessException e) {
+                Log.w(BuildConfig.LOG_TAG, e);
+            }
         }
         
         final AppLovinEventForwarder forwarder =
@@ -89,6 +106,12 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
         interstitial.setAdDisplayListener(forwarder);
         interstitial.setAdVideoPlaybackListener(forwarder);
         interstitial.setAdClickListener(forwarder);
+        
+        final PollingLoadChecker checker = new PollingLoadChecker(
+                interstitial,
+                forwarder);
+        forwarder.setChecker(checker);
+        checker.start();
     }
     
     @Override
@@ -114,7 +137,7 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
     
     @Override
     public void onDestroy() {
-        if (interstitial != null && interstitial.isShowing()) {
+        if (interstitial != null) {
             if (interstitial.isShowing()) {
                 interstitial.dismiss();
             }

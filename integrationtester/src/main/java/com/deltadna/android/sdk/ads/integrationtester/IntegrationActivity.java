@@ -76,8 +76,7 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             "ElG63iTpOQfZvG4kizCGhhXZQiWt37hIszOvfyi3MNdFdh-KeAbKt7vHrQ9uXrBNpZHTV-WtL87-r6IUGvp80h",
                             "Interstitial",
-                            false,
-                            -1),
+                            true),
                     new InMobiInterstitialAdapter(
                             0,
                             0,
