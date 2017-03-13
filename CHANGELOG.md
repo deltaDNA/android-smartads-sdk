@@ -1,7 +1,7 @@
 # Change Log
 
 ## [1.3.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.3.0) (YYYY-MM-DD)
-Added AppLovin ad network.
+Added AppLovin ad network.  
 Added Thirdpresence ad network.  
 Updated Google Play Services dependencies.  
 Updated AdMob dependency.  
