@@ -140,6 +140,6 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-def getSha() {
+static def getSha() {
     return 'git rev-parse --short HEAD'.execute().text.trim()
 }
