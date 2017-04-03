@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.4.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.0) (YYYY-MM-DD)
+Updated Play Services and Support libraries.  
+
 ## [1.3.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.3.0) (2017-03-13)
 Added AppLovin ad network.  
 Added Thirdpresence ad network.  
