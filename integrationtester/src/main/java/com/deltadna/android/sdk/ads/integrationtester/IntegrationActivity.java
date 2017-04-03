@@ -36,8 +36,6 @@ import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter;
-import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicInterstitialAdapter;
-import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter;
@@ -99,18 +97,6 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             0,
                             "3ac456d99b6a4cffb58cfba31fab2a21"),
-                    new SupersonicInterstitialAdapter(
-                            0,
-                            0,
-                            0,
-                            "45d0aacd",
-                            false),
-                    new SupersonicRewardedAdapter(
-                            0,
-                            0,
-                            0,
-                            "45d0aacd",
-                            false),
                     new ThirdPresenceRewardedAdapter(
                             0,
                             0,

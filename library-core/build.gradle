@@ -28,7 +28,6 @@ dependencies {
     provided project(':provider-inmobi')
     provided project(':provider-mobfox')
     provided project(':provider-mopub')
-    provided project(':provider-supersonic')
     provided project(':provider-thirdpresence')
     provided project(':provider-unity')
     provided project(':provider-vungle')

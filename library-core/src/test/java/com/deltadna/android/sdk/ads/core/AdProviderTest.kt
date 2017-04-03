@@ -31,8 +31,6 @@ import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter
-import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicInterstitialAdapter
-import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter
@@ -168,24 +166,6 @@ class AdProviderTest {
                 1, 2, 3, 4,
                 JSONObject().put("adUnitId", "adUnitId")))
                 .isInstanceOf(MoPubAdapter::class.java)
-    }
-    
-    @Test
-    fun supersonic() {
-        assertThat(SUPERSONIC.createAdapter(
-                1, 2, 3, 4,
-                JSONObject().put("appKey", "appKey").put("log", true)))
-                .isInstanceOf(SupersonicInterstitialAdapter::class.java)
-    }
-    
-    @Test
-    fun supersonicRewarded() {
-        assertThat(SUPERSONIC_REWARDED.createAdapter(
-                1, 2, 3, 4,
-                JSONObject().put("appKey", "appKey").put("log", true)))
-                .isInstanceOf(SupersonicRewardedAdapter::class.java)
-        
-        assertThat(SUPERSONIC.rewarded()).isSameAs(SUPERSONIC_REWARDED)
     }
     
     @Test

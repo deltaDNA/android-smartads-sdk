@@ -56,7 +56,6 @@ dependencies {
     compile project(':provider-inmobi')
     compile project(':provider-mobfox')
     compile project(':provider-mopub')
-    compile project(':provider-supersonic')
     compile project(':provider-thirdpresence')
     compile project(':provider-unity')
     compile project(':provider-vungle')

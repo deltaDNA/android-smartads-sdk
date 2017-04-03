@@ -60,7 +60,6 @@ android {
         inmobi {}
         mobfox {}
         mopub {}
-        supersonic {}
         thirdpresence {}
         unity {}
         vungle {}
@@ -79,7 +78,6 @@ dependencies {
     all_Compile project(':provider-inmobi')
     all_Compile project(':provider-mobfox')
     all_Compile project(':provider-mopub')
-    all_Compile project(':provider-supersonic')
     all_Compile project(':provider-thirdpresence')
     all_Compile project(':provider-unity')
     all_Compile project(':provider-vungle')
@@ -93,7 +91,6 @@ dependencies {
     inmobiCompile project(':provider-inmobi')
     mobfoxCompile project(':provider-mobfox')
     mopubCompile project(':provider-mopub')
-    supersonicCompile project(':provider-supersonic')
     thirdpresenceCompile project(':provider-thirdpresence')
     unityCompile project(':provider-unity')
     vungleCompile project(':provider-vungle')

@@ -32,8 +32,6 @@ import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter;
-import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicInterstitialAdapter;
-import com.deltadna.android.sdk.ads.provider.supersonic.SupersonicRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter;
@@ -282,48 +280,6 @@ enum AdProvider {
                     demoteOnCode,
                     index,
                     config.getString("adUnitId"));
-        }
-    },
-    
-    SUPERSONIC("com.deltadna.android.sdk.ads.provider.supersonic.SupersonicInterstitialAdapter") {
-        @Override
-        MediationAdapter createAdapter(
-                int eCPM,
-                int adFloorPrice,
-                int demoteOnCode,
-                int index,
-                JSONObject config) throws JSONException {
-            
-            return new SupersonicInterstitialAdapter(
-                    eCPM,
-                    demoteOnCode,
-                    index,
-                    config.getString("appKey"),
-                    config.getBoolean("log"));
-        }
-        
-        @Nullable
-        @Override
-        AdProvider rewarded() {
-            return SUPERSONIC_REWARDED;
-        }
-    },
-    
-    SUPERSONIC_REWARDED(SUPERSONIC.cls) {
-        @Override
-        MediationAdapter createAdapter(
-                int eCPM,
-                int adFloorPrice,
-                int demoteOnCode,
-                int index,
-                JSONObject config) throws JSONException {
-            
-            return new SupersonicRewardedAdapter(
-                    eCPM,
-                    demoteOnCode,
-                    index,
-                    config.getString("appKey"),
-                    config.getBoolean("log"));
         }
     },
     
