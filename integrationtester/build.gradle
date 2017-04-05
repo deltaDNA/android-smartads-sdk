@@ -54,6 +54,7 @@ dependencies {
     compile project(':provider-amazon')
     compile project(':provider-applovin')
     compile project(':provider-inmobi')
+    compile project(':provider-ironsource')
     compile project(':provider-mobfox')
     compile project(':provider-mopub')
     compile project(':provider-thirdpresence')

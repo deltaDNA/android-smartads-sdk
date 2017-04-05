@@ -58,6 +58,7 @@ android {
         chartboost {}
         flurry {}
         inmobi {}
+        ironsource {}
         mobfox {}
         mopub {}
         thirdpresence {}
@@ -76,6 +77,7 @@ dependencies {
     all_Compile project(':provider-chartboost')
     all_Compile project(':provider-flurry')
     all_Compile project(':provider-inmobi')
+    all_Compile project(':provider-ironsource')
     all_Compile project(':provider-mobfox')
     all_Compile project(':provider-mopub')
     all_Compile project(':provider-thirdpresence')
@@ -89,6 +91,7 @@ dependencies {
     chartboostCompile project(':provider-chartboost')
     flurryCompile project(':provider-flurry')
     inmobiCompile project(':provider-inmobi')
+    ironsourceCompile project(':provider-ironsource')
     mobfoxCompile project(':provider-mobfox')
     mopubCompile project(':provider-mopub')
     thirdpresenceCompile project(':provider-thirdpresence')

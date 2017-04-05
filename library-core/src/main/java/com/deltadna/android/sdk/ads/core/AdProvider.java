@@ -30,6 +30,8 @@ import com.deltadna.android.sdk.ads.provider.flurry.FlurryInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter;
+import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter;
+import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter;
 import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceRewardedAdapter;
@@ -246,6 +248,48 @@ enum AdProvider {
                     index,
                     config.getString("accountId"),
                     config.getLong("placementId"));
+        }
+    },
+    
+    IRONSOURCE("com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter") {
+        @Override
+        MediationAdapter createAdapter(
+                int eCPM,
+                int adFloorPrice,
+                int demoteOnCode,
+                int index,
+                JSONObject config) throws JSONException {
+            
+            return new IronSourceInterstitialAdapter(
+                    eCPM,
+                    demoteOnCode,
+                    index,
+                    config.getString("appKey"),
+                    false);
+        }
+        
+        @Nullable
+        @Override
+        AdProvider rewarded() {
+            return IRONSOURCE_REWARDED;
+        }
+    },
+    
+    IRONSOURCE_REWARDED("com.deltadna.android.sdk.ads.provider.ironsource.IronSourceRewardedAdapter") {
+        @Override
+        MediationAdapter createAdapter(
+                int eCPM,
+                int adFloorPrice,
+                int demoteOnCode,
+                int index,
+                JSONObject config) throws JSONException {
+            
+            return new IronSourceRewardedAdapter(
+                    eCPM,
+                    demoteOnCode,
+                    index,
+                    config.getString("appKey"),
+                    false);
         }
     },
     

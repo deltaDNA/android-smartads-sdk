@@ -34,6 +34,8 @@ import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter;
+import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter;
+import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter;
 import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceRewardedAdapter;
@@ -87,6 +89,18 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             "d9518d128a124772b07a750fa98d1bbe",
                             1464837141675L),
+                    new IronSourceInterstitialAdapter(
+                            0,
+                            0,
+                            0,
+                            "6114d36d",
+                            true),
+                    new IronSourceRewardedAdapter(
+                            0,
+                            0,
+                            0,
+                            "6114d36d",
+                            true),
                     new MobFoxAdapter(
                             0,
                             0,

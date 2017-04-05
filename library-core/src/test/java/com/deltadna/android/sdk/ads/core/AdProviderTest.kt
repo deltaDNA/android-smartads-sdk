@@ -29,6 +29,8 @@ import com.deltadna.android.sdk.ads.provider.flurry.FlurryInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter
+import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter
+import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter
 import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceRewardedAdapter
@@ -150,6 +152,26 @@ class AdProviderTest {
                 .isInstanceOf(InMobiRewardedAdapter::class.java)
         
         assertThat(INMOBI.rewarded()).isSameAs(INMOBI_REWARDED)
+    }
+    
+    @Test
+    fun ironSource() {
+        assertThat(IRONSOURCE.createAdapter(
+                1, 2, 3, 4,
+                JSONObject()
+                        .put("appKey", "appKey")))
+                .isInstanceOf(IronSourceInterstitialAdapter::class.java)
+    }
+    
+    @Test
+    fun ironSourceRewarded() {
+        assertThat(IRONSOURCE_REWARDED.createAdapter(
+                1, 2, 3, 4,
+                JSONObject()
+                        .put("appKey", "appKey")))
+                .isInstanceOf(IronSourceRewardedAdapter::class.java)
+        
+        assertThat(IRONSOURCE.rewarded()).isSameAs(IRONSOURCE_REWARDED)
     }
     
     @Test

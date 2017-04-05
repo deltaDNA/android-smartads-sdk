@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 deltaDNA Ltd. All rights reserved.
+ * Copyright (c) 2017 deltaDNA Ltd. All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-android {}
+android {
+    defaultConfig {
+        buildConfigField('String', logTagName, "\"$logTagValue IronSource\"")
+    }
+}
 
 dependencies {
     compile project(':library-bindings')
     
-    provided project(':provider-admob')
-    provided project(':provider-adcolony')
-    provided project(':provider-amazon')
-    provided project(':provider-applovin')
-    provided project(':provider-chartboost')
-    provided project(':provider-flurry')
-    provided project(':provider-inmobi')
-    provided project(':provider-ironsource')
-    provided project(':provider-mobfox')
-    provided project(':provider-mopub')
-    provided project(':provider-thirdpresence')
-    provided project(':provider-unity')
-    provided project(':provider-vungle')
+    compile files('libs/mediationsdk-6.5.2.1.jar')
+    // needed for advertising id retrieval
+    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }
