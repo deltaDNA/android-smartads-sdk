@@ -32,6 +32,7 @@ import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter;
 import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter;
 import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
+import com.deltadna.android.sdk.ads.provider.facebook.FacebookInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter;
@@ -77,6 +78,11 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             "ElG63iTpOQfZvG4kizCGhhXZQiWt37hIszOvfyi3MNdFdh-KeAbKt7vHrQ9uXrBNpZHTV-WtL87-r6IUGvp80h",
                             "Interstitial",
                             true),
+                    new FacebookInterstitialAdapter(
+                            0,
+                            0,
+                            0,
+                            "1296985967048898_1296988693715292"),
                     new InMobiInterstitialAdapter(
                             0,
                             0,

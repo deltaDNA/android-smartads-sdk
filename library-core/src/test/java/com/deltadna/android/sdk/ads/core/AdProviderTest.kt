@@ -25,6 +25,7 @@ import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostRewardedAdapter
+import com.deltadna.android.sdk.ads.provider.facebook.FacebookInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter
@@ -106,6 +107,15 @@ class AdProviderTest {
                 .isInstanceOf(ChartBoostRewardedAdapter::class.java)
         
         assertThat(CHARTBOOST.rewarded()).isSameAs(CHARTBOOST_REWARDED)
+    }
+    
+    @Test
+    fun facebook() {
+        assertThat(FACEBOOK.createAdapter(
+                1, 2, 3, 4,
+                JSONObject()
+                        .put("placement", "placement")))
+                .isInstanceOf(FacebookInterstitialAdapter::class.java)
     }
     
     @Test

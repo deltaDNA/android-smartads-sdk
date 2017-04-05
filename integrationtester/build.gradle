@@ -17,6 +17,8 @@
 android {
     defaultConfig {
         applicationId 'com.deltadna.android.sdk.ads.integrationtester'
+        
+        multiDexEnabled true
     }
     
     dexOptions {
@@ -48,6 +50,7 @@ android {
 
 dependencies {
     compile "com.android.support:appcompat-v7:$supportVersion"
+    compile "com.android.support:multidex:$multidexVersion"
     
     compile project(':provider-adcolony')
     compile project(':provider-admob')
@@ -55,6 +58,7 @@ dependencies {
     compile project(':provider-applovin')
     compile project(':provider-inmobi')
     compile project(':provider-ironsource')
+    compile project(':provider-facebook')
     compile project(':provider-mobfox')
     compile project(':provider-mopub')
     compile project(':provider-thirdpresence')

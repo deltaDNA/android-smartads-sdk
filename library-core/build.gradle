@@ -24,6 +24,7 @@ dependencies {
     provided project(':provider-amazon')
     provided project(':provider-applovin')
     provided project(':provider-chartboost')
+    provided project(':provider-facebook')
     provided project(':provider-flurry')
     provided project(':provider-inmobi')
     provided project(':provider-ironsource')

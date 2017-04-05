@@ -26,6 +26,7 @@ import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostRewardedAdapter;
+import com.deltadna.android.sdk.ads.provider.facebook.FacebookInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter;
@@ -162,6 +163,23 @@ enum AdProvider {
                     config.optString(
                             "location",
                             ChartBoostInterstitialAdapter.LOCATION));
+        }
+    },
+    
+    FACEBOOK("com.deltadna.android.sdk.ads.provider.facebook.FacebookInterstitialAdapter") {
+        @Override
+        MediationAdapter createAdapter(
+                int eCPM,
+                int adFloorPrice,
+                int demoteOnCode,
+                int index,
+                JSONObject config) throws JSONException {
+            
+            return new FacebookInterstitialAdapter(
+                    eCPM,
+                    demoteOnCode,
+                    index,
+                    config.getString("placementId"));
         }
     },
     
