@@ -114,7 +114,7 @@ class AdProviderTest {
         assertThat(FACEBOOK.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
-                        .put("placement", "placement")))
+                        .put("placementId", "placement")))
                 .isInstanceOf(FacebookInterstitialAdapter::class.java)
     }
     
