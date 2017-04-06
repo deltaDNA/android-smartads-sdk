@@ -31,7 +31,7 @@ buildscript {
     }
     
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.android.tools.build:gradle:2.3.1'
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.1'
         classpath 'gradle.plugin.com.nimbledroid:gradle-profiler:1.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
@@ -67,7 +67,7 @@ subprojects {
     
     android {
         compileSdkVersion 25
-        buildToolsVersion '25'
+        buildToolsVersion '25.0.2'
         
         defaultConfig {
             minSdkVersion 15
