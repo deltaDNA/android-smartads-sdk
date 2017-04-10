@@ -22,7 +22,6 @@ import android.support.annotation.Nullable;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.inmobi.ads.InMobiInterstitial;
-import com.inmobi.sdk.InMobiSdk;
 
 import org.json.JSONObject;
 
@@ -76,12 +75,12 @@ public final class InMobiInterstitialAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "INMOBI";
+        return BuildConfig.PROVIDER_NAME;
     }
     
     @Override
     public String getProviderVersionString() {
-        return InMobiSdk.getVersion();
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override

@@ -7,6 +7,7 @@ Updated AdColony ad network.
 Updated AppLovin ad network.  
 Updated ChartBoost ad network.  
 Updated Flurry ad network.  
+Updated InMobi ad nerwork.  
 Updated Play Services and Support libraries.  
 
 ## [1.3.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.3.0) (2017-03-13)

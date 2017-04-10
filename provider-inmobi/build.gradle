@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+def providerVersion = '6.2.0'
+
 android {
     defaultConfig {
         buildConfigField('String', logTagName, "\"$logTagValue InMobi\"")
+        
+        buildConfigField('String', 'PROVIDER_NAME', "\"INMOBI\"")
+        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
     }
     
     testOptions {
@@ -29,8 +34,9 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile 'com.inmobi.monetization:inmobi-ads:6.1.0'
+    compile "com.inmobi.monetization:inmobi-ads:$providerVersion"
     compile 'com.squareup.picasso:picasso:2.5.2'
+    
     // needed for advertising id retrieval (and GoogleApiAvailability)
     compile "com.google.android.gms:play-services-base:$playServicesVersion"
 }

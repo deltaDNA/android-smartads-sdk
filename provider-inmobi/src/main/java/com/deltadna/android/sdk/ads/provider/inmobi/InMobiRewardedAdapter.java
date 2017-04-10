@@ -17,13 +17,10 @@
 package com.deltadna.android.sdk.ads.provider.inmobi;
 
 import android.app.Activity;
-import android.util.Log;
 
-import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.inmobi.ads.InMobiInterstitial;
-import com.inmobi.sdk.InMobiSdk;
 
 import org.json.JSONObject;
 
@@ -73,15 +70,15 @@ public final class InMobiRewardedAdapter extends MediationAdapter {
             rewarded = null;
         }
     }
-
+    
     @Override
     public String getProviderString() {
-        return "INMOBI";
+        return BuildConfig.PROVIDER_NAME;
     }
-
+    
     @Override
     public String getProviderVersionString() {
-        return InMobiSdk.getVersion();
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override
