@@ -127,12 +127,12 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "APPLOVIN";
+        return BuildConfig.PROVIDER_NAME;
     }
     
     @Override
     public String getProviderVersionString() {
-        return AppLovinSdk.VERSION;
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override

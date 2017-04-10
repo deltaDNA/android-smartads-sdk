@@ -4,6 +4,7 @@
 Added Facebook ad network.  
 Added IronSource ad network.  
 Updated AdColony ad network.  
+Updated AppLovin ad network.  
 Updated Flurry ad network.  
 Updated Play Services and Support libraries.  
 

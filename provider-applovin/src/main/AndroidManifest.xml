@@ -26,7 +26,9 @@ limitations under the License.
         android:maxSdkVersion="18"/>
     
     <application>
-        <activity android:name="com.applovin.adview.AppLovinInterstitialActivity"/>
+        <activity
+            android:name="com.applovin.adview.AppLovinInterstitialActivity"
+            android:configChanges="orientation|screenSize"/>
         <activity android:name="com.applovin.adview.AppLovinConfirmationActivity"/>
     </application>
 </manifest>

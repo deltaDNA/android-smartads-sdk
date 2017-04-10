@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
+def providerVersion = '7.0.0'
+
 android {
     defaultConfig {
         buildConfigField('String', logTagName, "\"$logTagValue AppLovin\"")
+        
+        buildConfigField('String', 'PROVIDER_NAME', "\"APPLOVIN\"")
+        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
     }
 }
 
 dependencies {
     compile project(':library-bindings')
     
-    compile files('libs/applovin-sdk-6.4.2.jar')
+    compile files("libs/applovin-sdk-${providerVersion}.jar")
+    
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }
