@@ -87,12 +87,12 @@ public final class AdColonyAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "ADCOLONY";
+        return BuildConfig.PROVIDER_NAME;
     }
     
     @Override
     public String getProviderVersionString() {
-        return "3.0.7";
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override

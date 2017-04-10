@@ -3,6 +3,7 @@
 ## [1.4.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.0) (YYYY-MM-DD)
 Added Facebook ad network.  
 Added IronSource ad network.  
+Updated AdColony ad network.  
 Updated Flurry ad network.  
 Updated Play Services and Support libraries.  
 
