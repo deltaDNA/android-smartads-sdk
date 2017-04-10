@@ -62,12 +62,12 @@ public final class MobFoxAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "MOBFOX";
+        return BuildConfig.PROVIDER_NAME;
     }
     
     @Override
     public String getProviderVersionString() {
-        return "3.2.3";
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override
