@@ -56,6 +56,7 @@ dependencies {
     compile project(':provider-admob')
     compile project(':provider-amazon')
     compile project(':provider-applovin')
+    compile project(':provider-chartboost')
     compile project(':provider-inmobi')
     compile project(':provider-ironsource')
     compile project(':provider-facebook')

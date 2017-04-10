@@ -86,15 +86,15 @@ public final class ChartBoostInterstitialAdapter extends MediationAdapter {
             Chartboost.showInterstitial(location);
         }
     }
-
+    
     @Override
     public String getProviderString() {
-        return "CHARTBOOST";
+        return BuildConfig.PROVIDER_NAME;
     }
-
+    
     @Override
     public String getProviderVersionString() {
-        return Chartboost.getSDKVersion();
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override

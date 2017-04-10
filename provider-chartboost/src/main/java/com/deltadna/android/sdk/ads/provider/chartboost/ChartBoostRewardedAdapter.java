@@ -83,15 +83,15 @@ public final class ChartBoostRewardedAdapter extends MediationAdapter {
             Chartboost.showRewardedVideo(location);
         }
     }
-
+    
     @Override
     public String getProviderString() {
-        return "CHARTBOOST";
+        return BuildConfig.PROVIDER_NAME;
     }
-
+    
     @Override
     public String getProviderVersionString() {
-        return Chartboost.getSDKVersion();
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override
