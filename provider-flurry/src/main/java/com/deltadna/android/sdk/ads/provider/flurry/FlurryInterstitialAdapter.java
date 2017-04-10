@@ -22,7 +22,6 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.flurry.android.FlurryAgent;
 import com.flurry.android.ads.FlurryAdInterstitial;
 import com.flurry.android.ads.FlurryAdTargeting;
 
@@ -33,6 +32,7 @@ public final class FlurryInterstitialAdapter extends MediationAdapter {
     private final String apiKey;
     private final String adSpace;
     private final boolean testMode;
+    private final boolean logging;
     
     private FlurryAdInterstitial interstitial;
     
@@ -42,23 +42,22 @@ public final class FlurryInterstitialAdapter extends MediationAdapter {
             int waterfallIndex,
             String apiKey,
             String adSpace,
-            boolean testMode) {
+            boolean testMode,
+            boolean logging) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.apiKey = apiKey;
         this.adSpace = adSpace;
         this.testMode = testMode;
-        if(testMode) {
-            Log.i(BuildConfig.LOG_TAG, "Flurry set to have test ads enabled");
-        }
+        this.logging = logging;
     }
     
     @Override
     public void requestAd(Activity activity, MediationListener listener, JSONObject configuration) {
-        if(!FlurryHelper.isInitialised()) {
+        if (!FlurryHelper.isInitialised()) {
             try {
-                FlurryHelper.initialise(activity, apiKey);
+                FlurryHelper.initialise(activity, apiKey, logging);
             } catch (Exception e) {
                 Log.e(BuildConfig.LOG_TAG, "Failed to initialise", e);
                 listener.onAdFailedToLoad(
@@ -84,22 +83,22 @@ public final class FlurryInterstitialAdapter extends MediationAdapter {
                     "Failed to fetch Flurry ad: " + e);
         }
     }
-
+    
     @Override
     public void showAd() {
-        if(interstitial != null && interstitial.isReady()) {
+        if (interstitial != null && interstitial.isReady()) {
             interstitial.displayAd();
         }
     }
-
+    
     @Override
     public String getProviderString() {
-        return "FLURRY";
+        return BuildConfig.PROVIDER_NAME;
     }
-
+    
     @Override
     public String getProviderVersionString() {
-        return FlurryAgent.getReleaseVersion();
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override

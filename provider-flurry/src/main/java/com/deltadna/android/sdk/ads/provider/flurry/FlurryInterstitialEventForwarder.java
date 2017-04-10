@@ -43,49 +43,62 @@ final class FlurryInterstitialEventForwarder implements FlurryAdInterstitialList
     
     @Override
     public void onFetched(FlurryAdInterstitial flurryAdInterstitial) {
-        Log.d(BuildConfig.LOG_TAG, "Flurry Ad loaded");
+        Log.d(BuildConfig.LOG_TAG, "On fetched");
         listener.onAdLoaded(adapter);
     }
-
+    
     @Override
     public void onRendered(FlurryAdInterstitial flurryAdInterstitial) {
-        // nothing to do
+        Log.d(BuildConfig.LOG_TAG, "On rendered");
     }
-
+    
     @Override
     public void onDisplay(FlurryAdInterstitial flurryAdInterstitial) {
+        Log.d(BuildConfig.LOG_TAG, "On display");
         listener.onAdShowing(adapter);
     }
-
+    
     @Override
     public void onClose(FlurryAdInterstitial flurryAdInterstitial) {
+        Log.d(BuildConfig.LOG_TAG, "On close");
         listener.onAdClosed(adapter, true);
     }
-
+    
     @Override
     public void onAppExit(FlurryAdInterstitial flurryAdInterstitial) {
+        Log.d(BuildConfig.LOG_TAG, "On app exit");
         listener.onAdLeftApplication(adapter);
     }
-
+    
     @Override
     public void onClicked(FlurryAdInterstitial flurryAdInterstitial) {
+        Log.d(BuildConfig.LOG_TAG, "On clicked");
         listener.onAdClicked(adapter);
     }
-
+    
     @Override
     public void onVideoCompleted(FlurryAdInterstitial flurryAdInterstitial) {
-        // nothing to do
+        Log.d(BuildConfig.LOG_TAG, "On video completed");
     }
-
+    
     @Override
-    public void onError(FlurryAdInterstitial flurryAdInterstitial, FlurryAdErrorType flurryAdErrorType, int errorCode) {
-        Log.d(BuildConfig.LOG_TAG, "Ad error: " + errorCode);
+    public void onError(
+            FlurryAdInterstitial ad,
+            FlurryAdErrorType type,
+            int code) {
+        
+        Log.w(BuildConfig.LOG_TAG, String.format(
+                Locale.US,
+                "On error: %s/%d",
+                type,
+                code));
+        
+        ad.destroy();
         
         final AdRequestResult adStatus;
-
-        switch (flurryAdErrorType) {
+        switch (type) {
             case FETCH:
-                switch (errorCode) {
+                switch (code) {
                     case 1: // No network connectivity - There is no internet connection
                         adStatus = AdRequestResult.Network;
                         break;
@@ -127,7 +140,7 @@ final class FlurryInterstitialEventForwarder implements FlurryAdInterstitialList
                         break;
                     
                     default:
-                        Log.w(BuildConfig.LOG_TAG, "Unknown case: " + errorCode);
+                        Log.w(BuildConfig.LOG_TAG, "Unknown case: " + code);
                         adStatus = AdRequestResult.Error;
                 }
                 
@@ -137,20 +150,17 @@ final class FlurryInterstitialEventForwarder implements FlurryAdInterstitialList
                         String.format(
                                 Locale.US,
                                 "Flurry error %d / %s",
-                                errorCode,
-                                flurryAdErrorType));
+                                code,
+                                type));
                 break;
             
             case RENDER:
-                listener.onAdFailedToShow(adapter, AdClosedResult.ERROR);
-                break;
-            
             case CLICK:
                 listener.onAdFailedToShow(adapter, AdClosedResult.ERROR);
                 break;
             
             default:
-                Log.w(BuildConfig.LOG_TAG, "Unknown case: " + flurryAdErrorType);
+                Log.w(BuildConfig.LOG_TAG, "Unknown case: " + type);
         }
     }
 }

@@ -33,6 +33,8 @@ import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter;
 import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.facebook.FacebookInterstitialAdapter;
+import com.deltadna.android.sdk.ads.provider.flurry.FlurryInterstitialAdapter;
+import com.deltadna.android.sdk.ads.provider.flurry.FlurryRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter;
@@ -83,6 +85,22 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             0,
                             "1296985967048898_1296988693715292"),
+                    new FlurryInterstitialAdapter(
+                            0,
+                            0,
+                            0,
+                            "HWJM27QJT2HS2ZBBG32P",
+                            "INTERSTITIAL_ADSPACE",
+                            true,
+                            true),
+                    new FlurryRewardedAdapter(
+                            0,
+                            0,
+                            0,
+                            "HWJM27QJT2HS2ZBBG32P",
+                            "REWARDED_ADSPACE",
+                            true,
+                            true),
                     new InMobiInterstitialAdapter(
                             0,
                             0,

@@ -17,18 +17,27 @@
 package com.deltadna.android.sdk.ads.provider.flurry;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.flurry.android.FlurryAgent;
+import com.flurry.android.FlurryAgentListener;
 
 final class FlurryHelper {
     
     private static boolean initialised;
     
-    public static void initialise(Activity activity, String apiKey) {
+    static void initialise(Activity activity, String apiKey, boolean logging) {
         if (!initialised) {
-            new FlurryAgent.Builder().build(
-                    activity.getApplicationContext(),
-                    apiKey);
+            new FlurryAgent.Builder()
+                    .withListener(new FlurryAgentListener() {
+                        @Override
+                        public void onSessionStarted() {
+                            // logs an error otherwise...
+                        }
+                    })
+                    .withLogEnabled(logging)
+                    .withLogLevel(logging ? Log.VERBOSE : Log.WARN)
+                    .build(activity.getApplicationContext(), apiKey);
             
             initialised = true;
         }

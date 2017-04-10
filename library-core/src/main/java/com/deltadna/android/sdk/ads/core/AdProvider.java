@@ -198,7 +198,8 @@ enum AdProvider {
                     index,
                     config.getString("apiKey"),
                     config.getString("adSpace"),
-                    config.optBoolean("testMode", false));
+                    config.optBoolean("testMode", false),
+                    false);
         }
         
         @Nullable
@@ -223,7 +224,8 @@ enum AdProvider {
                     index,
                     config.getString("apiKey"),
                     config.getString("adSpace"),
-                    config.optBoolean("testMode", false));
+                    config.optBoolean("testMode", false),
+                    false);
         }
     },
     

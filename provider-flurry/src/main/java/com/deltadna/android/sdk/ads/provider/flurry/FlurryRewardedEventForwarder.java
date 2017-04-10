@@ -35,7 +35,7 @@ final class FlurryRewardedEventForwarder implements FlurryAdInterstitialListener
     
     private boolean completed;
     
-    public FlurryRewardedEventForwarder(
+    FlurryRewardedEventForwarder(
             MediationListener listener,
             MediationAdapter adapter) {
         
@@ -45,50 +45,65 @@ final class FlurryRewardedEventForwarder implements FlurryAdInterstitialListener
     
     @Override
     public void onFetched(FlurryAdInterstitial flurryAdInterstitial) {
-        Log.d(BuildConfig.LOG_TAG, "Ad fetched");
+        Log.d(BuildConfig.LOG_TAG, "On fetched");
         listener.onAdLoaded(adapter);
     }
-
+    
     @Override
     public void onRendered(FlurryAdInterstitial flurryAdInterstitial) {
-        // nothing to do
+        Log.d(BuildConfig.LOG_TAG, "On rendered");
     }
-
+    
     @Override
     public void onDisplay(FlurryAdInterstitial flurryAdInterstitial) {
+        Log.d(BuildConfig.LOG_TAG, "On display");
+        
         completed = false;
         listener.onAdShowing(adapter);
     }
-
+    
     @Override
     public void onClose(FlurryAdInterstitial flurryAdInterstitial) {
+        Log.d(BuildConfig.LOG_TAG, "On closed");
         listener.onAdClosed(adapter, completed);
     }
-
+    
     @Override
     public void onAppExit(FlurryAdInterstitial flurryAdInterstitial) {
+        Log.d(BuildConfig.LOG_TAG, "On app exit");
         listener.onAdLeftApplication(adapter);
     }
-
+    
     @Override
     public void onClicked(FlurryAdInterstitial flurryAdInterstitial) {
+        Log.d(BuildConfig.LOG_TAG, "On clicked");
         listener.onAdClicked(adapter);
     }
-
+    
     @Override
     public void onVideoCompleted(FlurryAdInterstitial flurryAdInterstitial) {
+        Log.d(BuildConfig.LOG_TAG, "On video completed");
         completed = true;
     }
-
+    
     @Override
-    public void onError(FlurryAdInterstitial flurryAdInterstitial, FlurryAdErrorType flurryAdErrorType, int errorCode) {
-        Log.w(BuildConfig.LOG_TAG, "Ad error: " + errorCode);
+    public void onError(
+            FlurryAdInterstitial ad,
+            FlurryAdErrorType type,
+            int code) {
+        
+        Log.w(BuildConfig.LOG_TAG, String.format(
+                Locale.US,
+                "On error: %s/%d",
+                type,
+                code));
+        
+        ad.destroy();
         
         final AdRequestResult adStatus;
-        
-        switch (flurryAdErrorType) {
+        switch (type) {
             case FETCH:
-                switch (errorCode) {
+                switch (code) {
                     case 1: // No network connectivity - There is no internet connection
                         adStatus = AdRequestResult.Network;
                         break;
@@ -130,7 +145,7 @@ final class FlurryRewardedEventForwarder implements FlurryAdInterstitialListener
                         break;
                     
                     default:
-                        Log.w(BuildConfig.LOG_TAG, "Not handled: " + errorCode);
+                        Log.w(BuildConfig.LOG_TAG, "Not handled: " + code);
                         adStatus = AdRequestResult.Error;
                 }
                 
@@ -140,20 +155,17 @@ final class FlurryRewardedEventForwarder implements FlurryAdInterstitialListener
                         String.format(
                                 Locale.ENGLISH,
                                 "Flurry error %d type %s",
-                                errorCode,
-                                flurryAdErrorType));
+                                code,
+                                type));
                 break;
             
             case RENDER:
-                listener.onAdFailedToShow(adapter, AdClosedResult.ERROR);
-                break;
-            
             case CLICK:
                 listener.onAdFailedToShow(adapter, AdClosedResult.ERROR);
                 break;
             
             default:
-                Log.w(BuildConfig.LOG_TAG, "Not handled: " + flurryAdErrorType);
+                Log.w(BuildConfig.LOG_TAG, "Not handled: " + type);
         }
     }
 }
