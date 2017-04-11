@@ -4,13 +4,13 @@
 Added Facebook ad network.  
 Added IronSource ad network.  
 Updated minimum API level to 16 (Jelly Bean).  
-Updated AdColony ad network.  
-Updated AppLovin ad network.  
-Updated ChartBoost ad network.  
-Updated Flurry ad network.  
-Updated InMobi ad nerwork.  
-Updated MobFox ad network.  
-Updated Vungle ad network.  
+Updated AdColony dependency.  
+Updated AppLovin dependency.  
+Updated ChartBoost dependency.  
+Updated Flurry dependency.  
+Updated InMobi dependency.  
+Updated MobFox dependency.  
+Updated Vungle dependency.  
 Updated Play Services and Support libraries.  
 
 ## [1.3.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.3.0) (2017-03-13)
