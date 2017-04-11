@@ -23,7 +23,7 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile('com.thirdpresence.adsdk.sdk:thirdpresence-ad-sdk:1.5.1') {
+    compile('com.thirdpresence.adsdk.sdk:thirdpresence-ad-sdk:1.5.3') {
         exclude group: 'com.android.support', module: 'support-compat'
         exclude group: 'com.android.support', module: 'support-core-utils'
     }

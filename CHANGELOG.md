@@ -10,6 +10,7 @@ Updated ChartBoost dependency.
 Updated Flurry dependency.  
 Updated InMobi dependency.  
 Updated MobFox dependency.  
+Updated ThirdPresence dependency.  
 Updated Vungle dependency.  
 Updated Play Services and Support libraries.  
 
