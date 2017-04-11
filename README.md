@@ -21,7 +21,7 @@ The deltaDNA SmartAds SDK provides your Android game with access to our intellig
 * [License](#license)
 
 ## Adding to a project
-The deltaDNA SmartAds SDK can be used in Android projects using minimum SDK version 15 and newer (Android 4.0.3+).
+The deltaDNA SmartAds SDK can be used in Android projects using minimum SDK version 16 and newer (Android 4.1+).
 
 ### Gradle
 In your top-level build script

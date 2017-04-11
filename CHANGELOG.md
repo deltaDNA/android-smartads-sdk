@@ -3,6 +3,7 @@
 ## [1.4.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.0) (YYYY-MM-DD)
 Added Facebook ad network.  
 Added IronSource ad network.  
+Updated minimum API level to 16 (Jelly Bean).  
 Updated AdColony ad network.  
 Updated AppLovin ad network.  
 Updated ChartBoost ad network.  

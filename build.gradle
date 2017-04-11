@@ -70,7 +70,7 @@ subprojects {
         buildToolsVersion '25.0.2'
         
         defaultConfig {
-            minSdkVersion 15
+            minSdkVersion 16
             targetSdkVersion 25
             
             versionCode 1
