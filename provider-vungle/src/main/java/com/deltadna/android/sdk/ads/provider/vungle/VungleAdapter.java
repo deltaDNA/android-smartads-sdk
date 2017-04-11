@@ -91,12 +91,12 @@ public final class VungleAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "VUNGLE";
+        return BuildConfig.PROVIDER_NAME;
     }
     
     @Override
     public String getProviderVersionString() {
-        return VunglePub.VERSION;
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override

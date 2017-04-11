@@ -30,8 +30,6 @@ final class VungleEventForwarder implements EventListener {
     private final MediationListener listener;
     private final MediationAdapter adapter;
     
-    private boolean completed;
-    
     VungleEventForwarder(MediationListener listener, MediationAdapter adapter) {
         this.listener = listener;
         this.adapter = adapter;
@@ -40,8 +38,6 @@ final class VungleEventForwarder implements EventListener {
     @Override
     public void onAdUnavailable(final String reason) {
         Log.w(BuildConfig.LOG_TAG, "Ad unavailable: " + reason);
-        
-        completed = false;
         listener.onAdFailedToShow(adapter, AdClosedResult.EXPIRED);
     }
     
@@ -53,19 +49,24 @@ final class VungleEventForwarder implements EventListener {
     @Override
     public void onAdStart() {
         Log.d(BuildConfig.LOG_TAG, "Ad start");
-        
-        completed = false;
         listener.onAdShowing(adapter);
     }
     
     @Override
-    public void onAdEnd(boolean wasCallToActionClicked) {
-        Log.d(BuildConfig.LOG_TAG, "Ad end: " + wasCallToActionClicked);
+    public void onAdEnd(
+            boolean wasSuccessfulView,
+            boolean wasCallToActionClicked) {
+        
+        Log.d(BuildConfig.LOG_TAG, String.format(
+                Locale.US,
+                "Ad end: %s/%s",
+                wasSuccessfulView,
+                wasCallToActionClicked));
         
         if (wasCallToActionClicked) {
             listener.onAdClicked(adapter);
         }
-        listener.onAdClosed(adapter, completed);
+        listener.onAdClosed(adapter, wasSuccessfulView);
     }
     
     @Override
@@ -74,12 +75,6 @@ final class VungleEventForwarder implements EventListener {
             int watchedMillis,
             int videoMillis) {
         
-        Log.d(BuildConfig.LOG_TAG, String.format(
-                Locale.US,
-                "Video view: %s/%d/%d",
-                isCompletedView,
-                watchedMillis,
-                videoMillis));
-        completed = isCompletedView;
+        // deprecated
     }
 }

@@ -16,7 +16,6 @@
 
 package com.deltadna.android.sdk.ads.provider.vungle
 
-import android.os.Build
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
@@ -26,11 +25,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class,
-        sdk = intArrayOf(Build.VERSION_CODES.LOLLIPOP))
 class VungleEventForwarderTest {
     
     private val listener = mock<MediationListener>()
@@ -60,8 +56,7 @@ class VungleEventForwarderTest {
     @Test
     fun notCompletedShowing() {
         uut.onAdStart()
-        uut.onVideoView(false, 0, 0)
-        uut.onAdEnd(false)
+        uut.onAdEnd(false, false)
         
         with(inOrder(listener)) {
             verify(listener).onAdShowing(same(adapter))
@@ -73,8 +68,7 @@ class VungleEventForwarderTest {
     @Test
     fun completedShowing() {
         uut.onAdStart()
-        uut.onVideoView(true, 0, 0)
-        uut.onAdEnd(false)
+        uut.onAdEnd(true, false)
         
         with(inOrder(listener)) {
             verify(listener).onAdShowing(same(adapter))
@@ -86,8 +80,7 @@ class VungleEventForwarderTest {
     @Test
     fun completedShowingAndClicked() {
         uut.onAdStart()
-        uut.onVideoView(true, 0, 0)
-        uut.onAdEnd(true)
+        uut.onAdEnd(true, true)
         
         with(inOrder(listener)) {
             verify(listener).onAdShowing(same(adapter))

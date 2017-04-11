@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+def providerVersion = '4.0.3'
+
 android {
     defaultConfig {
         buildConfigField('String', logTagName, "\"$logTagValue Vungle\"")
+        
+        buildConfigField('String', 'PROVIDER_NAME', "\"VUNGLE\"")
+        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
     }
     
     packagingOptions {
@@ -32,10 +37,11 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile files('libs/vungle-publisher-adaptive-id-3.3.5.jar')
+    compile files("libs/vungle-publisher-adaptive-id-${providerVersion}.jar")
+    
+    compile 'com.google.dagger:dagger:2.7'
+    compile 'javax.inject:javax.inject:1'
+    
     // needed for advertising id retrieval (and GooglePlayServicesUtil)
     compile "com.google.android.gms:play-services-base:$playServicesVersion"
-    
-    compile 'com.google.dagger:dagger:2.1'
-    compile 'javax.inject:javax.inject:1'
 }
