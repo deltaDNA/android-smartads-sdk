@@ -82,12 +82,12 @@ public final class MoPubAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "MOPUB";
+        return BuildConfig.PROVIDER_NAME;
     }
     
     @Override
     public String getProviderVersionString() {
-        return MoPub.SDK_VERSION;
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override

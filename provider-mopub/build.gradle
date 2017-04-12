@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
+def providerVersion = '4.13.0'
+
 android {
     defaultConfig {
         buildConfigField('String', logTagName, "\"$logTagValue MoPub\"")
+        
+        buildConfigField('String', 'PROVIDER_NAME', "\"MOBFOX\"")
+        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
     }
 }
 
 dependencies {
     compile project(':library-bindings')
     
-    compile 'com.mopub:mopub-sdk-interstitial:4.11.0'
+    compile "com.mopub:mopub-sdk-interstitial:$providerVersion"
+    
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }
