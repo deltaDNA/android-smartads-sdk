@@ -11,6 +11,7 @@ Updated Flurry dependency.
 Updated InMobi dependency.  
 Updated MobFox dependency.  
 Updated ThirdPresence dependency.  
+Updated Unity dependency.  
 Updated Vungle dependency.  
 Updated Play Services and Support libraries.  
 

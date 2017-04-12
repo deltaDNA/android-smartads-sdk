@@ -108,12 +108,12 @@ public final class UnityRewardedAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "UNITY";
+        return BuildConfig.PROVIDER_NAME;
     }
     
     @Override
     public String getProviderVersionString() {
-        return UnityAds.getVersion();
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override
