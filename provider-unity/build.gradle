@@ -20,7 +20,7 @@ android {
     defaultConfig {
         buildConfigField('String', logTagName, "\"$logTagValue Unity\"")
         
-        buildConfigField('String', 'PROVIDER_NAME', "\"ADCOLONY\"")
+        buildConfigField('String', 'PROVIDER_NAME', "\"UNITY\"")
         buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
     }
 }

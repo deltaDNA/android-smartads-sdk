@@ -101,12 +101,12 @@ public final class IronSourceInterstitialAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return Constants.NAME;
+        return BuildConfig.PROVIDER_NAME;
     }
     
     @Override
     public String getProviderVersionString() {
-        return Constants.VERSION;
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override

@@ -135,12 +135,12 @@ public final class AmazonAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "AMAZON";
+        return BuildConfig.PROVIDER_NAME;
     }
     
     @Override
     public String getProviderVersionString() {
-        return AdRegistration.getVersion();
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override

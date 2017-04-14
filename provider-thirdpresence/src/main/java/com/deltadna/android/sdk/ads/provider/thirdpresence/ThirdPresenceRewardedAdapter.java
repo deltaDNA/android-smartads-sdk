@@ -121,12 +121,12 @@ public final class ThirdPresenceRewardedAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "THIRDPRESENCE";
+        return BuildConfig.PROVIDER_NAME;
     }
     
     @Override
     public String getProviderVersionString() {
-        return "1.5.1";
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override

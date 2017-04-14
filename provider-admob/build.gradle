@@ -17,6 +17,9 @@
 android {
     defaultConfig {
         buildConfigField('String', logTagName, "\"$logTagValue AdMob\"")
+        
+        buildConfigField('String', 'PROVIDER_NAME', "\"ADMOB\"")
+        buildConfigField('String', 'PROVIDER_VERSION', "\"$playServicesVersion\"")
     }
 }
 

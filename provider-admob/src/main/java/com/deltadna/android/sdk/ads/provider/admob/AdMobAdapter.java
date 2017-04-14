@@ -85,12 +85,12 @@ final public class AdMobAdapter extends MediationAdapter {
     
     @Override
     public String getProviderString() {
-        return "ADMOB";
+        return BuildConfig.PROVIDER_NAME;
     }
     
     @Override
     public String getProviderVersionString() {
-        return "10.2.0";
+        return BuildConfig.PROVIDER_VERSION;
     }
     
     @Override

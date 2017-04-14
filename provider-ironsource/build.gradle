@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
+def providerVersion = '6.5.2.1'
+
 android {
     defaultConfig {
         buildConfigField('String', logTagName, "\"$logTagValue IronSource\"")
+        
+        buildConfigField('String', 'PROVIDER_NAME', "\"IRONSOURCE\"")
+        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
     }
 }
 
 dependencies {
     compile project(':library-bindings')
     
-    compile files('libs/mediationsdk-6.5.2.1.jar')
+    compile files("libs/mediationsdk-${providerVersion}.jar")
+    
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

@@ -20,7 +20,7 @@ android {
     defaultConfig {
         buildConfigField('String', logTagName, "\"$logTagValue Flurry\"")
         
-        buildConfigField('String', 'PROVIDER_NAME', "\"FACEBOOK\"")
+        buildConfigField('String', 'PROVIDER_NAME', "\"FLURRY\"")
         buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
     }
 }

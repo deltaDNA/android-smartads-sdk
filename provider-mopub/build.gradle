@@ -20,7 +20,7 @@ android {
     defaultConfig {
         buildConfigField('String', logTagName, "\"$logTagValue MoPub\"")
         
-        buildConfigField('String', 'PROVIDER_NAME', "\"MOBFOX\"")
+        buildConfigField('String', 'PROVIDER_NAME', "\"MOPUB\"")
         buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
     }
 }

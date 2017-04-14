@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
+def providerVersion = '5.8.1.1'
+
 android {
     defaultConfig {
         buildConfigField('String', logTagName, "\"$logTagValue Amazon\"")
+        
+        buildConfigField('String', 'PROVIDER_NAME', "\"AMAZON\"")
+        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
     }
 }
 
 dependencies {
     compile project(':library-bindings')
     
-    compile 'com.amazon.android:mobile-ads:5.8.1.1'
+    compile "com.amazon.android:mobile-ads:$providerVersion"
+    
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }
