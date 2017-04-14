@@ -48,7 +48,8 @@ allprojects {
 }
 
 subprojects {
-    def isLibrary = it.name.startsWith('library') || it.name.startsWith("provider")
+    def isProvider = it.name.startsWith('provider')
+    def isLibrary = it.name.startsWith('library') || isProvider
     
     if (isLibrary) {
         apply plugin: 'com.android.library'
@@ -76,7 +77,14 @@ subprojects {
             versionCode 1
             versionName VERSION_NAME
             
-            buildConfigField('String', logTagName, "\"$logTagValue\"")
+            if (isProvider) {
+                buildConfigField('String', logTagName, "\"$logTagValue $PROVIDER_NAME\"")
+                
+                buildConfigField('String', 'PROVIDER_NAME', "\"${PROVIDER_NAME.toUpperCase()}\"")
+                buildConfigField('String', 'PROVIDER_VERSION', "\"$PROVIDER_VERSION\"")
+            } else {
+                buildConfigField('String', logTagName, "\"$logTagValue\"")
+            }
             
             if (isLibrary) {
                 archivesBaseName = "${POM_ARTIFACT_ID}-${versionName}.${System.getenv("BUILD_NUMBER") ?: getSha()}"

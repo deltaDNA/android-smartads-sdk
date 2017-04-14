@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-def providerVersion = '7.0.0'
-
-android {
-    defaultConfig {
-        buildConfigField('String', logTagName, "\"$logTagValue Flurry\"")
-        
-        buildConfigField('String', 'PROVIDER_NAME', "\"FLURRY\"")
-        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
-    }
-}
-
 dependencies {
     compile project(':library-bindings')
     
-    compile "com.flurry.android:ads:$providerVersion"
+    compile "com.flurry.android:ads:$PROVIDER_VERSION"
     
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-basement:$playServicesVersion"

@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-def providerVersion = '1.5.3'
-
-android {
-    defaultConfig {
-        buildConfigField('String', logTagName, "\"$logTagValue Thirdpresence\"")
-        
-        buildConfigField('String', 'PROVIDER_NAME', "\"THIRDPRESENCE\"")
-        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
-    }
-}
-
 dependencies {
     compile project(':library-bindings')
     
-    compile("com.thirdpresence.adsdk.sdk:thirdpresence-ad-sdk:$providerVersion") {
+    compile("com.thirdpresence.adsdk.sdk:thirdpresence-ad-sdk:$PROVIDER_VERSION") {
         exclude group: 'com.android.support', module: 'support-compat'
         exclude group: 'com.android.support', module: 'support-core-utils'
     }

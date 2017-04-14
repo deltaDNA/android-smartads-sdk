@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 
-def providerVersion = '4.0.3'
-
 android {
-    defaultConfig {
-        buildConfigField('String', logTagName, "\"$logTagValue Vungle\"")
-        
-        buildConfigField('String', 'PROVIDER_NAME', "\"VUNGLE\"")
-        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
-    }
-    
     packagingOptions {
         exclude 'assets/vg_close.png'
         exclude 'assets/vg_cta.png'
@@ -37,8 +28,7 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile files("libs/vungle-publisher-adaptive-id-${providerVersion}.jar")
-    
+    compile files("libs/vungle-publisher-adaptive-id-${PROVIDER_VERSION}.jar")
     compile 'com.google.dagger:dagger:2.7'
     compile 'javax.inject:javax.inject:1'
     

@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-def providerVersion = '2.1.0'
-
-android {
-    defaultConfig {
-        buildConfigField('String', logTagName, "\"$logTagValue Unity\"")
-        
-        buildConfigField('String', 'PROVIDER_NAME', "\"UNITY\"")
-        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
-    }
-}
-
 dependencies {
     compile project(':library-bindings')
     
-    compile files("libs/unity-ads-${providerVersion}-classes.jar")
+    compile files("libs/unity-ads-${PROVIDER_VERSION}-classes.jar")
     
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-basement:$playServicesVersion"

@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-android {
-    defaultConfig {
-        buildConfigField('String', logTagName, "\"$logTagValue AdMob\"")
-        
-        buildConfigField('String', 'PROVIDER_NAME', "\"ADMOB\"")
-        buildConfigField('String', 'PROVIDER_VERSION', "\"$playServicesVersion\"")
-    }
-}
-
 dependencies {
     compile project(':library-bindings')
     
-    compile "com.google.firebase:firebase-ads:$playServicesVersion"
+    compile "com.google.firebase:firebase-ads:$PROVIDER_VERSION"
 }

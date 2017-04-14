@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 
-def providerVersion = '4.21.0'
-
 android {
-    defaultConfig {
-        buildConfigField('String', logTagName, "\"$logTagValue Facebook\"")
-        
-        buildConfigField('String', 'PROVIDER_NAME', "\"FACEBOOK\"")
-        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
-    }
-    
     // workaround for 'java.lang.VerifyError' in 'com.facebook.ads.AdError'
     testOptions {
         unitTests {
@@ -37,15 +28,14 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile "com.facebook.android:audience-network-sdk:$providerVersion"
-    
-    // needed for advertising id retrieval
-    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
-    
+    compile "com.facebook.android:audience-network-sdk:$PROVIDER_VERSION"
     // workaround for strange 'GradleCompatible' lint error
     compile "com.android.support:appcompat-v7:$supportVersion"
     compile "com.android.support:recyclerview-v7:$supportVersion"
     compile "com.android.support:support-annotations:$supportVersion"
     compile "com.android.support:support-v4:$supportVersion"
     compile "com.google.android.gms:play-services-ads:$playServicesVersion"
+    
+    // needed for advertising id retrieval
+    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

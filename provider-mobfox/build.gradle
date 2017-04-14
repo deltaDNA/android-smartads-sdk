@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 
-def providerVersion = '3.2.5'
-
 android {
-    defaultConfig {
-        buildConfigField('String', logTagName, "\"$logTagValue MobFox\"")
-        
-        buildConfigField('String', 'PROVIDER_NAME', "\"MOBFOX\"")
-        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
-    }
-    
     lintOptions {
         // workaround for missing stax dependency
         disable 'InvalidPackage'
@@ -33,7 +24,7 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile files("libs/MobFox-Android-SDK-Core-${providerVersion}.jar")
+    compile files("libs/MobFox-Android-SDK-Core-${PROVIDER_VERSION}.jar")
     
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-basement:$playServicesVersion"

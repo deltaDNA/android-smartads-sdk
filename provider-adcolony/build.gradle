@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 
-def providerVersion = '3.1.2'
-
 android {
-    defaultConfig {
-        buildConfigField('String', logTagName, "\"$logTagValue AdColony\"")
-        
-        buildConfigField('String', 'PROVIDER_NAME', "\"ADCOLONY\"")
-        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
-    }
-    
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
@@ -40,7 +31,7 @@ android {
 dependencies {
     compile project(':library-bindings')
     
-    compile files("libs/adcolony-${providerVersion}.jar")
+    compile files("libs/adcolony-${PROVIDER_VERSION}.jar")
     
     // needed for advertising id retrieval (and GoogleApiAvailability)
     compile "com.google.android.gms:play-services-base:$playServicesVersion"

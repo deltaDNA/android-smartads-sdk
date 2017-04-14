@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-def providerVersion = '6.6.3'
-
-android {
-    defaultConfig {
-        buildConfigField('String', logTagName, "\"$logTagValue Chartboost\"")
-        
-        buildConfigField('String', 'PROVIDER_NAME', "\"CHARTBOOST\"")
-        buildConfigField('String', 'PROVIDER_VERSION', "\"$providerVersion\"")
-    }
-}
-
 dependencies {
     compile project(':library-bindings')
     
-    compile files("libs/chartboost-${providerVersion}.jar")
+    compile files("libs/chartboost-${PROVIDER_VERSION}.jar")
     
     // needed for advertising id retrieval
     compile "com.google.android.gms:play-services-basement:$playServicesVersion"
