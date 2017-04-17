@@ -12,13 +12,12 @@ android:
     - platform-tools
     - tools
     - android-25
-    - build-tools-25.0.0
+    - build-tools-25.0.2
     - extra-android-m2repository
     - extra-google-m2repository
 
 script:
   - ./gradlew build check jacocoTestReport
-  - cat /home/travis/build/deltaDNA/android-smartads-sdk/examples/demo/build/outputs/lint-results-adcolonyDebug.html
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
