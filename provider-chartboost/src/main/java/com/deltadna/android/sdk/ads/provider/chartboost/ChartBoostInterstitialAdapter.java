@@ -17,11 +17,9 @@
 package com.deltadna.android.sdk.ads.provider.chartboost;
 
 import android.app.Activity;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
 import com.chartboost.sdk.CBLocation;
-import com.chartboost.sdk.Chartboost;
-import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 
@@ -35,6 +33,7 @@ public final class ChartBoostInterstitialAdapter extends MediationAdapter {
     private final String appSignature;
     private final String location;
     
+    @Nullable
     private Activity activity;
     
     public ChartBoostInterstitialAdapter(
@@ -53,38 +52,29 @@ public final class ChartBoostInterstitialAdapter extends MediationAdapter {
     }
     
     @Override
-    public void requestAd(Activity activity, MediationListener listener, JSONObject configuration) {
+    public void requestAd(
+            Activity activity,
+            MediationListener listener,
+            JSONObject configuration) {
+        
         this.activity = activity;
-
-        try {
-            ChartBoostHelper.initialise(activity, appId, appSignature);
-        } catch (Exception e) {
-            Log.w(BuildConfig.LOG_TAG, "Failed to initialise", e);
-            listener.onAdFailedToLoad(
-                    this,
-                    AdRequestResult.Configuration,
-                    "Invalid Configuration: " + e);
-            return;
-        }
-
-        ChartBoostHelper.setInterstitialListeners(listener, this);
-
-        try {
-            Chartboost.cacheInterstitial(location);
-        } catch(Exception e){
-            Log.e(BuildConfig.LOG_TAG, "Failed to request ad", e);
-            listener.onAdFailedToLoad(
-                    this,
-                    AdRequestResult.Error,
-                    "Failed to request Chartboost ad: " + e);
-        }
+        
+        Helper.initialise(
+                activity,
+                appId,
+                appSignature,
+                this,
+                listener);
+        
+        Helper.requestInterstitial(
+                location,
+                listener,
+                this);
     }
-
+    
     @Override
     public void showAd() {
-        if(ChartBoostHelper.isInitialised() && Chartboost.hasInterstitial(location)) {
-            Chartboost.showInterstitial(location);
-        }
+        Helper.showInterstitial(location);
     }
     
     @Override
@@ -98,27 +88,19 @@ public final class ChartBoostInterstitialAdapter extends MediationAdapter {
     }
     
     @Override
-    public void onDestroy() {
-        if (activity != null && ChartBoostHelper.isInitialised()) {
-            if (ChartBoostHelper.isInitialised()) {
-                Chartboost.onDestroy(activity);
-            }
-            
-            activity = null;
-        }
+    public void onResume() {
+        if (activity != null) Helper.onResume(activity);
     }
     
     @Override
     public void onPause() {
-        if (activity != null && ChartBoostHelper.isInitialised()) {
-            Chartboost.onPause(activity);
-        }
+        if (activity != null) Helper.onPause(activity);
     }
     
     @Override
-    public void onResume() {
-        if (activity != null && ChartBoostHelper.isInitialised()) {
-            Chartboost.onResume(activity);
+    public void onDestroy() {
+        if (activity != null) {
+            Helper.onDestroy(activity);
         }
     }
 }

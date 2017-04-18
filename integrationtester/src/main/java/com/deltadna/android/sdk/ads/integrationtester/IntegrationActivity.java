@@ -24,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.chartboost.sdk.CBLocation;
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
@@ -89,14 +88,14 @@ public final class IntegrationActivity extends AppCompatActivity implements
                             0,
                             "58f489a743150f4385b20df2",
                             "39eb54cb811959e303cacd9ccc6e9360d8a7b424",
-                            CBLocation.LOCATION_DEFAULT),
+                            ChartBoostInterstitialAdapter.LOCATION),
                     new ChartBoostRewardedAdapter(
                             0,
                             0,
                             0,
                             "58f489a743150f4385b20df2",
                             "39eb54cb811959e303cacd9ccc6e9360d8a7b424",
-                            CBLocation.LOCATION_DEFAULT),
+                            ChartBoostRewardedAdapter.LOCATION),
                     new FacebookInterstitialAdapter(
                             0,
                             0,
