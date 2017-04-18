@@ -87,18 +87,10 @@ final class AdServiceImpl implements AdService {
             @Nullable String decisionPoint,
             @Nullable JSONObject engagementParameters) {
         
-        if (interstitialAgent == null) {
-            postAdShowEvent(
-                    null,
-                    null,
-                    AdShowResult.NO_AD_AVAILABLE);
-            return false;
-        } else {
-            return isAdAllowed(
-                    interstitialAgent,
-                    decisionPoint,
-                    engagementParameters);
-        }
+        return isAdAllowed(
+                interstitialAgent,
+                decisionPoint,
+                engagementParameters);
     }
     
     @Override
@@ -106,18 +98,10 @@ final class AdServiceImpl implements AdService {
             @Nullable String decisionPoint,
             @Nullable JSONObject engagementParameters) {
         
-        if (rewardedAgent == null) {
-            postAdShowEvent(
-                    null,
-                    null,
-                    AdShowResult.NO_AD_AVAILABLE);
-            return false;
-        } else {
-            return isAdAllowed(
-                    rewardedAgent,
-                    decisionPoint,
-                    engagementParameters);
-        }
+        return isAdAllowed(
+                rewardedAgent,
+                decisionPoint,
+                engagementParameters);
     }
     
     @Override
@@ -183,9 +167,13 @@ final class AdServiceImpl implements AdService {
     }
     
     private boolean isAdAllowed(
-            AdAgent agent,
+            @Nullable AdAgent agent,
             @Nullable String decisionPoint,
             @Nullable JSONObject engagementParameters) {
+        
+        if (agent == null) {
+            return false;
+        }
         
         agent.setAdPoint(!TextUtils.isEmpty(decisionPoint)
                 ? decisionPoint

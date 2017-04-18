@@ -1,27 +1,23 @@
 package com.deltadna.android.sdk.ads.core
 
 import android.app.Activity
-import android.os.Build
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.core.network.DummyAdapter
 import com.github.salomonbrys.kotson.jsonArray
 import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.string
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockito_kotlin.*
+import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
-import org.robolectric.annotation.Config
-
-import com.google.common.truth.Truth.assertThat
-import org.json.JSONObject
 import org.robolectric.RobolectricTestRunner
+import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class,
-        sdk = intArrayOf(Build.VERSION_CODES.LOLLIPOP))
 class AdServiceImplTest {
     
     private var activity = Robolectric.buildActivity(Activity::class.java).create()
@@ -260,7 +256,9 @@ class AdServiceImplTest {
     
     private fun advance(time: Int) {
         with(time.toLong()) {
-            Robolectric.getForegroundThreadScheduler().advanceBy(this)
+            Robolectric
+                    .getForegroundThreadScheduler()
+                    .advanceBy(this, TimeUnit.MILLISECONDS)
             Thread.sleep(this)
         }
     }

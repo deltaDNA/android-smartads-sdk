@@ -2,6 +2,7 @@
 
 ## [1.4.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.1) (YYYY-MM-DD)
 Fixed Chartboost callbacks.  
+Fixed misreporting of ad show events.  
 
 ## [1.4.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.0) (2017-04-17)
 Added Facebook ad network.  
