@@ -33,6 +33,9 @@ public final class VungleAdapter extends MediationAdapter {
     
     private final String appId;
     
+    private EventForwarder forwarder;
+    private boolean initialised;
+    
     @Nullable
     private VunglePub vunglePub;
     
@@ -53,13 +56,20 @@ public final class VungleAdapter extends MediationAdapter {
             MediationListener listener,
             JSONObject configuration) {
         
-        if (vunglePub == null) {
+        if (!initialised) {
+            Log.d(BuildConfig.LOG_TAG, "Initialising");
+            
             try {
+                forwarder = new EventForwarder(this, listener);
+                
                 vunglePub = VunglePub.getInstance();
                 vunglePub.init(activity, appId);
                 vunglePub.setEventListeners(MainThread.redirect(
-                        new VungleEventForwarder(listener, this),
+                        forwarder,
                         EventListener.class));
+                
+                initialised = true;
+                Log.d(BuildConfig.LOG_TAG, "Initialised");
             } catch (Exception e) {
                 Log.w(BuildConfig.LOG_TAG, "Failed to initialise", e);
                 listener.onAdFailedToLoad(
@@ -70,16 +80,7 @@ public final class VungleAdapter extends MediationAdapter {
             }
         }
         
-        if (vunglePub != null && vunglePub.isAdPlayable()) {
-            Log.d(BuildConfig.LOG_TAG, "Ad loaded");
-            listener.onAdLoaded(this);
-        } else {
-            Log.w(BuildConfig.LOG_TAG, "No fill");
-            listener.onAdFailedToLoad(
-                    this,
-                    AdRequestResult.NoFill,
-                    "Vungle no fill");
-        }
+        forwarder.requestPerformed(listener);
     }
     
     @Override
