@@ -38,6 +38,8 @@ public final class UnityRewardedAdapter extends MediationAdapter {
     
     @Nullable
     private Activity activity;
+    @Nullable
+    private EventForwarder forwarder;
     
     public UnityRewardedAdapter(
             int eCPM,
@@ -61,36 +63,31 @@ public final class UnityRewardedAdapter extends MediationAdapter {
             JSONObject configuration) {
         
         if (!initialised) {
+            Log.d(BuildConfig.LOG_TAG, "Initialising");
             try {
+                forwarder = new EventForwarder(this, listener);
+                
                 UnityAds.initialize(
                         activity,
                         gameId,
-                        new UnityRewardedEventForwarder(listener, this),
+                        forwarder,
                         testMode);
                 
                 initialised = true;
+                Log.d(BuildConfig.LOG_TAG, "Initialised");
             } catch (Exception e) {
                 Log.w(BuildConfig.LOG_TAG, "Failed to initialise", e);
                 listener.onAdFailedToLoad(
                         this,
                         AdRequestResult.Configuration,
                         "Invalid Unity configuration: " + e);
-            }
-        } else {
-            if (zoneId != null && UnityAds.isReady(zoneId)) {
-                listener.onAdLoaded(this);
-            } else if (UnityAds.isReady()) {
-                listener.onAdLoaded(this);
-            } else {
-                Log.w(BuildConfig.LOG_TAG, "No fill");
-                listener.onAdFailedToLoad(
-                        UnityRewardedAdapter.this,
-                        AdRequestResult.NoFill,
-                        "Unity no fill");
+                return;
             }
         }
         
         this.activity = activity;
+        
+        if (forwarder != null) forwarder.requestPerformed(listener, zoneId);
     }
     
     @Override
