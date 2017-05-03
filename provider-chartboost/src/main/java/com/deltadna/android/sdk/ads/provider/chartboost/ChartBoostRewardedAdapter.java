@@ -17,21 +17,23 @@
 package com.deltadna.android.sdk.ads.provider.chartboost;
 
 import android.app.Activity;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
-import com.chartboost.sdk.Chartboost;
+import com.chartboost.sdk.CBLocation;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 
 import org.json.JSONObject;
 
 public final class ChartBoostRewardedAdapter extends MediationAdapter {
     
+    public static final String LOCATION = CBLocation.LOCATION_DEFAULT;
+    
     private final String appId;
     private final String appSignature;
     private final String location;
     
+    @Nullable
     private Activity activity;
     
     public ChartBoostRewardedAdapter(
@@ -50,38 +52,29 @@ public final class ChartBoostRewardedAdapter extends MediationAdapter {
     }
     
     @Override
-    public void requestAd(Activity activity, MediationListener listener, JSONObject configuration) {
+    public void requestAd(
+            Activity activity,
+            MediationListener listener,
+            JSONObject configuration) {
+        
         this.activity = activity;
-
-        try {
-            ChartBoostHelper.initialise(activity, appId, appSignature);
-        } catch (Exception e) {
-            Log.e(BuildConfig.LOG_TAG, "Failed to initialise", e);
-            listener.onAdFailedToLoad(
-                    this,
-                    AdRequestResult.Configuration,
-                    "Invalid configuration: " + e);
-            return;
-        }
-
-        ChartBoostHelper.setRewardedListeners(listener, this);
-
-        try {
-            Chartboost.cacheRewardedVideo(location);
-        } catch (Exception e){
-            Log.e(BuildConfig.LOG_TAG, "Failed to request ad", e);
-            listener.onAdFailedToLoad(
-                    this,
-                    AdRequestResult.Error,
-                    "Failed to request Chartboost ad: " + e);
-        }
+        
+        Helper.initialise(
+                activity,
+                appId,
+                appSignature,
+                this,
+                listener);
+        
+        Helper.requestRewarded(
+                location,
+                listener,
+                this);
     }
-
+    
     @Override
     public void showAd() {
-        if(ChartBoostHelper.isInitialised() && Chartboost.hasRewardedVideo(location)) {
-            Chartboost.showRewardedVideo(location);
-        }
+        Helper.showRewarded(location);
     }
     
     @Override
@@ -96,26 +89,16 @@ public final class ChartBoostRewardedAdapter extends MediationAdapter {
     
     @Override
     public void onDestroy() {
-        if (activity != null) {
-            if (ChartBoostHelper.isInitialised()) {
-                Chartboost.onDestroy(activity);
-            }
-            
-            activity = null;
-        }
+        if (activity != null) Helper.onResume(activity);
     }
     
     @Override
     public void onPause() {
-        if (activity != null && ChartBoostHelper.isInitialised()) {
-            Chartboost.onPause(activity);
-        }
+        if (activity != null) Helper.onPause(activity);
     }
     
     @Override
     public void onResume() {
-        if (activity != null && ChartBoostHelper.isInitialised()) {
-            Chartboost.onResume(activity);
-        }
+        if (activity != null) Helper.onDestroy(activity);
     }
 }
