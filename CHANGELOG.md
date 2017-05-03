@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.4.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.1) (YYYY-MM-DD)
+## [1.4.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.1) (2017-05-03)
 Fixed Chartboost callbacks.  
 Fixed Unity callbacks.  
 Fixed Vungle callbacks.  
