@@ -14,14 +14,14 @@ deltaDNA智能广告SDK用于将你的Android游戏接入我们的智能广告�
 * [初始化](#初始化)
 * [显示广告](#显示广告)
 * [权限](#权限)
-* [防反编译](#防反编译)
+* [防反编译（ProGuard）](#防反编译（ProGuard）)
 * [常见问题解答](#常见问题解答)
 * [更新日志](#更新日志)
 * [迁移](#迁移)
 * [授权](#授权)
 
 ## 添加至项目
-deltaDNA智能广告SDK可以用于基于第15版和更新版本（Android 4.0.3+）内核SDK的Android项目。
+deltaDNA智能广告SDK可以用于基于第16版和更新版本（Android 4.1+）内核SDK的Android项目。
 
 ### Gradle
 在你的顶层构建脚本
@@ -44,11 +44,12 @@ compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.4.1'
 compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.4.1'
 compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.4.1'
 compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.4.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-facebook:1.4.1'
 compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.4.1'
 compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.4.1'
+compile 'com.deltadna.android:deltadna-smartads-provider-ironsource:1.4.1'
 compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.4.1'
 compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.4.1'
-compile 'com.deltadna.android:deltadna-smartads-provider-supersonic:1.4.1'
 compile 'com.deltadna.android:deltadna-smartads-provider-thirdpresence:1.4.1'
 compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.4.1'
 compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.4.1'
@@ -143,18 +144,11 @@ DDNA.instance().requestEngagement(
 
 其他（往往是危险的）权限可能被添加以提高广告网络提供商的功能和性能。这些权限在每一个提供商的清单文件中以注释列出。你可以根据需求添加其中的任一一些到你的应用程序清单中。
 
-## 防反编译
+## 防反编译（ProGuard）
 如果你为你的应用设置`minifyEnabled true`，那么没有必要在你的ProGuard配置中添加额外的代码。因为这个库提供了其自己的配置文件，可以在编译过程中被Android编译工具包含进去。
 
 ## 常见问题解答
-1.  我的项目在较新版本的Google Play Services中有一个依赖，我可以使用一个不同于智能广告默认的版本吗？
-    
-    是的。如果你已经添加了任何其他的Play Service模块到你的依赖，这时你可以将版本改成你需要的。例如
-    ```java
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
-    ```
-    到目前为止，我们已经确认第8、9和10版本可以替代7.8版本。
-2.  当我的项目编译时，我在`transformClassesWithDexForDebug`任务中得到了一个`TransformException`警示。
+1.  当我的项目编译时，我在`transformClassesWithDexForDebug`任务中得到了一个`TransformException`警示。
     
     如果你引入了太多的广告提供商导致你的应用包括超过65K的方法时这种情况可能发生。广告提供商可以被移除以减小方法的数量，或者使用一个[官方解决方案](http://developer.android.com/tools/building/multidex.html#mdex-gradle)。
 
