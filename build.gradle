@@ -53,12 +53,13 @@ subprojects {
     
     if (isLibrary) {
         apply plugin: 'com.android.library'
-        apply plugin: 'kotlin-android'
         apply plugin: 'jacoco-android'
     } else {
         apply plugin: 'com.android.application'
         apply plugin: 'com.nimbledroid.profiler'
     }
+    apply plugin: 'kotlin-android'
+    apply plugin: 'kotlin-android-extensions'
     
     if (isLibrary) {
         // workaround for group/version not picked up through project() dependency
