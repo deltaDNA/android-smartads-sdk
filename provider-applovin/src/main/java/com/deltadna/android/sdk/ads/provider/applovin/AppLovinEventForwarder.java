@@ -41,6 +41,7 @@ final class AppLovinEventForwarder implements
     @Nullable
     private PollingLoadChecker checker;
     
+    private boolean notified;
     private boolean complete;
     
     AppLovinEventForwarder(MediationListener listener, MediationAdapter adapter) {
@@ -59,7 +60,10 @@ final class AppLovinEventForwarder implements
         if (checker != null) {
             checker.stop();
         }
-        listener.onAdLoaded(adapter);
+        if (!notified) {
+            listener.onAdLoaded(adapter);
+            notified = true;
+        }
     }
     
     @Override
