@@ -17,6 +17,7 @@
 package com.deltadna.android.sdk.ads.provider.chartboost
 
 import com.chartboost.sdk.Model.CBError
+import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
@@ -118,6 +119,19 @@ class DelegateTest {
     }
     
     @Test
+    fun interstitialFailedToShow() {
+        uut.setInterstitial(interstitialListener, interstitialAdapter)
+        
+        uut.didCacheInterstitial("")
+        uut.didFailToLoadInterstitial("", CBError.CBImpressionError.NO_HOST_ACTIVITY)
+        
+        verify(interstitialListener).onAdLoaded(same(interstitialAdapter))
+        verify(interstitialListener).onAdFailedToShow(
+                same(interstitialAdapter),
+                eq(AdClosedResult.ERROR))
+    }
+    
+    @Test
     fun rewardedWithoutReward() {
         uut.setRewarded(rewardedListener, rewardedAdapter)
         
@@ -178,5 +192,18 @@ class DelegateTest {
         verify(rewardedListener).onAdLoaded(same(rewardedAdapter))
         verify(rewardedListener).onAdShowing(same(rewardedAdapter))
         verifyNoMoreInteractions(rewardedAdapter)
+    }
+    
+    @Test
+    fun rewardedFailedToShow() {
+        uut.setRewarded(rewardedListener, rewardedAdapter)
+        
+        uut.didCacheRewardedVideo("")
+        uut.didFailToLoadRewardedVideo("", CBError.CBImpressionError.NO_HOST_ACTIVITY)
+        
+        verify(rewardedListener).onAdLoaded(same(rewardedAdapter))
+        verify(rewardedListener).onAdFailedToShow(
+                same(rewardedAdapter),
+                eq(AdClosedResult.ERROR))
     }
 }
