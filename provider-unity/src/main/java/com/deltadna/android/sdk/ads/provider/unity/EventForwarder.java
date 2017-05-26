@@ -139,9 +139,11 @@ final class EventForwarder implements IUnityAdsListener {
         }
         
         if (listener != null) {
+            // stops further unexpected callbacks by the network
+            final MediationListener listener = this.listener;
+            this.listener = null;
+            
             listener.onAdClosed(adapter, complete);
-            // avoid any further calls which Unity does
-            listener = null;
         }
     }
     
