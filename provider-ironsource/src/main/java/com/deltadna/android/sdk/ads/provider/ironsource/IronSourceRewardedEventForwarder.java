@@ -101,11 +101,14 @@ final class IronSourceRewardedEventForwarder implements RewardedVideoListener {
     
     @Override
     public void onRewardedVideoAdClosed() {
-        Log.d(BuildConfig.LOG_TAG, "Rewarded video ad closed");
+        Log.d(BuildConfig.LOG_TAG, "Rewarded video ad closed: " + complete);
         
         if (listener != null) {
+            // stops further unexpected callbacks by the network
+            final MediationListener listener = this.listener;
+            this.listener = null;
+            
             listener.onAdClosed(adapter, complete);
-            listener = null;
         }
     }
     
