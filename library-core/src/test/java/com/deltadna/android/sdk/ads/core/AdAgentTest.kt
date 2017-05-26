@@ -264,6 +264,22 @@ class AdAgentTest {
     }
     
     @Test
+    fun showAdCalledTwiceReportedOnlyOnce() {
+        withAgent(spiedAdapters(1)) { adapters ->
+            doAnswer {
+                onAdLoaded(adapters[0])
+                onAdShowing(adapters[0])
+                onAdShowing(adapters[0])
+            }.whenever(adapters[0]).requestAd(activity, this, config)
+            
+            requestAd(activity, config)
+            showAd("adpoint")
+            
+            verify(listener).onAdOpened(same(this@withAgent), same(adapters[0]))
+        }
+    }
+    
+    @Test
     fun showAdWhenNotLoaded() {
         withAgent(spiedAdapters(1)) { adapters ->
             showAd("adpoint")

@@ -238,12 +238,21 @@ class AdAgent implements MediationListener {
     }
     
     @Override
-    public void onAdShowing(MediationAdapter mediationAdapter) {
-        Log.d(TAG, "Ad showing for " + mediationAdapter);
-        listener.onAdOpened(this, mediationAdapter);
-        
-        shownCount++;
-        state = State.SHOWING;
+    public void onAdShowing(MediationAdapter adapter) {
+        if (adapter.equals(currentAdapter)) {
+            if (state != State.SHOWING) {
+                Log.d(TAG, "Ad showing for " + adapter);
+                
+                listener.onAdOpened(this, adapter);
+                
+                shownCount++;
+                state = State.SHOWING;
+            } else {
+                Log.w(TAG, "Ad already showing for " + adapter);
+            }
+        } else {
+            Log.w(TAG, "Unexpected adapter " + adapter);
+        }
     }
     
     @Override
