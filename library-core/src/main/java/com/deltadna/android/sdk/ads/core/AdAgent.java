@@ -33,6 +33,7 @@ import com.deltadna.android.sdk.ads.bindings.MediationListener;
 
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Locale;
 
 class AdAgent implements MediationListener {
@@ -70,6 +71,7 @@ class AdAgent implements MediationListener {
     private final AdAgentListener listener;
     private final Waterfall waterfall;
     private final int adMaxPerSession;
+    private final ExceptionHandler exceptionHandler;
     
     long lastShownTime;
     int shownCount;
@@ -90,12 +92,14 @@ class AdAgent implements MediationListener {
     private String adPoint;
     
     AdAgent(AdAgentListener listener,
-            Waterfall waterfall, 
-            int adMaxPerSession) {
+            Waterfall waterfall,
+            int adMaxPerSession,
+            ExceptionHandler exceptionHandler) {
         
         this.listener = listener;
         this.waterfall = waterfall;
         this.adMaxPerSession = adMaxPerSession;
+        this.exceptionHandler = exceptionHandler;
         
         currentAdapter = waterfall.resetAndGetFirst();
         if (currentAdapter == null) {
@@ -323,16 +327,29 @@ class AdAgent implements MediationListener {
                         AdRequestResult.Network,
                         "No connection");
             } else if (state == State.READY) {
-                Log.d(TAG, "Requesting next ad from " + currentAdapter);
-                
-                state = State.LOADING;
-                lastRequestStart = System.currentTimeMillis();
-                
-                handler.postDelayed(loadTimeout, LOAD_TIMEOUT_MILLIS);
-                currentAdapter.requestAd(activity, this, configuration);
+                final List<String> crashes = exceptionHandler.listCrashes(
+                        AdProvider.defines(currentAdapter));
+                if (!crashes.isEmpty()) {
+                    Log.d(TAG, String.format(
+                            Locale.US,
+                            "Not requesting next ad from %s due to previous crash",
+                            currentAdapter));
+                    
+                    onAdFailedToLoad(
+                            currentAdapter,
+                            AdRequestResult.Error,
+                            crashes.get(0));
+                } else {
+                    Log.d(TAG, "Requesting next ad from " + currentAdapter);
+                    
+                    state = State.LOADING;
+                    lastRequestStart = System.currentTimeMillis();
+                    
+                    handler.postDelayed(loadTimeout, LOAD_TIMEOUT_MILLIS);
+                    currentAdapter.requestAd(activity, this, configuration);
+                }
             } else {
-                Log.w(TAG, "Not ready to request next ad from "
-                        + currentAdapter);
+                Log.w(TAG, "Not ready to request next ad from " + currentAdapter);
             }
         } else {
             Log.w(TAG, "No adapter to request ad from");

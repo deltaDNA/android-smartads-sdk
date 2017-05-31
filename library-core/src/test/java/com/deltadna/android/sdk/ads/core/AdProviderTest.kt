@@ -48,161 +48,206 @@ class AdProviderTest {
     
     @Test
     fun adColony() {
-        assertThat(ADCOLONY.createAdapter(
+        with(ADCOLONY.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
                         .put("appId", "appId")
                         .put("clientOptions", "clientOptions")
-                        .put("zoneId", "zoneId")))
-                .isInstanceOf(AdColonyAdapter::class.java)
+                        .put("zoneId", "zoneId"))) {
+            assertThat(this).isInstanceOf(AdColonyAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(ADCOLONY.version())
+            assertThat(this.javaClass.name).isEqualTo(ADCOLONY.cls)
+        }
     }
     
     @Test
     fun adMob() {
-        assertThat(ADMOB.createAdapter(
+        with(ADMOB.createAdapter(
                 1, 2, 3, 4,
-                JSONObject().put("adUnitId", "adUnitId")))
-                .isInstanceOf(AdMobAdapter::class.java)
+                JSONObject().put("adUnitId", "adUnitId"))) {
+            assertThat(this).isInstanceOf(AdMobAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(ADMOB.version())
+            assertThat(this.javaClass.name).isEqualTo(ADMOB.cls)
+        }
     }
     
     @Test
     fun amazon() {
-        assertThat(AMAZON.createAdapter(
+        with(AMAZON.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
                         .put("appKey", "appKey")
-                        .put("testMode", true)))
-                .isInstanceOf(AmazonAdapter::class.java)
+                        .put("testMode", true))) {
+            assertThat(this).isInstanceOf(AmazonAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(AMAZON.version())
+            assertThat(this.javaClass.name).isEqualTo(AMAZON.cls)
+        }
     }
     
     @Test
     fun appLovin() {
-        assertThat(APPLOVIN.createAdapter(
+        with(APPLOVIN.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
                         .put("sdkKey", "sdkKey")
                         .put("placement", "placement")
                         .put("verboseLogging", true)
-                        .put("adRefreshSeconds", 1)))
-                .isInstanceOf(AppLovinRewardedAdapter::class.java)
+                        .put("adRefreshSeconds", 1))) {
+            assertThat(this).isInstanceOf(AppLovinRewardedAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(APPLOVIN.version())
+            assertThat(this.javaClass.name).isEqualTo(APPLOVIN.cls)
+        }
     }
     
     @Test
     fun chartboost() {
-        assertThat(CHARTBOOST.createAdapter(
+        with(CHARTBOOST.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
                         .put("appId", "appId")
-                        .put("appSignature", "appSignature")))
-                .isInstanceOf(ChartBoostInterstitialAdapter::class.java)
+                        .put("appSignature", "appSignature"))) {
+            assertThat(this).isInstanceOf(ChartBoostInterstitialAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(CHARTBOOST.version())
+            assertThat(this.javaClass.name).isEqualTo(CHARTBOOST.cls)
+        }
     }
     
     @Test
     fun chartboostRewarded() {
-        assertThat(CHARTBOOST_REWARDED.createAdapter(
+        with(CHARTBOOST_REWARDED.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
                         .put("appId", "appId")
-                        .put("appSignature", "appSignature")))
-                .isInstanceOf(ChartBoostRewardedAdapter::class.java)
+                        .put("appSignature", "appSignature"))) {
+            assertThat(this).isInstanceOf(ChartBoostRewardedAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(CHARTBOOST_REWARDED.version())
+            assertThat(this.javaClass.name).isEqualTo(CHARTBOOST_REWARDED.cls)
+        }
         
         assertThat(CHARTBOOST.rewarded()).isSameAs(CHARTBOOST_REWARDED)
     }
     
     @Test
     fun facebook() {
-        assertThat(FACEBOOK.createAdapter(
+        with(FACEBOOK.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
-                        .put("placementId", "placement")))
-                .isInstanceOf(FacebookInterstitialAdapter::class.java)
+                        .put("placementId", "placement"))) {
+            assertThat(this).isInstanceOf(FacebookInterstitialAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(FACEBOOK.version())
+            assertThat(this.javaClass.name).isEqualTo(FACEBOOK.cls)
+        }
     }
     
     @Test
     fun flurry() {
-        assertThat(FLURRY.createAdapter(
+        with(FLURRY.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
                         .put("apiKey", "apiKey")
                         .put("adSpace", "adSpace")
-                        .put("testMode", true)))
-                .isInstanceOf(FlurryInterstitialAdapter::class.java)
+                        .put("testMode", true))) {
+            assertThat(this).isInstanceOf(FlurryInterstitialAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(FLURRY.version())
+            assertThat(this.javaClass.name).isEqualTo(FLURRY.cls)
+        }
     }
     
     @Test
     fun flurryRewarded() {
-        assertThat(FLURRY_REWARDED.createAdapter(
+        with(FLURRY_REWARDED.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
                         .put("apiKey", "apiKey")
                         .put("adSpace", "adSpace")
-                        .put("testMode", true)))
-                .isInstanceOf(FlurryRewardedAdapter::class.java)
+                        .put("testMode", true))) {
+            assertThat(this).isInstanceOf(FlurryRewardedAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(FLURRY_REWARDED.version())
+            assertThat(this.javaClass.name).isEqualTo(FLURRY_REWARDED.cls)
+        }
         
         assertThat(FLURRY.rewarded()).isSameAs(FLURRY_REWARDED)
     }
     
     @Test
     fun inMobi() {
-        assertThat(INMOBI.createAdapter(
+        with(INMOBI.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
                         .put("accountId", "accountId")
-                        .put("placementId", 1L)))
-                .isInstanceOf(InMobiInterstitialAdapter::class.java)
+                        .put("placementId", 1L))) {
+            assertThat(this).isInstanceOf(InMobiInterstitialAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(INMOBI.version())
+            assertThat(this.javaClass.name).isEqualTo(INMOBI.cls)
+        }
     }
     
     @Test
     fun inMobiRewarded() {
-        assertThat(INMOBI_REWARDED.createAdapter(
+        with(INMOBI_REWARDED.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
                         .put("accountId", "accountId")
-                        .put("placementId", 1L)))
-                .isInstanceOf(InMobiRewardedAdapter::class.java)
+                        .put("placementId", 1L))) {
+            assertThat(this).isInstanceOf(InMobiRewardedAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(INMOBI_REWARDED.version())
+            assertThat(this.javaClass.name).isEqualTo(INMOBI_REWARDED.cls)
+        }
         
         assertThat(INMOBI.rewarded()).isSameAs(INMOBI_REWARDED)
     }
     
     @Test
     fun ironSource() {
-        assertThat(IRONSOURCE.createAdapter(
+        with(IRONSOURCE.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
-                        .put("appKey", "appKey")))
-                .isInstanceOf(IronSourceInterstitialAdapter::class.java)
+                        .put("appKey", "appKey"))) {
+            assertThat(this).isInstanceOf(IronSourceInterstitialAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(IRONSOURCE.version())
+            assertThat(this.javaClass.name).isEqualTo(IRONSOURCE.cls)
+        }
     }
     
     @Test
     fun ironSourceRewarded() {
-        assertThat(IRONSOURCE_REWARDED.createAdapter(
+        with(IRONSOURCE_REWARDED.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
-                        .put("appKey", "appKey")))
-                .isInstanceOf(IronSourceRewardedAdapter::class.java)
+                        .put("appKey", "appKey"))) {
+            assertThat(this).isInstanceOf(IronSourceRewardedAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(IRONSOURCE_REWARDED.version())
+            assertThat(this.javaClass.name).isEqualTo(IRONSOURCE_REWARDED.cls)
+        }
         
         assertThat(IRONSOURCE.rewarded()).isSameAs(IRONSOURCE_REWARDED)
     }
     
     @Test
     fun mobFox() {
-        assertThat(MOBFOX.createAdapter(
+        with(MOBFOX.createAdapter(
                 1, 2, 3, 4,
-                JSONObject().put("publicationId", "publicationId")))
-                .isInstanceOf(MobFoxAdapter::class.java)
+                JSONObject().put("publicationId", "publicationId"))) {
+            assertThat(this).isInstanceOf(MobFoxAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(MOBFOX.version())
+            assertThat(this.javaClass.name).isEqualTo(MOBFOX.cls)
+        }
     }
     
     @Test
     fun moPub() {
-        assertThat(MOPUB.createAdapter(
+        with(MOPUB.createAdapter(
                 1, 2, 3, 4,
-                JSONObject().put("adUnitId", "adUnitId")))
-                .isInstanceOf(MoPubAdapter::class.java)
+                JSONObject().put("adUnitId", "adUnitId"))) {
+            assertThat(this).isInstanceOf(MoPubAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(MOPUB.version())
+            assertThat(this.javaClass.name).isEqualTo(MOPUB.cls)
+        }
     }
     
     @Test
     fun thirdpresence() {
-        assertThat(THIRDPRESENCE.createAdapter(
+        with(THIRDPRESENCE.createAdapter(
                 1,
                 2,
                 3,
@@ -210,27 +255,36 @@ class AdProviderTest {
                 JSONObject()
                         .put("accountName", "accountName")
                         .put("placementId", "placementId")
-                        .put("testMode", true)))
-                .isInstanceOf(ThirdPresenceRewardedAdapter::class.java)
+                        .put("testMode", true))) {
+            assertThat(this).isInstanceOf(ThirdPresenceRewardedAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(THIRDPRESENCE.version())
+            assertThat(this.javaClass.name).isEqualTo(THIRDPRESENCE.cls)
+        }
     }
     
     @Test
     fun unity() {
-        assertThat(UNITY.createAdapter(
+        with(UNITY.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
                         .put("gameId", "gameId")
                         .put("zoneId", "zoneId")
-                        .put("testMode", true)))
-                .isInstanceOf(UnityRewardedAdapter::class.java)
+                        .put("testMode", true))) {
+            assertThat(this).isInstanceOf(UnityRewardedAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(UNITY.version())
+            assertThat(this.javaClass.name).isEqualTo(UNITY.cls)
+        }
     }
     
     @Test
     fun vungle() {
-        assertThat(VUNGLE.createAdapter(
+        with(VUNGLE.createAdapter(
                 1, 2, 3, 4,
-                JSONObject().put("appId", "appId")))
-                .isInstanceOf(VungleAdapter::class.java)
+                JSONObject().put("appId", "appId"))) {
+            assertThat(this).isInstanceOf(VungleAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(VUNGLE.version())
+            assertThat(this.javaClass.name).isEqualTo(VUNGLE.cls)
+        }
     }
     
     @Test
@@ -262,6 +316,14 @@ class AdProviderTest {
     @Test
     fun valueOfRewardedInvalid() {
         valueOf(provider("adcolony"), REWARDED)
+    }
+    
+    @Test
+    fun defines() {
+        assertThat(defines(AdMobAdapter(0, 0, 0, "")))
+                .isEqualTo(ADMOB)
+        assertThat(defines(IronSourceRewardedAdapter(0, 0, 0, "", false)))
+                .isEqualTo(IRONSOURCE_REWARDED)
     }
     
     private fun provider(name: String) = JSONObject().put("adProvider", name)

@@ -1,6 +1,7 @@
 # Change Log
 
 ## [1.4.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.3) (YYYY-MM-DD)
+Added network crash detection and exclusion from following runs.  
 Fixed Chartboost misreporting show failure callbacks as load failures.  
 Fixed Vungle callbacks not invoked after the first ad show.  
 Fixed IronSource callbacks not invoked after the first ad show.  
