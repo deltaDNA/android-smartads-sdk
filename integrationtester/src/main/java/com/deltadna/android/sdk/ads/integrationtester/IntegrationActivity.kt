@@ -227,7 +227,7 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         "109764",
-                        null,
+                        "placementId",
                         true),
                 VungleAdapter(
                         0,

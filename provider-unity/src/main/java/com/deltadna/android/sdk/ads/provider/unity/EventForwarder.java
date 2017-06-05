@@ -36,6 +36,7 @@ final class EventForwarder implements IUnityAdsListener {
     private final Handler handler = new Handler(Looper.getMainLooper());
     
     private final MediationAdapter adapter;
+    private final String placementId;
     @Nullable
     private MediationListener listener;
     
@@ -48,15 +49,22 @@ final class EventForwarder implements IUnityAdsListener {
     
     EventForwarder(
             MediationAdapter adapter,
+            String placementId,
             @Nullable MediationListener listener) {
         
         this.adapter = adapter;
+        this.placementId = placementId;
         this.listener = listener;
     }
     
     @Override
-    public void onUnityAdsReady(@Nullable String placementId) {
-        Log.d(BuildConfig.LOG_TAG, "Unity ads ready");
+    public void onUnityAdsReady(String placementId) {
+        Log.d(BuildConfig.LOG_TAG, "Unity ads ready: " + placementId);
+        
+        if (!samePlacement(placementId)) {
+            Log.w(BuildConfig.LOG_TAG, "Placement ids are different");
+            return;
+        }
         
         available = true;
         lastError = null;
@@ -108,6 +116,12 @@ final class EventForwarder implements IUnityAdsListener {
     @Override
     public void onUnityAdsStart(String placementId) {
         Log.d(BuildConfig.LOG_TAG, "Unity ads start: " + placementId);
+        
+        if (!samePlacement(placementId)) {
+            Log.w(BuildConfig.LOG_TAG, "Placement ids are different");
+            return;
+        }
+        
         if (listener != null) listener.onAdShowing(adapter);
     }
     
@@ -121,6 +135,11 @@ final class EventForwarder implements IUnityAdsListener {
                 "Unity ads finish: %s/%s",
                 placementId,
                 state));
+        
+        if (!samePlacement(placementId)) {
+            Log.w(BuildConfig.LOG_TAG, "Placement ids are different");
+            return;
+        }
         
         final boolean complete;
         switch (state) {
@@ -147,10 +166,7 @@ final class EventForwarder implements IUnityAdsListener {
         }
     }
     
-    void requestPerformed(
-            MediationListener listener,
-            @Nullable String placementId) {
-        
+    void requestPerformed(MediationListener listener) {
         this.listener = listener;
         
         if (available != null) {
@@ -160,5 +176,9 @@ final class EventForwarder implements IUnityAdsListener {
                 onUnityAdsError(lastError, lastMessage);
             }
         }
+    }
+    
+    private boolean samePlacement(String value) {
+        return placementId.equals(value);
     }
 }

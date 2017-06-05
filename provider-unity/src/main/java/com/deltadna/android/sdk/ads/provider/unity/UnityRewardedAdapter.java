@@ -18,6 +18,7 @@ package com.deltadna.android.sdk.ads.provider.unity;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
@@ -30,8 +31,7 @@ import org.json.JSONObject;
 public final class UnityRewardedAdapter extends MediationAdapter {
     
     private final String gameId;
-    @Nullable
-    private final String zoneId;
+    private final String placementId;
     private final boolean testMode;
     
     private boolean initialised;
@@ -46,13 +46,13 @@ public final class UnityRewardedAdapter extends MediationAdapter {
             int demoteOnCode,
             int waterfallIndex,
             String gameId,
-            @Nullable String zoneId,
+            String placementId,
             boolean testMode) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.gameId = gameId;
-        this.zoneId = zoneId;
+        this.placementId = placementId;
         this.testMode = testMode;
     }
     
@@ -65,7 +65,7 @@ public final class UnityRewardedAdapter extends MediationAdapter {
         if (!initialised) {
             Log.d(BuildConfig.LOG_TAG, "Initialising");
             try {
-                forwarder = new EventForwarder(this, listener);
+                forwarder = new EventForwarder(this, placementId, listener);
                 
                 UnityAds.initialize(
                         activity,
@@ -87,19 +87,15 @@ public final class UnityRewardedAdapter extends MediationAdapter {
         
         this.activity = activity;
         
-        if (forwarder != null) forwarder.requestPerformed(listener, zoneId);
+        if (forwarder != null && !TextUtils.isEmpty(placementId)) {
+            forwarder.requestPerformed(listener);
+        }
     }
     
     @Override
     public void showAd() {
-        if (zoneId != null) {
-            if (UnityAds.isReady(zoneId) && activity != null) {
-                UnityAds.show(activity, zoneId);
-            }
-        } else {
-            if (UnityAds.isReady() && activity != null) {
-                UnityAds.show(activity);
-            }
+        if (UnityAds.isReady(placementId) && activity != null) {
+            UnityAds.show(activity, placementId);
         }
     }
     

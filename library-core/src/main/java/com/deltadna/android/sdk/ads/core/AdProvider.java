@@ -487,7 +487,7 @@ enum AdProvider {
                     demoteOnCode,
                     index,
                     config.getString("gameId"),
-                    config.optString("zoneId", null),
+                    config.getString("placementId"),
                     config.optBoolean("testMode", false));
         }
         
