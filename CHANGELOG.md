@@ -8,6 +8,7 @@ Fixed IronSource callbacks not invoked after the first ad show.
 Fixed Unity callbacks not invoked after the first ad show.  
 Fixed misreporting of adShow events.  
 Updated IronSource dependency.  
+Updated AppLovin dependency.  
 
 ## [1.4.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.2) (2017-05-17)
 Fixed AppLovin reporting duplicate ad loads.  
