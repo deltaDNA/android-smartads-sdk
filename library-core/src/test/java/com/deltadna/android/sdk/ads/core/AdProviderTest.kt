@@ -268,7 +268,7 @@ class AdProviderTest {
                 1, 2, 3, 4,
                 JSONObject()
                         .put("gameId", "gameId")
-                        .put("zoneId", "zoneId")
+                        .put("placementId", "placementId")
                         .put("testMode", true))) {
             assertThat(this).isInstanceOf(UnityRewardedAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(UNITY.version())
