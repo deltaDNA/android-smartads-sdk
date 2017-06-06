@@ -27,13 +27,13 @@ import com.google.android.gms.ads.InterstitialAd;
 
 import org.json.JSONObject;
 
-final public class AdMobAdapter extends MediationAdapter {
+final public class AdMobInterstitialAdapter extends MediationAdapter {
     
     private final String adUnitId;
     
     private InterstitialAd interstitial;
     
-    public AdMobAdapter(
+    public AdMobInterstitialAdapter(
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
@@ -52,7 +52,7 @@ final public class AdMobAdapter extends MediationAdapter {
                 
                 interstitial = new InterstitialAd(activity);
                 interstitial.setAdUnitId(adUnitId);
-                interstitial.setAdListener(new AdMobEventForwarder(listener, this));
+                interstitial.setAdListener(new InterstitialEventForwarder(listener, this));
             } catch (Exception e) {
                 Log.e(BuildConfig.LOG_TAG, "Failed to initialise", e);
                 listener.onAdFailedToLoad(

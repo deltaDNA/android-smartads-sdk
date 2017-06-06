@@ -17,7 +17,7 @@
 package com.deltadna.android.sdk.ads.core
 
 import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter
-import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter
+import com.deltadna.android.sdk.ads.provider.admob.AdMobInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter
 import com.google.common.truth.Truth.assertThat
 import org.json.JSONArray
@@ -79,7 +79,7 @@ class WaterfallFactoryTest {
                 1,
                 AdProviderType.INTERSTITIAL)) {
             assertThat(adapters.size).isEqualTo(1)
-            assertThat(resetAndGetFirst()).isInstanceOf(AdMobAdapter::class.java)
+            assertThat(resetAndGetFirst()).isInstanceOf(AdMobInterstitialAdapter::class.java)
         }
     }
     

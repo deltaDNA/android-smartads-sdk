@@ -21,7 +21,8 @@ import android.support.annotation.Nullable;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.core.network.DummyAdapter;
 import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter;
-import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter;
+import com.deltadna.android.sdk.ads.provider.admob.AdMobInterstitialAdapter;
+import com.deltadna.android.sdk.ads.provider.admob.AdMobRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter;
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostInterstitialAdapter;
@@ -64,7 +65,7 @@ enum AdProvider {
         }
     },
     
-    ADMOB("com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter") {
+    ADMOB("com.deltadna.android.sdk.ads.provider.admob.AdMobInterstitialAdapter") {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
@@ -73,7 +74,30 @@ enum AdProvider {
                 int index,
                 JSONObject config) throws JSONException {
             
-            return new AdMobAdapter(
+            return new AdMobInterstitialAdapter(
+                    eCPM,
+                    demoteOnCode,
+                    index,
+                    config.getString("adUnitId"));
+        }
+        
+        @Nullable
+        @Override
+        AdProvider rewarded() {
+            return ADMOB_REWARDED;
+        }
+    },
+    
+    ADMOB_REWARDED("com.deltadna.android.sdk.ads.provider.admob.AdMobRewardedAdapter") {
+        @Override
+        MediationAdapter createAdapter(
+                int eCPM,
+                int adFloorPrice,
+                int demoteOnCode,
+                int index,
+                JSONObject config) throws JSONException {
+            
+            return new AdMobRewardedAdapter(
                     eCPM,
                     demoteOnCode,
                     index,

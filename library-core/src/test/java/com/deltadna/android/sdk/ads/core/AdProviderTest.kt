@@ -20,7 +20,8 @@ import com.deltadna.android.sdk.ads.core.AdProvider.*
 import com.deltadna.android.sdk.ads.core.AdProviderType.INTERSTITIAL
 import com.deltadna.android.sdk.ads.core.AdProviderType.REWARDED
 import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter
-import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter
+import com.deltadna.android.sdk.ads.provider.admob.AdMobInterstitialAdapter
+import com.deltadna.android.sdk.ads.provider.admob.AdMobRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostInterstitialAdapter
@@ -62,7 +63,17 @@ class AdProviderTest {
         assertThat(ADMOB.createAdapter(
                 1, 2, 3, 4,
                 JSONObject().put("adUnitId", "adUnitId")))
-                .isInstanceOf(AdMobAdapter::class.java)
+                .isInstanceOf(AdMobInterstitialAdapter::class.java)
+    }
+    
+    @Test
+    fun adMobRewarded() {
+        assertThat(ADMOB_REWARDED.createAdapter(
+                1, 2, 3, 4,
+                JSONObject().put("adUnitId", "adUnitId")))
+                .isInstanceOf(AdMobRewardedAdapter::class.java)
+        
+        assertThat(ADMOB.rewarded()).isSameAs(ADMOB_REWARDED)
     }
     
     @Test

@@ -27,7 +27,8 @@ import com.deltadna.android.sdk.ads.bindings.AdRequestResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter
-import com.deltadna.android.sdk.ads.provider.admob.AdMobAdapter
+import com.deltadna.android.sdk.ads.provider.admob.AdMobInterstitialAdapter
+import com.deltadna.android.sdk.ads.provider.admob.AdMobRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter
 import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostInterstitialAdapter
@@ -128,11 +129,16 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         "appc804f742b8064114a9",
                         "vzbb9fa7accb4e4185b7"),
-                AdMobAdapter(
+                AdMobInterstitialAdapter(
                         0,
                         0,
                         0,
-                        "ca-app-pub-3117129396855330/6027943007"),
+                        "ca-app-pub-3940256099942544/1033173712"),
+                AdMobRewardedAdapter(
+                        0,
+                        0,
+                        0,
+                        "ca-app-pub-3940256099942544/5224354917"),
                 AmazonAdapter(
                         0,
                         0,

@@ -24,12 +24,12 @@ import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 
-final class AdMobEventForwarder extends AdListener {
+final class InterstitialEventForwarder extends AdListener {
     
     private final MediationListener listener;
     private final MediationAdapter adapter;
     
-    AdMobEventForwarder(MediationListener listener, MediationAdapter adapter) {
+    InterstitialEventForwarder(MediationListener listener, MediationAdapter adapter) {
         this.listener = listener;
         this.adapter = adapter;
     }
