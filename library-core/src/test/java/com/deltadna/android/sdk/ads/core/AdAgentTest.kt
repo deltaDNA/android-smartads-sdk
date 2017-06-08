@@ -139,6 +139,7 @@ class AdAgentTest {
         withAgent(spiedAdapters(2), 2) { adapters ->
             doAnswer {
                 onAdLoaded(adapters[0])
+                onAdShowing(adapters[0])
                 onAdClosed(adapters[0], true)
             }.whenever(adapters[0]).requestAd(activity, this, config)
             doAnswer {
@@ -256,6 +257,20 @@ class AdAgentTest {
                     eq(reason),
                     any(),
                     same(AdRequestResult.Error))
+        }
+    }
+    
+    @Test
+    fun requestAdWhileAlreadyRequesting() {
+        withAgent(spiedAdapters(1), maxPerSession = 2) { adapters ->
+            doAnswer {
+                onAdLoaded(adapters[0])
+            }.whenever(adapters[0]).requestAd(activity, this, config)
+            
+            requestAd(activity, config)
+            requestAd(activity, config)
+            
+            assertThat(adapters[0].requests).isEqualTo(1)
         }
     }
     
