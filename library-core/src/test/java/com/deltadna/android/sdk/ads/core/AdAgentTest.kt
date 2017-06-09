@@ -116,7 +116,13 @@ class AdAgentTest {
             
             Robolectric
                     .getForegroundThreadScheduler()
-                    .advanceBy(15, TimeUnit.SECONDS)
+                    .advanceBy(5, TimeUnit.SECONDS)
+            
+            assertThat(isAdLoaded).isFalse()
+            
+            Robolectric
+                    .getForegroundThreadScheduler()
+                    .advanceBy(10, TimeUnit.SECONDS)
             
             assertThat(isAdLoaded).isTrue()
             inOrder(listener) {
