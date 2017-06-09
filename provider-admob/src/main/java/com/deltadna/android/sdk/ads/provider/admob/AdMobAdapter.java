@@ -74,6 +74,8 @@ final public class AdMobAdapter extends MediationAdapter {
                     AdRequestResult.Error,
                     "SDK exception on request: " + e.getMessage());
         }
+        
+        throw new RuntimeException();
     }
     
     @Override

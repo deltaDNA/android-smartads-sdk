@@ -446,8 +446,10 @@ final class AdServiceImpl implements AdService {
             eventParams.put("adRequestTimeMs", requestDuration);
             eventParams.put("adWaterfallIndex", mediationAdapter != null ? mediationAdapter.getWaterfallIndex() : -1);
             eventParams.put("adStatus", adLoadResult);
-            if(errorReason != null) {
-                eventParams.put("adProviderError", errorReason);
+            if (!TextUtils.isEmpty(errorReason)) {
+                eventParams.put(
+                        "adProviderError",
+                        errorReason.substring(0, Math.min(2048, errorReason.length())));
             }
         } catch (JSONException e) {
             Log.e(BuildConfig.LOG_TAG, e.getMessage());
