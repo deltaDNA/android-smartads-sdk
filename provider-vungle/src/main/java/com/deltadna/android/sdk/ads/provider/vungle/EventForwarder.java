@@ -110,15 +110,6 @@ final class EventForwarder implements EventListener {
         }
     }
     
-    @Override
-    public void onVideoView(
-            boolean isCompletedView,
-            int watchedMillis,
-            int videoMillis) {
-        
-        // deprecated
-    }
-    
     void requestPerformed(MediationListener listener) {
         this.listener = listener;
         
