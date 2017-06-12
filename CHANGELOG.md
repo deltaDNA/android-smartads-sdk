@@ -10,6 +10,7 @@ Fixed misreporting of adShow events.
 Updated IronSource dependency.  
 Updated AppLovin dependency.  
 Updated Vungle dependency.  
+Updated Google Play Services and Firebase dependencies.  
 
 ## [1.4.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.2) (2017-05-17)
 Fixed AppLovin reporting duplicate ad loads.  
