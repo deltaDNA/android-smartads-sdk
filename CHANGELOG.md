@@ -11,6 +11,7 @@ Fixed behaviour when ads requested/shown from non-UI threads.
 Updated IronSource dependency.  
 Updated AppLovin dependency.  
 Updated Vungle dependency.  
+Updated InMobi dependency.  
 Updated Google Play Services and Firebase dependencies.  
 Updated deltaDNA analytics dependency.  
 
