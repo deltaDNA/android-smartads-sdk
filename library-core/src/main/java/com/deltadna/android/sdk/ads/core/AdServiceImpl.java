@@ -163,34 +163,49 @@ final class AdServiceImpl implements AdService {
     
     @Override
     public void onPause() {
-        if (interstitialAgent != null) {
-            interstitialAgent.onPause();
-        }
-        if (rewardedAgent != null) {
-            rewardedAgent.onPause();
-        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (interstitialAgent != null) {
+                    interstitialAgent.onPause();
+                }
+                if (rewardedAgent != null) {
+                    rewardedAgent.onPause();
+                }
+            }
+        });
     }
     
     @Override
     public void onResume() {
-        if (interstitialAgent != null) {
-            interstitialAgent.onResume();
-        }
-        if (rewardedAgent != null) {
-            rewardedAgent.onResume();
-        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (interstitialAgent != null) {
+                    interstitialAgent.onResume();
+                }
+                if (rewardedAgent != null) {
+                    rewardedAgent.onResume();
+                }
+            }
+        });
     }
     
     @Override
     public void onDestroy() {
         handler.removeCallbacksAndMessages(null);
         
-        if (interstitialAgent != null) {
-            interstitialAgent.onDestroy();
-        }
-        if (rewardedAgent != null) {
-            rewardedAgent.onDestroy();
-        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (interstitialAgent != null) {
+                    interstitialAgent.onDestroy();
+                }
+                if (rewardedAgent != null) {
+                    rewardedAgent.onDestroy();
+                }
+            }
+        });
     }
     
     private boolean isAdAllowed(

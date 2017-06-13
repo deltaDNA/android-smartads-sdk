@@ -7,6 +7,7 @@ Fixed Vungle callbacks not invoked after the first ad show.
 Fixed IronSource callbacks not invoked after the first ad show.  
 Fixed Unity callbacks not invoked after the first ad show.  
 Fixed misreporting of adShow events.  
+Fixed behaviour when ads requested/shown from non-UI threads.  
 Updated IronSource dependency.  
 Updated AppLovin dependency.  
 Updated Vungle dependency.  

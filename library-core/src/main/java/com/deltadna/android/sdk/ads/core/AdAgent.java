@@ -109,6 +109,7 @@ class AdAgent implements MediationListener {
         this.state = State.READY;
     }
     
+    @UiThread
     void requestAd(Activity activity, JSONObject configuration) {
         if (currentAdapter == null) {
             Log.w(TAG, "Ignoring ad request due to no providers");
@@ -166,18 +167,21 @@ class AdAgent implements MediationListener {
         return adPoint;
     }
     
+    @UiThread
     void onResume() {
         for (MediationAdapter adapter : waterfall.adapters) {
             adapter.onResume();
         }
     }
     
+    @UiThread
     void onPause() {
         for (MediationAdapter adapter : waterfall.adapters) {
             adapter.onPause();
         }
     }
     
+    @UiThread
     void onDestroy() {
         for (MediationAdapter adapter : waterfall.adapters) {
             adapter.onDestroy();
