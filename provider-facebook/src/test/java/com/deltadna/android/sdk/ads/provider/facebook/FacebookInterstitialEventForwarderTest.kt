@@ -82,4 +82,11 @@ class FacebookInterstitialEventForwarderTest {
         
         verify(listener).onAdClosed(same(adapter), eq(true))
     }
+    
+    @Test
+    fun onLoggingImpression() {
+        uut.onLoggingImpression(mock())
+        
+        verifyZeroInteractions(listener)
+    }
 }

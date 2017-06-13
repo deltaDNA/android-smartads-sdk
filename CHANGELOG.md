@@ -12,6 +12,7 @@ Updated IronSource dependency.
 Updated AppLovin dependency.  
 Updated Vungle dependency.  
 Updated InMobi dependency.  
+Updated Facebook dependency.  
 Updated Google Play Services and Firebase dependencies.  
 Updated deltaDNA analytics dependency.  
 
