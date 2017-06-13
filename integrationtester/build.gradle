@@ -36,6 +36,9 @@ android {
         buildConfigField 'String', 'IRONSOURCE_APP_KEY', "\"${findProperty('IRONSOURCE_APP_KEY')}\""
         buildConfigField 'String', 'MOBFOX_PUBLICATION_ID', "\"${findProperty('MOBFOX_PUBLICATION_ID')}\""
         buildConfigField 'String', 'MOPUB_AD_UNIT_ID', "\"${findProperty('MOPUB_AD_UNIT_ID')}\""
+        buildConfigField 'String', 'TAPJOY_SDK_KEY', "\"${findProperty('TAPJOY_SDK_KEY')}\""
+        buildConfigField 'String', 'TAPJOY_INTERSTITIAL_PLACEMENT', "\"${findProperty('TAPJOY_INTERSTITIAL_PLACEMENT')}\""
+        buildConfigField 'String', 'TAPJOY_REWARDED_PLACEMENT', "\"${findProperty('TAPJOY_REWARDED_PLACEMENT')}\""
         buildConfigField 'String', 'THIRDPRESENCE_ACCOUNT_NAME', "\"${findProperty('THIRDPRESENCE_ACCOUNT_NAME')}\""
         buildConfigField 'String', 'THIRDPRESENCE_PLACEMENT_ID', "\"${findProperty('THIRDPRESENCE_PLACEMENT_ID')}\""
         buildConfigField 'String', 'UNITY_GAME_ID', "\"${findProperty('UNITY_GAME_ID')}\""
@@ -85,6 +88,7 @@ dependencies {
     compile project(':provider-flurry')
     compile project(':provider-mobfox')
     compile project(':provider-mopub')
+    compile project(':provider-tapjoy')
     compile project(':provider-thirdpresence')
     compile project(':provider-unity')
     compile project(':provider-vungle')

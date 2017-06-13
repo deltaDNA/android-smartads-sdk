@@ -36,6 +36,7 @@ import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAd
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter;
+import com.deltadna.android.sdk.ads.provider.tapjoy.TapJoyAdapter;
 import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter;
@@ -484,6 +485,37 @@ enum AdProvider {
         @Override
         String version() {
             return com.deltadna.android.sdk.ads.provider.mopub.BuildConfig.PROVIDER_VERSION;
+        }
+    },
+    
+    TAPJOY( "com.deltadna.android.sdk.ads.provider.tapjoy.TapJoyAdapter",
+            "com.tapjoy") {
+        @Override
+        MediationAdapter createAdapter(
+                int eCPM,
+                int adFloorPrice,
+                int demoteOnCode,
+                int index,
+                JSONObject config) throws JSONException {
+            
+            return new TapJoyAdapter(
+                    eCPM,
+                    demoteOnCode,
+                    index,
+                    config.getString("sdkKey"),
+                    config.getString("placement"),
+                    config.optBoolean("logging", false));
+        }
+        
+        @Override
+        String version() {
+            return com.deltadna.android.sdk.ads.provider.tapjoy.BuildConfig.PROVIDER_VERSION;
+        }
+        
+        @Nullable
+        @Override
+        AdProvider rewarded() {
+            return this;
         }
     },
     
