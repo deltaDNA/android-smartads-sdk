@@ -308,6 +308,11 @@ enum AdProvider {
         }
         
         @Override
+        boolean present() {
+            return false; // SA-94
+        }
+        
+        @Override
         String version() {
             return com.deltadna.android.sdk.ads.provider.inmobi.BuildConfig.PROVIDER_VERSION;
         }
@@ -336,6 +341,11 @@ enum AdProvider {
                     index,
                     config.getString("accountId"),
                     config.getLong("placementId"));
+        }
+        
+        @Override
+        boolean present() {
+            return false; // SA-94
         }
         
         @Override
