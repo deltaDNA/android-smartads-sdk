@@ -1,6 +1,8 @@
 package com.deltadna.android.sdk.ads.core
 
 import android.app.Activity
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.core.network.DummyAdapter
 import com.github.salomonbrys.kotson.jsonArray
@@ -15,21 +17,37 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
+@Config(manifest = Config.NONE)
 class AdServiceImplTest {
     
     private var activity = Robolectric.buildActivity(Activity::class.java).create()
     private val listener = mock<AdServiceListener>()
     
-    private var uut = AdServiceImpl(activity.get(), listener)
+    private var uut = AdServiceImpl(activity.get(), listener, "1")
     
     @Before
     fun before() {
         activity = Robolectric.buildActivity(Activity::class.java).create()
         
-        uut = AdServiceImpl(activity.get(), listener)
+        uut = AdServiceImpl(
+                // needed just to stop the version name from being null
+                spy(activity.get()).apply {
+                    whenever(packageManager).then {
+                        mock<PackageManager>().apply {
+                            whenever(getPackageInfo(packageName, 0)).then {
+                                PackageInfo().apply {
+                                    versionName = "1"
+                                }
+                            }
+                        }
+                    }
+                },
+                listener,
+                "1")
     }
     
     @After

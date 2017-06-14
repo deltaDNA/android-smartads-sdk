@@ -21,6 +21,7 @@ import android.util.Log;
 
 import com.chartboost.sdk.ChartboostDelegate;
 import com.chartboost.sdk.Model.CBError;
+import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
@@ -71,7 +72,7 @@ final class Delegate extends ChartboostDelegate {
         
         Log.w(BuildConfig.LOG_TAG, String.format(
                 Locale.US,
-                "Did fail to load interstitial: %s/%s",
+                "Did fail to load/show interstitial: %s/%s",
                 location,
                 error.name()));
         
@@ -118,7 +119,7 @@ final class Delegate extends ChartboostDelegate {
         
         Log.w(BuildConfig.LOG_TAG, String.format(
                 Locale.US,
-                "Did fail to load rewarded: %s/%s",
+                "Did fail to load/show rewarded: %s/%s",
                 location,
                 error.name()));
         
@@ -167,17 +168,35 @@ final class Delegate extends ChartboostDelegate {
             MediationListener listener,
             MediationAdapter adapter) {
         
-        final AdRequestResult result;
+        handleFailure(error, listener, adapter, true);
+    }
+    
+    private static void handleShowFailure(
+            CBError.CBImpressionError error,
+            MediationListener listener,
+            MediationAdapter adapter) {
+        
+        handleFailure(error, listener, adapter, false);
+    }
+    
+    private static void handleFailure(
+            CBError.CBImpressionError error,
+            MediationListener listener,
+            MediationAdapter adapter,
+            boolean loadFailure) {
+        
+        final AdRequestResult loadResult;
+        AdClosedResult showResult = AdClosedResult.ERROR;
         switch (error) {
             case NO_AD_FOUND:
-                result = AdRequestResult.NoFill;
+                loadResult = AdRequestResult.NoFill;
+                showResult = AdClosedResult.NOT_READY;
                 break;
             
             case INTERNET_UNAVAILABLE:
             case TOO_MANY_CONNECTIONS:
             case NETWORK_FAILURE:
-            case NO_HOST_ACTIVITY:
-                result = AdRequestResult.Network;
+                loadResult = AdRequestResult.Network;
                 break;
             
             case WRONG_ORIENTATION:
@@ -186,14 +205,18 @@ final class Delegate extends ChartboostDelegate {
             case ACTIVITY_MISSING_IN_MANIFEST:
             case END_POINT_DISABLED:
             case HARDWARE_ACCELERATION_DISABLED:
-                result = AdRequestResult.Configuration;
+                loadResult = AdRequestResult.Configuration;
                 break;
             
             default:
-                result = AdRequestResult.Error;
+                loadResult = AdRequestResult.Error;
         }
         
-        listener.onAdFailedToLoad(adapter, result, error.name());
+        if (loadFailure) {
+            listener.onAdFailedToLoad(adapter, loadResult, error.name());
+        } else {
+            listener.onAdFailedToShow(adapter, showResult);
+        }
     }
     
     private static final class InterstitialDelegate extends ChartboostDelegate {
@@ -228,6 +251,8 @@ final class Delegate extends ChartboostDelegate {
             if (!notifiedLoadedOrNot) {
                 Delegate.handleLoadFailure(error, listener, adapter);
                 notifiedLoadedOrNot = true;
+            } else {
+                Delegate.handleShowFailure(error, listener, adapter);
             }
         }
         
@@ -281,6 +306,8 @@ final class Delegate extends ChartboostDelegate {
             if (!notifiedLoadedOrNot) {
                 Delegate.handleLoadFailure(error, listener, adapter);
                 notifiedLoadedOrNot = true;
+            } else {
+                Delegate.handleShowFailure(error, listener, adapter);
             }
         }
         

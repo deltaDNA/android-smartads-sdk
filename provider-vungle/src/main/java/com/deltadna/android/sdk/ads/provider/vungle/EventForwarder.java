@@ -80,6 +80,7 @@ final class EventForwarder implements EventListener {
         Log.d(BuildConfig.LOG_TAG, "Ad start");
         
         showing = true;
+        
         if (listener != null) listener.onAdShowing(adapter);
     }
     
@@ -94,25 +95,19 @@ final class EventForwarder implements EventListener {
                 wasSuccessfulView,
                 wasCallToActionClicked));
         
-        showing = false;
-        
         if (listener != null) {
+            /*
+             * Avoids odd interaction between the adapter and agent when Vungle
+             * invokes this callback out of sequence sometimes
+             */
+            final MediationListener listener = this.listener;
+            this.listener = null;
+            
             if (wasCallToActionClicked) {
                 listener.onAdClicked(adapter);
             }
             listener.onAdClosed(adapter, wasSuccessfulView);
-            
-            listener = null;
         }
-    }
-    
-    @Override
-    public void onVideoView(
-            boolean isCompletedView,
-            int watchedMillis,
-            int videoMillis) {
-        
-        // deprecated
     }
     
     void requestPerformed(MediationListener listener) {

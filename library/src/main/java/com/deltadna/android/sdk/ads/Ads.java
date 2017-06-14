@@ -54,7 +54,10 @@ class Ads implements AdServiceListener, SessionListener {
             new WeakReference<>(null);
     
     Ads(Activity activity) {
-        service = AdServiceWrapper.create(activity, this);
+        service = AdServiceWrapper.create(
+                activity,
+                this,
+                com.deltadna.android.sdk.BuildConfig.VERSION_NAME);
         
         DDNA.instance().register(this);
     }

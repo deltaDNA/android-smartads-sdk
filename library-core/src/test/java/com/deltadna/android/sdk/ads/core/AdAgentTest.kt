@@ -20,7 +20,6 @@ import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import android.os.Build
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
@@ -34,10 +33,10 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
+import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class,
-        sdk = intArrayOf(Build.VERSION_CODES.LOLLIPOP))
+@Config(manifest = Config.NONE)
 class AdAgentTest {
     
     private val listener = mock<AdAgentListener>()
@@ -115,7 +114,15 @@ class AdAgentTest {
             
             requestAd(activity, config)
             
-            Robolectric.getForegroundThreadScheduler().advanceBy(15000)
+            Robolectric
+                    .getForegroundThreadScheduler()
+                    .advanceBy(5, TimeUnit.SECONDS)
+            
+            assertThat(isAdLoaded).isFalse()
+            
+            Robolectric
+                    .getForegroundThreadScheduler()
+                    .advanceBy(10, TimeUnit.SECONDS)
             
             assertThat(isAdLoaded).isTrue()
             inOrder(listener) {
@@ -138,6 +145,7 @@ class AdAgentTest {
         withAgent(spiedAdapters(2), 2) { adapters ->
             doAnswer {
                 onAdLoaded(adapters[0])
+                onAdShowing(adapters[0])
                 onAdClosed(adapters[0], true)
             }.whenever(adapters[0]).requestAd(activity, this, config)
             doAnswer {
@@ -243,6 +251,36 @@ class AdAgentTest {
     }
     
     @Test
+    fun requestAdPreviouslyCrashed() {
+        val reason = "crash"
+        withAgent(spiedAdapters(1), crashes = arrayListOf(reason)) { adapters ->
+            requestAd(activity, config)
+            
+            assertThat(isAdLoaded).isFalse()
+            verify(listener).onAdFailedToLoad(
+                    same(this),
+                    same(adapters[0]),
+                    eq(reason),
+                    any(),
+                    same(AdRequestResult.Error))
+        }
+    }
+    
+    @Test
+    fun requestAdWhileAlreadyRequesting() {
+        withAgent(spiedAdapters(1), maxPerSession = 2) { adapters ->
+            doAnswer {
+                onAdLoaded(adapters[0])
+            }.whenever(adapters[0]).requestAd(activity, this, config)
+            
+            requestAd(activity, config)
+            requestAd(activity, config)
+            
+            assertThat(adapters[0].requests).isEqualTo(1)
+        }
+    }
+    
+    @Test
     fun showAdWhenLoaded() {
         withAgent(spiedAdapters(1)) { adapters ->
             doAnswer {
@@ -260,6 +298,22 @@ class AdAgentTest {
                 verify(listener).onAdOpened(
                         same(this@withAgent), same(adapters[0]))
             }
+        }
+    }
+    
+    @Test
+    fun showAdCalledTwiceReportedOnlyOnce() {
+        withAgent(spiedAdapters(1)) { adapters ->
+            doAnswer {
+                onAdLoaded(adapters[0])
+                onAdShowing(adapters[0])
+                onAdShowing(adapters[0])
+            }.whenever(adapters[0]).requestAd(activity, this, config)
+            
+            requestAd(activity, config)
+            showAd("adpoint")
+            
+            verify(listener).onAdOpened(same(this@withAgent), same(adapters[0]))
         }
     }
     
@@ -333,7 +387,7 @@ class AdAgentTest {
             reset(listener)
             with(Robolectric.getForegroundThreadScheduler()) {
                 assertThat(size()).isEqualTo(1)
-                advanceBy(60000)
+                advanceBy(60, TimeUnit.SECONDS)
             }
             
             verify(listener).onAdFailedToLoad(
@@ -354,13 +408,17 @@ class AdAgentTest {
     
     private fun withAgent(
             adapters: List<MediationAdapter>,
-                maxPerNetwork: Int = 1,
+            maxPerNetwork: Int = 1,
             maxPerSession: Int = -1,
+            crashes: List<String> = listOf(),
             block: AdAgent.(List<MediationAdapter>) -> Unit) {
         block.invoke(
                 AdAgent(listener,
                         Waterfall(adapters, maxPerNetwork),
-                        maxPerSession),
+                        maxPerSession,
+                        mock<ExceptionHandler>().apply {
+                            whenever(listCrashes(any())).then { crashes }
+                        }),
                 adapters)
     }
     

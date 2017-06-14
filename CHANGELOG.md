@@ -1,7 +1,24 @@
 # Change Log
 
+## [1.4.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.3) (2017-06-14)
+Added network crash detection and exclusion from following runs.  
+Fixed Chartboost misreporting show failure callbacks as load failures.  
+Fixed Vungle callbacks not invoked after the first ad show.  
+Fixed IronSource callbacks not invoked after the first ad show.  
+Fixed Unity callbacks not invoked after the first ad show.  
+Fixed misreporting of adShow events.  
+Fixed behaviour when ads requested/shown from non-UI threads.  
+Updated IronSource dependency.  
+Updated AppLovin dependency.  
+Updated Vungle dependency.  
+Updated InMobi dependency.  
+Updated Facebook dependency.  
+Updated Google Play Services and Firebase dependencies.  
+Updated deltaDNA analytics dependency.  
+
 ## [1.4.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.2) (2017-05-17)
 Fixed AppLovin reporting duplicate ad loads.  
+Fixed AdColony not reporting expired ads correctly.  
 Updated AppLovin dependency.  
 
 ## [1.4.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.1) (2017-05-03)

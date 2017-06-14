@@ -99,8 +99,6 @@ public final class ChartBoostInterstitialAdapter extends MediationAdapter {
     
     @Override
     public void onDestroy() {
-        if (activity != null) {
-            Helper.onDestroy(activity);
-        }
+        if (activity != null) Helper.onDestroy(activity);
     }
 }

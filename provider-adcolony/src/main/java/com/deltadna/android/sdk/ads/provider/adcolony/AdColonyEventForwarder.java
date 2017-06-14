@@ -22,6 +22,7 @@ import android.util.Log;
 import com.adcolony.sdk.AdColonyInterstitial;
 import com.adcolony.sdk.AdColonyInterstitialListener;
 import com.adcolony.sdk.AdColonyZone;
+import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
@@ -92,5 +93,10 @@ class AdColonyEventForwarder extends AdColonyInterstitialListener {
     @Nullable
     AdColonyInterstitial getAd() {
         return ad;
+    }
+    
+    void onExpired() {
+        Log.d(BuildConfig.LOG_TAG, "Expired");
+        listener.onAdFailedToShow(adapter, AdClosedResult.EXPIRED);
     }
 }
