@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.adcolony.sdk.AdColony;
+import com.adcolony.sdk.AdColonyInterstitial;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
@@ -81,7 +82,13 @@ public final class AdColonyAdapter extends MediationAdapter {
     @Override
     public void showAd() {
         if (forwarder != null && forwarder.getAd() != null) {
-            forwarder.getAd().show();
+            final AdColonyInterstitial ad = forwarder.getAd();
+            
+            if (ad.isExpired()) {
+                forwarder.onExpired();
+            } else {
+                ad.show();
+            }
         }
     }
     

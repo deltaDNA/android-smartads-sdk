@@ -23,8 +23,9 @@ public final class AdServiceWrapper {
     
     public static AdService create(
             Activity activity,
-            AdServiceListener listener) {
+            AdServiceListener listener,
+            String sdkVersion) {
         
-        return new AdServiceImpl(activity, listener);
+        return new AdServiceImpl(activity, listener, sdkVersion);
     }
 }

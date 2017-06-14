@@ -88,7 +88,7 @@ public final class ChartBoostRewardedAdapter extends MediationAdapter {
     }
     
     @Override
-    public void onDestroy() {
+    public void onResume() {
         if (activity != null) Helper.onResume(activity);
     }
     
@@ -98,7 +98,7 @@ public final class ChartBoostRewardedAdapter extends MediationAdapter {
     }
     
     @Override
-    public void onResume() {
+    public void onDestroy() {
         if (activity != null) Helper.onDestroy(activity);
     }
 }

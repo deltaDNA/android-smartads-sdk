@@ -17,6 +17,8 @@
 package com.deltadna.android.sdk.ads.core;
 
 import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
@@ -45,6 +47,7 @@ final class AdServiceImpl implements AdService {
     
     private final Handler handler = new Handler(Looper.getMainLooper());
     
+    private final ExceptionHandler exceptionHandler;
     private final Activity activity;
     private final AdServiceListener listener;
     
@@ -62,9 +65,33 @@ final class AdServiceImpl implements AdService {
     
     private boolean adDebugMode = true;
     
-    AdServiceImpl(Activity activity, AdServiceListener listener) {
+    AdServiceImpl(
+            Activity activity,
+            AdServiceListener listener,
+            String sdkVersion) {
+        
         Preconditions.checkArg(activity != null, "activity cannot be null");
         Preconditions.checkArg(listener != null, "listener cannot be null");
+        
+        String version = "";
+        int versionCode = -1;
+        try {
+            final PackageInfo info = activity
+                    .getPackageManager()
+                    .getPackageInfo(activity.getPackageName(), 0);
+            
+            version = info.versionName;
+            versionCode = info.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(BuildConfig.LOG_TAG, "Failed to read app versions", e);
+        }
+        exceptionHandler = new ExceptionHandler(
+                activity,
+                version,
+                versionCode,
+                sdkVersion,
+                BuildConfig.VERSION_NAME);
+        Thread.setDefaultUncaughtExceptionHandler(exceptionHandler);
         
         this.activity = activity;
         this.listener = MainThread.redirect(listener, AdServiceListener.class);
@@ -136,34 +163,49 @@ final class AdServiceImpl implements AdService {
     
     @Override
     public void onPause() {
-        if (interstitialAgent != null) {
-            interstitialAgent.onPause();
-        }
-        if (rewardedAgent != null) {
-            rewardedAgent.onPause();
-        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (interstitialAgent != null) {
+                    interstitialAgent.onPause();
+                }
+                if (rewardedAgent != null) {
+                    rewardedAgent.onPause();
+                }
+            }
+        });
     }
     
     @Override
     public void onResume() {
-        if (interstitialAgent != null) {
-            interstitialAgent.onResume();
-        }
-        if (rewardedAgent != null) {
-            rewardedAgent.onResume();
-        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (interstitialAgent != null) {
+                    interstitialAgent.onResume();
+                }
+                if (rewardedAgent != null) {
+                    rewardedAgent.onResume();
+                }
+            }
+        });
     }
     
     @Override
     public void onDestroy() {
         handler.removeCallbacksAndMessages(null);
         
-        if (interstitialAgent != null) {
-            interstitialAgent.onDestroy();
-        }
-        if (rewardedAgent != null) {
-            rewardedAgent.onDestroy();
-        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (interstitialAgent != null) {
+                    interstitialAgent.onDestroy();
+                }
+                if (rewardedAgent != null) {
+                    rewardedAgent.onDestroy();
+                }
+            }
+        });
     }
     
     private boolean isAdAllowed(
@@ -419,8 +461,10 @@ final class AdServiceImpl implements AdService {
             eventParams.put("adRequestTimeMs", requestDuration);
             eventParams.put("adWaterfallIndex", mediationAdapter != null ? mediationAdapter.getWaterfallIndex() : -1);
             eventParams.put("adStatus", adLoadResult);
-            if(errorReason != null) {
-                eventParams.put("adProviderError", errorReason);
+            if (!TextUtils.isEmpty(errorReason)) {
+                eventParams.put(
+                        "adProviderError",
+                        errorReason.substring(0, Math.min(2048, errorReason.length())));
             }
         } catch (JSONException e) {
             Log.e(BuildConfig.LOG_TAG, e.getMessage());
@@ -581,7 +625,8 @@ final class AdServiceImpl implements AdService {
                     interstitialAgent = new AdAgent(
                             agentListener,
                             waterfall,
-                            adMaxPerSession);
+                            adMaxPerSession,
+                            exceptionHandler);
                     interstitialAgent.requestAd(activity, adConfiguration);
                     
                     listener.onRegisteredForInterstitialAds();
@@ -610,7 +655,8 @@ final class AdServiceImpl implements AdService {
                     rewardedAgent = new AdAgent(
                             agentListener,
                             waterfall,
-                            adMaxPerSession);
+                            adMaxPerSession,
+                            exceptionHandler);
                     rewardedAgent.requestAd(activity, adConfiguration);
                     
                     listener.onRegisteredForRewardedAds();

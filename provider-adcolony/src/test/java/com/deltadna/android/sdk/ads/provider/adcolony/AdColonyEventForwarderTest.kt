@@ -17,6 +17,7 @@
 package com.deltadna.android.sdk.ads.provider.adcolony
 
 import com.adcolony.sdk.AdColonyInterstitial
+import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
@@ -120,7 +121,12 @@ class AdColonyEventForwarderTest {
         assertThat(uut.ad).isSameAs(ad)
     }
     
-    private fun inOrder(vararg mocks: Any, block: org.mockito.InOrder.() -> Unit) {
-        block.invoke(org.mockito.Mockito.inOrder(*mocks))
+    @Test
+    fun onExpired() {
+        uut.onExpired()
+        
+        verify(listener).onAdFailedToShow(
+                same(adapter),
+                eq(AdClosedResult.EXPIRED))
     }
 }

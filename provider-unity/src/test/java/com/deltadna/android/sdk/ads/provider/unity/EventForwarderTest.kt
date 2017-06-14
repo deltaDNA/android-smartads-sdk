@@ -35,11 +35,11 @@ class EventForwarderTest {
     private val adapter = mock<MediationAdapter>()
     private val listener = mock<MediationListener>()
     
-    private var uut = EventForwarder(adapter, listener)
+    private var uut = EventForwarder(adapter, PLACEMENT_ID, listener)
     
     @Before
     fun before() {
-        uut = EventForwarder(adapter, listener)
+        uut = EventForwarder(adapter, PLACEMENT_ID, listener)
     }
     
     @After
@@ -49,10 +49,10 @@ class EventForwarderTest {
     
     @Test
     fun loaded() {
-        uut.requestPerformed(listener, "")
+        uut.requestPerformed(listener)
         // simulate Unity calling ready in quick succession
-        uut.onUnityAdsReady("")
-        uut.onUnityAdsReady("")
+        uut.onUnityAdsReady(PLACEMENT_ID)
+        uut.onUnityAdsReady(PLACEMENT_ID)
         advance()
         
         // but we only want a single callback invocation
@@ -62,7 +62,7 @@ class EventForwarderTest {
     
     @Test
     fun failedToLoad() {
-        uut.requestPerformed(listener, "")
+        uut.requestPerformed(listener)
         uut.onUnityAdsError(UnityAds.UnityAdsError.INTERNAL_ERROR, "message")
         
         verify(listener).onAdFailedToLoad(
@@ -73,13 +73,13 @@ class EventForwarderTest {
     
     @Test
     fun fullCycleCompleted() {
-        uut.requestPerformed(listener, "")
-        uut.onUnityAdsReady("")
+        uut.requestPerformed(listener)
+        uut.onUnityAdsReady(PLACEMENT_ID)
         advance()
-        uut.onUnityAdsStart("")
-        uut.onUnityAdsFinish("", UnityAds.FinishState.COMPLETED)
+        uut.onUnityAdsStart(PLACEMENT_ID)
+        uut.onUnityAdsFinish(PLACEMENT_ID, UnityAds.FinishState.COMPLETED)
         // simulate Unity calling ready after a cycle
-        uut.onUnityAdsReady("")
+        uut.onUnityAdsReady(PLACEMENT_ID)
         advance()
         
         inOrder(listener) {
@@ -92,20 +92,20 @@ class EventForwarderTest {
     
     @Test
     fun fullCycleNotComplete() {
-        uut.requestPerformed(listener, "")
-        uut.onUnityAdsFinish("", UnityAds.FinishState.SKIPPED)
+        uut.requestPerformed(listener)
+        uut.onUnityAdsFinish(PLACEMENT_ID, UnityAds.FinishState.SKIPPED)
         
         verify(listener).onAdClosed(same(adapter), eq(false))
     }
     
     @Test
     fun loadedCalledOnNextCycle() {
-        uut.requestPerformed(listener, "")
-        uut.onUnityAdsReady("")
+        uut.requestPerformed(listener)
+        uut.onUnityAdsReady(PLACEMENT_ID)
         advance()
-        uut.onUnityAdsFinish("", UnityAds.FinishState.COMPLETED)
+        uut.onUnityAdsFinish(PLACEMENT_ID, UnityAds.FinishState.COMPLETED)
         val nextListener = mock<MediationListener>()
-        uut.requestPerformed(nextListener, "")
+        uut.requestPerformed(nextListener)
         advance()
         
         inOrder(listener, nextListener) {
@@ -119,10 +119,10 @@ class EventForwarderTest {
     
     @Test
     fun failureCarriedOn() {
-        uut.requestPerformed(listener, "")
+        uut.requestPerformed(listener)
         uut.onUnityAdsError(UnityAds.UnityAdsError.INTERNAL_ERROR, "message")
         val nextListener = mock<MediationListener>()
-        uut.requestPerformed(nextListener, "")
+        uut.requestPerformed(nextListener)
         advance()
         
         inOrder(listener, nextListener) {
@@ -137,9 +137,24 @@ class EventForwarderTest {
         }
     }
     
+    @Test
+    fun differentPlacementId() {
+        uut.requestPerformed(listener)
+        uut.onUnityAdsReady("differentId")
+        advance()
+        uut.onUnityAdsStart("differentId")
+        
+        verifyZeroInteractions(listener)
+    }
+    
     private fun advance() {
         RuntimeEnvironment
                 .getMasterScheduler()
                 .advanceBy(1500, TimeUnit.MILLISECONDS)
+    }
+    
+    private companion object {
+        
+        val PLACEMENT_ID = "placementId"
     }
 }

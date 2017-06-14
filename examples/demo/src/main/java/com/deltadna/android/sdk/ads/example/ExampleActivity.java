@@ -34,6 +34,11 @@ import com.deltadna.android.sdk.listeners.EngageListener;
 
 public class ExampleActivity extends Activity implements AdRegistrationListener {
     
+    private static final String TAG =
+            BuildConfig.LOG_TAG
+            + ' '
+            + ExampleActivity.class.getSimpleName();
+    
     // lifecycle methods
     
     @Override
@@ -77,7 +82,7 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
     
     @Override
     public void onRegisteredForInterstitial() {
-        Log.d(BuildConfig.LOG_TAG, "Registered for interstitial ads");
+        Log.d(TAG, "Registered for interstitial ads");
         
         findViewById(R.id.show_interstitial_ad).setEnabled(true);
         findViewById(R.id.show_engage_interstitial_ad).setEnabled(true);
@@ -85,7 +90,7 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
     
     @Override
     public void onFailedToRegisterForInterstitial(String reason) {
-        Log.d(BuildConfig.LOG_TAG, "Failed to register for interstitial ads");
+        Log.d(TAG, "Failed to register for interstitial ads");
         
         findViewById(R.id.show_interstitial_ad).setEnabled(false);
         findViewById(R.id.show_engage_interstitial_ad).setEnabled(false);
@@ -93,7 +98,7 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
     
     @Override
     public void onRegisteredForRewarded() {
-        Log.d(BuildConfig.LOG_TAG, "Registered for rewarded ads");
+        Log.d(TAG, "Registered for rewarded ads");
         
         findViewById(R.id.show_rewarded_ad).setEnabled(true);
         findViewById(R.id.show_engage_rewarded_ad).setEnabled(true);
@@ -101,7 +106,7 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
     
     @Override
     public void onFailedToRegisterForRewarded(String reason) {
-        Log.d(BuildConfig.LOG_TAG, "Failed to register for rewarded ads");
+        Log.d(TAG, "Failed to register for rewarded ads");
         
         findViewById(R.id.show_rewarded_ad).setEnabled(false);
         findViewById(R.id.show_engage_rewarded_ad).setEnabled(false);
@@ -118,7 +123,7 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
         if (ad != null) {
             ad.show();
         } else {
-            Log.w(BuildConfig.LOG_TAG, "Interstitial ad not created");
+            Log.w(TAG, "Interstitial ad not created");
         }
     }
     
@@ -132,14 +137,13 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
                         if (ad != null) {
                             ad.show();
                         } else {
-                            Log.d(  BuildConfig.LOG_TAG,
-                                    "Engage not setup to show ad");
+                            Log.d(TAG, "Engage not setup to show ad");
                         }
                     }
                     
                     @Override
                     public void onError(Throwable t) {
-                        Log.d(BuildConfig.LOG_TAG, "Failed to engage", t);
+                        Log.d(TAG, "Failed to engage", t);
                     }
                 });
     }
@@ -148,24 +152,23 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
         RewardedAd ad = RewardedAd.create(new RewardedAdsListener() {
             @Override
             public void onOpened() {
-                Log.d(BuildConfig.LOG_TAG, "Rewarded ad opened");
+                Log.d(TAG, "Rewarded ad opened");
             }
             
             @Override
             public void onFailedToOpen(String reason) {
-                Log.d(  BuildConfig.LOG_TAG,
-                        "Rewarded ad failed to open: " + reason);
+                Log.d(TAG, "Rewarded ad failed to open: " + reason);
             }
             
             @Override
             public void onClosed(boolean completed) {
-                Log.d(BuildConfig.LOG_TAG, "Rewarded ad closed");
+                Log.d(TAG, "Rewarded ad closed");
             }
         });
         if (ad != null) {
             ad.show();
         } else {
-            Log.w(BuildConfig.LOG_TAG, "Rewarded ad not created");
+            Log.w(TAG, "Rewarded ad not created");
         }
     }
     
@@ -179,14 +182,13 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
                         if (ad != null) {
                             ad.show();
                         } else {
-                            Log.d(  BuildConfig.LOG_TAG,
-                                    "Engage not setup to show ad");
+                            Log.d(TAG, "Engage not setup to show ad");
                         }
                     }
                     
                     @Override
                     public void onError(Throwable t) {
-                        Log.d(BuildConfig.LOG_TAG, "Failed to engage", t);
+                        Log.d(TAG, "Failed to engage", t);
                     }
                 });
     }
@@ -209,7 +211,7 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
                                 
                                 @Override
                                 public void onError(Throwable cause) {
-                                    Log.d(  BuildConfig.LOG_TAG,
+                                    Log.d(  TAG,
                                             "Failed to prepare image",
                                             cause);
                                 }
@@ -221,7 +223,7 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
                     
                     @Override
                     public void onError(Throwable t) {
-                        Log.d(BuildConfig.LOG_TAG, "Failed to engage", t);
+                        Log.d(TAG, "Failed to engage", t);
                     }
                 });
     }

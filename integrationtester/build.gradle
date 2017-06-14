@@ -19,6 +19,27 @@ android {
         applicationId 'com.deltadna.android.sdk.ads.integrationtester'
         
         multiDexEnabled true
+        
+        buildConfigField 'String', 'ADCOLONY_APP_ID', "\"${findProperty('ADCOLONY_APP_ID')}\""
+        buildConfigField 'String', 'ADCOLONY_ZONE_IDS', "\"${findProperty('ADCOLONY_ZONE_IDS')}\""
+        buildConfigField 'String', 'ADMOB_INTERSTITIAL_AD_UNIT_ID', "\"${findProperty('ADMOB_INTERSTITIAL_AD_UNIT_ID')}\""
+        buildConfigField 'String', 'ADMOB_REWARDED_AD_UNIT_ID', "\"${findProperty('ADMOB_REWARDED_AD_UNIT_ID')}\""
+        buildConfigField 'String', 'AMAZON_APP_KEY', "\"${findProperty('AMAZON_APP_KEY')}\""
+        buildConfigField 'String', 'APPLOVIN_KEY', "\"${findProperty('APPLOVIN_KEY')}\""
+        buildConfigField 'String', 'CHARTBOOST_APP_ID', "\"${findProperty('CHARTBOOST_APP_ID')}\""
+        buildConfigField 'String', 'CHARTBOOST_APP_SIGNATURE', "\"${findProperty('CHARTBOOST_APP_SIGNATURE')}\""
+        buildConfigField 'String', 'FACEBOOK_PLACEMENT_ID', "\"${findProperty('FACEBOOK_PLACEMENT_ID')}\""
+        buildConfigField 'String', 'FLURRY_API_KEY', "\"${findProperty('FLURRY_API_KEY')}\""
+        buildConfigField 'String', 'INMOBI_ACCOUNT_ID', "\"${findProperty('INMOBI_ACCOUNT_ID')}\""
+        buildConfigField 'long', 'INMOBI_INTERSTITIAL_PLACEMENT_ID', "${findProperty('INMOBI_INTERSTITIAL_PLACEMENT_ID') ?: 0L}"
+        buildConfigField 'long', 'INMOBI_REWARDED_PLACEMENT_ID', "${findProperty('INMOBI_REWARDED_PLACEMENT_ID') ?: 0L}"
+        buildConfigField 'String', 'IRONSOURCE_APP_KEY', "\"${findProperty('IRONSOURCE_APP_KEY')}\""
+        buildConfigField 'String', 'MOBFOX_PUBLICATION_ID', "\"${findProperty('MOBFOX_PUBLICATION_ID')}\""
+        buildConfigField 'String', 'MOPUB_AD_UNIT_ID', "\"${findProperty('MOPUB_AD_UNIT_ID')}\""
+        buildConfigField 'String', 'THIRDPRESENCE_ACCOUNT_NAME', "\"${findProperty('THIRDPRESENCE_ACCOUNT_NAME')}\""
+        buildConfigField 'String', 'THIRDPRESENCE_PLACEMENT_ID', "\"${findProperty('THIRDPRESENCE_PLACEMENT_ID')}\""
+        buildConfigField 'String', 'UNITY_GAME_ID', "\"${findProperty('UNITY_GAME_ID')}\""
+        buildConfigField 'String', 'VUNGLE_APP_ID', "\"${findProperty('VUNGLE_APP_ID')}\""
     }
     
     dexOptions {

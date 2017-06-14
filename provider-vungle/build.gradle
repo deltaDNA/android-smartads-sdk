@@ -29,7 +29,10 @@ dependencies {
     compile project(':library-bindings')
     
     compile files("libs/vungle-publisher-adaptive-id-${PROVIDER_VERSION}.jar")
+    
     compile 'com.google.dagger:dagger:2.7'
+    compile 'de.greenrobot:eventbus:2.2.1'
+    compile 'io.reactivex:rxjava:1.2.0'
     compile 'javax.inject:javax.inject:1'
     
     // needed for advertising id retrieval (and GooglePlayServicesUtil)
