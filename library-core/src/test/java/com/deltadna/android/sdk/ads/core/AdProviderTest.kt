@@ -35,7 +35,7 @@ import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAd
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter
-import com.deltadna.android.sdk.ads.provider.tapjoy.TapJoyAdapter
+import com.deltadna.android.sdk.ads.provider.tapjoy.TapjoyAdapter
 import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter
@@ -274,7 +274,7 @@ class AdProviderTest {
                         .put("sdkKey", "sdkKey")
                         .put("placement", "placement")
                         .put("logging", true))) {
-            assertThat(this).isInstanceOf(TapJoyAdapter::class.java)
+            assertThat(this).isInstanceOf(TapjoyAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(TAPJOY.version())
             assertThat(this.javaClass.name).isEqualTo(TAPJOY.cls)
         }

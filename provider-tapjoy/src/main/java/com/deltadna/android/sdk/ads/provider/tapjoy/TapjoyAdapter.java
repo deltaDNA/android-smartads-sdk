@@ -38,7 +38,7 @@ import java.util.Hashtable;
 /**
  * Singular implementation handles both interstitial and rewarded ads.
  */
-public final class TapJoyAdapter extends MediationAdapter {
+public final class TapjoyAdapter extends MediationAdapter {
     
     private static final Handler REQUESTER = new Handler(Looper.getMainLooper());
     
@@ -54,7 +54,7 @@ public final class TapJoyAdapter extends MediationAdapter {
     @Nullable
     private MediationListener listener;
     
-    public TapJoyAdapter(
+    public TapjoyAdapter(
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
@@ -75,7 +75,7 @@ public final class TapJoyAdapter extends MediationAdapter {
             MediationListener listener,
             JSONObject configuration) {
         
-        synchronized (TapJoyAdapter.class) {
+        synchronized (TapjoyAdapter.class) {
             final Request request = new Request(activity, listener);
             
             if (!initialising && !initialised) {
@@ -155,13 +155,13 @@ public final class TapJoyAdapter extends MediationAdapter {
             if (initialised) {
                 Tapjoy.setActivity(activity);
                 ad = Tapjoy.getPlacement(placement, new EventForwarder(
-                        TapJoyAdapter.this,
+                        TapjoyAdapter.this,
                         listener,
                         placement));
                 ad.requestContent();
             } else {
                 listener.onAdFailedToLoad(
-                        TapJoyAdapter.this,
+                        TapjoyAdapter.this,
                         AdRequestResult.Configuration,
                         "SDK not initialised");
             }
@@ -180,7 +180,7 @@ public final class TapJoyAdapter extends MediationAdapter {
         public void onConnectSuccess() {
             Log.d(BuildConfig.LOG_TAG, "Connected");
             
-            synchronized (TapJoyAdapter.class) {
+            synchronized (TapjoyAdapter.class) {
                 REQUESTER.post(new Runnable() {
                     @Override
                     public void run() {
@@ -201,7 +201,7 @@ public final class TapJoyAdapter extends MediationAdapter {
         public void onConnectFailure() {
             Log.d(BuildConfig.LOG_TAG, "Failed to connect");
             
-            synchronized (TapJoyAdapter.class) {
+            synchronized (TapjoyAdapter.class) {
                 initialised = false;
                 initialising = false;
             }

@@ -42,7 +42,7 @@ import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAd
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter
-import com.deltadna.android.sdk.ads.provider.tapjoy.TapJoyAdapter
+import com.deltadna.android.sdk.ads.provider.tapjoy.TapjoyAdapter
 import com.deltadna.android.sdk.ads.provider.thirdpresence.ThirdPresenceRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter
@@ -222,14 +222,14 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         BuildConfig.MOPUB_AD_UNIT_ID),
-                TapJoyAdapter(
+                TapjoyAdapter(
                         0,
                         0,
                         0,
                         BuildConfig.TAPJOY_SDK_KEY,
                         BuildConfig.TAPJOY_INTERSTITIAL_PLACEMENT,
                         true),
-                TapJoyAdapter(
+                TapjoyAdapter(
                         0,
                         0,
                         0,
