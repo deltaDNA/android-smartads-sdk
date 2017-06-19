@@ -154,6 +154,8 @@ public final class TapjoyAdapter extends MediationAdapter {
         public void run() {
             if (initialised) {
                 Tapjoy.setActivity(activity);
+                TapjoyAdapter.this.listener = listener;
+                
                 ad = Tapjoy.getPlacement(placement, new EventForwarder(
                         TapjoyAdapter.this,
                         listener,
