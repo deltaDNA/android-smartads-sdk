@@ -15,14 +15,14 @@
  */
 
 dependencies {
-    compile project(':library-bindings')
+    api project(':library-bindings')
     
-    compile("com.thirdpresence.adsdk.sdk:thirdpresence-ad-sdk:$PROVIDER_VERSION") {
+    implementation("com.thirdpresence.adsdk.sdk:thirdpresence-ad-sdk:$PROVIDER_VERSION") {
         exclude group: 'com.android.support', module: 'support-compat'
         exclude group: 'com.android.support', module: 'support-core-utils'
     }
-    compile "com.android.support:support-v4:$supportVersion"
+    implementation "com.android.support:support-v4:$supportVersion"
     
     // needed for advertising id retrieval
-    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
+    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

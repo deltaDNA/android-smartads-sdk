@@ -15,10 +15,10 @@
  */
 
 dependencies {
-    compile project(':library-bindings')
+    api project(':library-bindings')
     
-    compile "com.flurry.android:ads:$PROVIDER_VERSION"
+    implementation "com.flurry.android:ads:$PROVIDER_VERSION"
     
     // needed for advertising id retrieval
-    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
+    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

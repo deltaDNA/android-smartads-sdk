@@ -43,16 +43,16 @@ limitations under the License.
         android:orientation="vertical">
         
         <Button
+            android:id="@+id/request_ad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@string/request_ad"
-            android:onClick="onRequestAd"/>
+            android:text="@string/request_ad"/>
         
         <Button
+            android:id="@+id/show_ad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/show_ad"
-            android:onClick="onShowAd"/>
+            android:text="@string/show_ad"/>
     </LinearLayout>
 </LinearLayout>

@@ -23,14 +23,14 @@ android {
 }
 
 dependencies {
-    compile project(':library-bindings')
+    api project(':library-bindings')
     
-    compile "com.inmobi.monetization:inmobi-ads:$PROVIDER_VERSION"
+    implementation "com.inmobi.monetization:inmobi-ads:$PROVIDER_VERSION"
     
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile "com.android.support:appcompat-v7:$supportVersion"
-    compile "com.android.support:recyclerview-v7:$supportVersion"
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation "com.android.support:appcompat-v7:$supportVersion"
+    implementation "com.android.support:recyclerview-v7:$supportVersion"
     
     // needed for advertising id retrieval (and GoogleApiAvailability)
-    compile "com.google.android.gms:play-services-base:$playServicesVersion"
+    implementation "com.google.android.gms:play-services-base:$playServicesVersion"
 }

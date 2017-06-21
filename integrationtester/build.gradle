@@ -73,23 +73,23 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:$supportVersion"
-    compile "com.android.support:multidex:$multidexVersion"
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "com.android.support:appcompat-v7:$supportVersion"
+    implementation "com.android.support:multidex:$multidexVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     
-    compile project(':provider-adcolony')
-    compile project(':provider-admob')
-    compile project(':provider-amazon')
-    compile project(':provider-applovin')
-    compile project(':provider-chartboost')
-    compile project(':provider-inmobi')
-    compile project(':provider-ironsource')
-    compile project(':provider-facebook')
-    compile project(':provider-flurry')
-    compile project(':provider-mobfox')
-    compile project(':provider-mopub')
-    compile project(':provider-tapjoy')
-    compile project(':provider-thirdpresence')
-    compile project(':provider-unity')
-    compile project(':provider-vungle')
+    implementation project(':provider-adcolony')
+    implementation project(':provider-admob')
+    implementation project(':provider-amazon')
+    implementation project(':provider-applovin')
+    implementation project(':provider-chartboost')
+    implementation project(':provider-inmobi')
+    implementation project(':provider-ironsource')
+    implementation project(':provider-facebook')
+    implementation project(':provider-flurry')
+    implementation project(':provider-mobfox')
+    implementation project(':provider-mopub')
+    implementation project(':provider-tapjoy')
+    implementation project(':provider-thirdpresence')
+    implementation project(':provider-unity')
+    implementation project(':provider-vungle')
 }

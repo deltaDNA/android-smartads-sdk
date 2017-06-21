@@ -48,61 +48,95 @@ android {
         //}
     }
     
+    flavorDimensions 'default'
+    
     productFlavors {
-        none {}
-        all_ {} // 'all' appears to be reserved
-        adcolony {}
-        admob {}
-        amazon {}
-        applovin {}
-        chartboost {}
-        facebook {}
-        flurry {}
-        inmobi {}
-        ironsource {}
-        mobfox {}
-        mopub {}
-        thirdpresence {}
-        unity {}
-        vungle {}
+        none {
+            dimension 'default'
+        }
+        all_ { // 'all' appears to be reserved
+            dimension 'default'
+        }
+        adcolony {
+            dimension 'default'
+        }
+        admob {
+            dimension 'default'
+        }
+        amazon {
+            dimension 'default'
+        }
+        applovin {
+            dimension 'default'
+        }
+        chartboost {
+            dimension 'default'
+        }
+        facebook {
+            dimension 'default'
+        }
+        flurry {
+            dimension 'default'
+        }
+        inmobi {
+            dimension 'default'
+        }
+        ironsource {
+            dimension 'default'
+        }
+        mobfox {
+            dimension 'default'
+        }
+        mopub {
+            dimension 'default'
+        }
+        thirdpresence {
+            dimension 'default'
+        }
+        unity {
+            dimension 'default'
+        }
+        vungle {
+            dimension 'default'
+        }
     }
 }
 
 dependencies {
-    compile project(':library')
+    implementation project(':library')
     
-    all_Compile project(':provider-adcolony')
-    all_Compile project(':provider-admob')
-    all_Compile project(':provider-amazon')
-    all_Compile project(':provider-applovin')
-    all_Compile project(':provider-chartboost')
-    all_Compile project(':provider-facebook')
-    all_Compile project(':provider-flurry')
-    all_Compile project(':provider-inmobi')
-    all_Compile project(':provider-ironsource')
-    all_Compile project(':provider-mobfox')
-    all_Compile project(':provider-mopub')
-    all_Compile project(':provider-thirdpresence')
-    all_Compile project(':provider-unity')
-    all_Compile project(':provider-vungle')
+    all_Implementation project(':provider-adcolony')
+    all_Implementation project(':provider-admob')
+    all_Implementation project(':provider-amazon')
+    all_Implementation project(':provider-applovin')
+    all_Implementation project(':provider-chartboost')
+    all_Implementation project(':provider-facebook')
+    all_Implementation project(':provider-flurry')
+    all_Implementation project(':provider-inmobi')
+    all_Implementation project(':provider-ironsource')
+    all_Implementation project(':provider-mobfox')
+    all_Implementation project(':provider-mopub')
+    all_Implementation project(':provider-thirdpresence')
+    all_Implementation project(':provider-unity')
+    all_Implementation project(':provider-vungle')
     
-    adcolonyCompile project(':provider-adcolony')
-    admobCompile project(':provider-admob')
-    amazonCompile project(':provider-amazon')
-    applovinCompile project(':provider-applovin')
-    chartboostCompile project(':provider-chartboost')
-    facebookCompile project(':provider-facebook')
-    flurryCompile project(':provider-flurry')
-    inmobiCompile project(':provider-inmobi')
-    ironsourceCompile project(':provider-ironsource')
-    mobfoxCompile project(':provider-mobfox')
-    mopubCompile project(':provider-mopub')
-    thirdpresenceCompile project(':provider-thirdpresence')
-    unityCompile project(':provider-unity')
-    vungleCompile project(':provider-vungle')
+    adcolonyImplementation project(':provider-adcolony')
+    admobImplementation project(':provider-admob')
+    amazonImplementation project(':provider-amazon')
+    applovinImplementation project(':provider-applovin')
+    chartboostImplementation project(':provider-chartboost')
+    facebookImplementation project(':provider-facebook')
+    flurryImplementation project(':provider-flurry')
+    inmobiImplementation project(':provider-inmobi')
+    ironsourceImplementation project(':provider-ironsource')
+    mobfoxImplementation project(':provider-mobfox')
+    mopubImplementation project(':provider-mopub')
+    thirdpresenceImplementation project(':provider-thirdpresence')
+    unityImplementation project(':provider-unity')
+    vungleImplementation project(':provider-vungle')
     
-    compile "com.android.support:appcompat-v7:$supportVersion"
-    compile "com.android.support:multidex:$multidexVersion"
+    implementation "com.android.support:appcompat-v7:$supportVersion"
+    implementation "com.android.support:multidex:$multidexVersion"
 }
 
 nimbledroid {

@@ -26,15 +26,15 @@ android {
 }
 
 dependencies {
-    compile project(':library-bindings')
+    api project(':library-bindings')
     
-    compile files("libs/vungle-publisher-adaptive-id-${PROVIDER_VERSION}.jar")
+    implementation files("libs/vungle-publisher-adaptive-id-${PROVIDER_VERSION}.jar")
     
-    compile 'com.google.dagger:dagger:2.7'
-    compile 'de.greenrobot:eventbus:2.2.1'
-    compile 'io.reactivex:rxjava:1.2.0'
-    compile 'javax.inject:javax.inject:1'
+    implementation 'com.google.dagger:dagger:2.7'
+    implementation 'de.greenrobot:eventbus:2.2.1'
+    implementation 'io.reactivex:rxjava:1.2.0'
+    implementation 'javax.inject:javax.inject:1'
     
     // needed for advertising id retrieval (and GooglePlayServicesUtil)
-    compile "com.google.android.gms:play-services-base:$playServicesVersion"
+    implementation "com.google.android.gms:play-services-base:$playServicesVersion"
 }

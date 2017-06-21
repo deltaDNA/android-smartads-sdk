@@ -15,7 +15,7 @@
  */
 
 dependencies {
-    compile project(':library-bindings')
+    api project(':library-bindings')
     
-    compile "com.google.firebase:firebase-ads:$PROVIDER_VERSION"
+    implementation "com.google.firebase:firebase-ads:$PROVIDER_VERSION"
 }

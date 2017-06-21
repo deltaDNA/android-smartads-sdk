@@ -15,10 +15,10 @@
  */
 
 dependencies {
-    compile project(':library-bindings')
+    api project(':library-bindings')
     
-    compile files("libs/mediationsdk-${PROVIDER_VERSION}.jar")
+    implementation files("libs/mediationsdk-${PROVIDER_VERSION}.jar")
     
     // needed for advertising id retrieval
-    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
+    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

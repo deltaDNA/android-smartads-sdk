@@ -6,5 +6,6 @@
 /captures
 *.iml
 /*/build
+jacoco.exec
 integrationtester/gradle.properties
 

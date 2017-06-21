@@ -15,10 +15,10 @@
  */
 
 dependencies {
-    compile project(':library-bindings')
+    api project(':library-bindings')
     
-    compile files("libs/unity-ads-${PROVIDER_VERSION}-classes.jar")
+    implementation files("libs/unity-ads-${PROVIDER_VERSION}-classes.jar")
     
     // needed for advertising id retrieval
-    compile "com.google.android.gms:play-services-basement:$playServicesVersion"
+    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

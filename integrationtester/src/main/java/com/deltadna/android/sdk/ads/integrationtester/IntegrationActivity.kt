@@ -70,14 +70,13 @@ class IntegrationActivity : AppCompatActivity() {
             debug("Using ${provider.javaClass.simpleName}")
         }
         providers.setItemChecked(0, true)
-    }
-    
-    fun onRequestAd(view: View) {
-        provider.requestAd(this, Listener(), JSONObject())
-    }
-    
-    fun onShowAd(view: View) {
-        provider.showAd()
+        
+        findViewById(R.id.request_ad).setOnClickListener {
+            provider.requestAd(this, Listener(), JSONObject())
+        }
+        findViewById(R.id.show_ad).setOnClickListener {
+            provider.showAd()
+        }
     }
     
     private inner class Listener : MediationListener {

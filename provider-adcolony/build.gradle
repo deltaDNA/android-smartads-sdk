@@ -29,10 +29,10 @@ android {
 }
 
 dependencies {
-    compile project(':library-bindings')
+    api project(':library-bindings')
     
-    compile files("libs/adcolony-${PROVIDER_VERSION}.jar")
+    implementation files("libs/adcolony-${PROVIDER_VERSION}.jar")
     
     // needed for advertising id retrieval (and GoogleApiAvailability)
-    compile "com.google.android.gms:play-services-base:$playServicesVersion"
+    implementation "com.google.android.gms:play-services-base:$playServicesVersion"
 }
