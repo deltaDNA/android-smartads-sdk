@@ -8,4 +8,5 @@
 /*/build
 jacoco.exec
 integrationtester/gradle.properties
+*.pyc
 
