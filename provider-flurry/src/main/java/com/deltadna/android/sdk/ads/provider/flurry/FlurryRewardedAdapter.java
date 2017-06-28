@@ -72,8 +72,8 @@ public final class FlurryRewardedAdapter extends MediationAdapter {
             FlurryAdTargeting adTargeting = new FlurryAdTargeting();
             adTargeting.setEnableTestAds(testMode);
             interstitial = new FlurryAdInterstitial(activity, adSpace);
-            interstitial.setTargeting(adTargeting);
             interstitial.setListener(new FlurryRewardedEventForwarder(listener, this));
+            interstitial.setTargeting(adTargeting);
             interstitial.fetchAd();
         } catch (Exception e) {
             Log.e(BuildConfig.LOG_TAG, "Failed to fetch ad", e);

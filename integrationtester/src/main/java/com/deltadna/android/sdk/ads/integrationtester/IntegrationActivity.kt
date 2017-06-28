@@ -19,7 +19,6 @@ package com.deltadna.android.sdk.ads.integrationtester
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult
@@ -176,7 +175,7 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         BuildConfig.FLURRY_API_KEY,
-                        "INTERSTITIAL_ADSPACE",
+                        BuildConfig.FLURRY_INTERSTITIAL_AD_SPACE,
                         true,
                         true),
                 FlurryRewardedAdapter(
@@ -184,7 +183,7 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         BuildConfig.FLURRY_API_KEY,
-                        "REWARDED_ADSPACE",
+                        BuildConfig.FLURRY_REWARDED_AD_SPACE,
                         true,
                         true),
                 InMobiInterstitialAdapter(

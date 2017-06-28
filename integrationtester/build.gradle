@@ -30,6 +30,8 @@ android {
         buildConfigField 'String', 'CHARTBOOST_APP_SIGNATURE', "\"${findProperty('CHARTBOOST_APP_SIGNATURE')}\""
         buildConfigField 'String', 'FACEBOOK_PLACEMENT_ID', "\"${findProperty('FACEBOOK_PLACEMENT_ID')}\""
         buildConfigField 'String', 'FLURRY_API_KEY', "\"${findProperty('FLURRY_API_KEY')}\""
+        buildConfigField 'String', 'FLURRY_INTERSTITIAL_AD_SPACE', "\"${findProperty('FLURRY_INTERSTITIAL_AD_SPACE')}\""
+        buildConfigField 'String', 'FLURRY_REWARDED_AD_SPACE', "\"${findProperty('FLURRY_REWARDED_AD_SPACE')}\""
         buildConfigField 'String', 'INMOBI_ACCOUNT_ID', "\"${findProperty('INMOBI_ACCOUNT_ID')}\""
         buildConfigField 'long', 'INMOBI_INTERSTITIAL_PLACEMENT_ID', "${findProperty('INMOBI_INTERSTITIAL_PLACEMENT_ID') ?: 0L}"
         buildConfigField 'long', 'INMOBI_REWARDED_PLACEMENT_ID', "${findProperty('INMOBI_REWARDED_PLACEMENT_ID') ?: 0L}"

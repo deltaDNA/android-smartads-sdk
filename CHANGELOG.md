@@ -8,6 +8,7 @@ Updated Thirdpresence ads.
 Updated MoPub ads.  
 Updated MobFox ads.  
 Updated IronSource ads.  
+Updated Flurry ads.  
 
 ## [1.4.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.3) (2017-06-14)
 Added network crash detection and exclusion from following runs.  
