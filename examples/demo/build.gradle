@@ -90,6 +90,9 @@ android {
         mopub {
             dimension 'default'
         }
+        tapjoy {
+            dimension 'default'
+        }
         thirdpresence {
             dimension 'default'
         }
@@ -116,6 +119,7 @@ dependencies {
     all_Implementation project(':provider-ironsource')
     all_Implementation project(':provider-mobfox')
     all_Implementation project(':provider-mopub')
+    all_Implementation project(':provider-tapjoy')
     all_Implementation project(':provider-thirdpresence')
     all_Implementation project(':provider-unity')
     all_Implementation project(':provider-vungle')
@@ -131,6 +135,7 @@ dependencies {
     ironsourceImplementation project(':provider-ironsource')
     mobfoxImplementation project(':provider-mobfox')
     mopubImplementation project(':provider-mopub')
+    tapjoyImplementation project(':provider-tapjoy')
     thirdpresenceImplementation project(':provider-thirdpresence')
     unityImplementation project(':provider-unity')
     vungleImplementation project(':provider-vungle')
