@@ -79,12 +79,7 @@ public final class IronSourceInterstitialAdapter extends MediationAdapter {
         
         this.activity = activity;
         
-        synchronized (IronSourceInterstitialAdapter.class) {
-            if (!initialised) {
-                IronSource.init(activity, appKey, IronSource.AD_UNIT.INTERSTITIAL);
-                initialised = true;
-            }
-        }
+        Helper.initialise(activity, appKey);
         
         IronSource.setInterstitialListener(MainThread.redirect(
                 new IronSourceInterstitialEventForwarder(this, listener),

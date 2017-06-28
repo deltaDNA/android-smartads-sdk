@@ -3,9 +3,11 @@
 ## [1.5.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.5.0) (YYYY-MM-DD)
 Added rewarded ads for AdMob.  
 Added Tapjoy ads.  
+Fixed IronSource only loading a single type of ad.  
 Updated Thirdpresence ads.  
 Updated MoPub ads.  
 Updated MobFox ads.  
+Updated IronSource ads.  
 
 ## [1.4.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.4.3) (2017-06-14)
 Added network crash detection and exclusion from following runs.  

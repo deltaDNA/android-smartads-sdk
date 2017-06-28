@@ -86,12 +86,7 @@ public final class IronSourceRewardedAdapter extends MediationAdapter {
         
         this.activity = activity;
         
-        synchronized (IronSourceRewardedAdapter.class) {
-            if (!initialised) {
-                IronSource.init(activity, appKey, IronSource.AD_UNIT.REWARDED_VIDEO);
-                initialised = true;
-            }
-        }
+        Helper.initialise(activity, appKey);
         
         forwarder.requestPerformed(listener);
     }
