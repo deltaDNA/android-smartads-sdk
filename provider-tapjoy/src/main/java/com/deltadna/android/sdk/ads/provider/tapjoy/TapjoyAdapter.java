@@ -46,7 +46,7 @@ public final class TapjoyAdapter extends MediationAdapter {
     private static boolean initialised;
     
     private final String sdkKey;
-    private final String placement;
+    private final String placementName;
     private final boolean logging;
     
     @Nullable
@@ -59,13 +59,13 @@ public final class TapjoyAdapter extends MediationAdapter {
             int demoteOnCode,
             int waterfallIndex,
             String sdkKey,
-            String placement,
+            String placementName,
             boolean logging) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.sdkKey = sdkKey;
-        this.placement = placement;
+        this.placementName = placementName;
         this.logging = logging;
     }
     
@@ -156,10 +156,10 @@ public final class TapjoyAdapter extends MediationAdapter {
                 Tapjoy.setActivity(activity);
                 TapjoyAdapter.this.listener = listener;
                 
-                ad = Tapjoy.getPlacement(placement, new EventForwarder(
+                ad = Tapjoy.getPlacement(placementName, new EventForwarder(
                         TapjoyAdapter.this,
                         listener,
-                        placement));
+                        placementName));
                 ad.requestContent();
             } else {
                 listener.onAdFailedToLoad(
@@ -188,7 +188,7 @@ public final class TapjoyAdapter extends MediationAdapter {
                     public void run() {
                         Log.d(BuildConfig.LOG_TAG, "Requesting first placement");
                         Tapjoy.setActivity(request.activity);
-                        Tapjoy.getPlacement(placement, EventForwarder.EMPTY);
+                        Tapjoy.getPlacement(placementName, EventForwarder.EMPTY);
                     }
                 });
                 
@@ -212,6 +212,6 @@ public final class TapjoyAdapter extends MediationAdapter {
     
     @Override
     public String toString() {
-        return super.toString() + '@' + placement;
+        return super.toString() + '@' + placementName;
     }
 }

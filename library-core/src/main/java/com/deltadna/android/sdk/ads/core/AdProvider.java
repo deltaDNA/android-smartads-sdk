@@ -503,7 +503,7 @@ enum AdProvider {
                     demoteOnCode,
                     index,
                     config.getString("sdkKey"),
-                    config.getString("placement"),
+                    config.getString("placementName"),
                     config.optBoolean("logging", false));
         }
         

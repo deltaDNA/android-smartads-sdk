@@ -272,7 +272,7 @@ class AdProviderTest {
                 4,
                 JSONObject()
                         .put("sdkKey", "sdkKey")
-                        .put("placement", "placement")
+                        .put("placementName", "placementName")
                         .put("logging", true))) {
             assertThat(this).isInstanceOf(TapjoyAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(TAPJOY.version())
