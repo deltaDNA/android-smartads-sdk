@@ -366,6 +366,7 @@ final class AdServiceImpl implements AdService {
             listener.onRequestEngagement(
                     adPoint,
                     EngagementFlavour.ADVERTISING.toString(),
+                    null,
                     requestListener);
         } else {
             handler.post(new Runnable() {
@@ -381,6 +382,7 @@ final class AdServiceImpl implements AdService {
         listener.onRequestEngagement(
                 decisionPoint,
                 EngagementFlavour.INTERNAL.toString(),
+                VERSION,
                 new ConfigurationListener());
     }
     

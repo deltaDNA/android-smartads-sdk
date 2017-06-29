@@ -243,10 +243,12 @@ class Ads implements AdServiceListener, SessionListener {
     public void onRequestEngagement(
             String decisionPoint,
             String flavour,
+            String version,
             final EngagementListener listener) {
         
         DDNA.instance().requestEngagement(
-                new Engagement(decisionPoint, flavour),
+                new Engagement(decisionPoint, flavour)
+                        .putParam("adSdkVersion", version),
                 new EngageListener<Engagement>() {
                     @Override
                     public void onCompleted(Engagement engagement) {

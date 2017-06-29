@@ -172,6 +172,7 @@ class AdServiceImplTest {
             verify(listener, times(2)).onRequestEngagement(
                     eq("point"),
                     eq(EngagementFlavour.ADVERTISING.toString()),
+                    isNull(),
                     any())
         }
     }
@@ -242,8 +243,8 @@ class AdServiceImplTest {
             block: AdServiceImpl.() -> Unit) {
         with(config) {
             doAnswer {
-                (it.arguments[2] as EngagementListener).onSuccess(
-                        jsonObject("parameters" to jsonObject(
+                (it.arguments.find { it is EngagementListener } as EngagementListener)
+                        .onSuccess(jsonObject("parameters" to jsonObject(
                                 "adShowSession" to adShowSession,
                                 "adFloorPrice" to adFloorPrice,
                                 "adDemoteOnRequestCode" to onDemoteRequestCode,
@@ -264,6 +265,7 @@ class AdServiceImplTest {
             }.whenever(listener).onRequestEngagement(
                     eq(decisionPoint),
                     eq(EngagementFlavour.INTERNAL.toString()),
+                    eq("SmartAds v${BuildConfig.VERSION_NAME}"),
                     any())
             
             uut.init(decisionPoint)
