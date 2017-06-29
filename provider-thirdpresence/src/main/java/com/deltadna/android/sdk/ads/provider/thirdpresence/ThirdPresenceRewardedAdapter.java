@@ -42,7 +42,7 @@ public final class ThirdPresenceRewardedAdapter extends MediationAdapter {
     @Nullable
     private MediationListener listener;
     @Nullable
-    ThirdPresenceRewardedEventForwarder forwarder;
+    private ThirdPresenceRewardedEventForwarder forwarder;
     @Nullable
     private VideoAd ad;
     
