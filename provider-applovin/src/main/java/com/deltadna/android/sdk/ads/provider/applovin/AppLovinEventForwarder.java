@@ -29,6 +29,8 @@ import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 
+import java.util.Locale;
+
 final class AppLovinEventForwarder implements
         AppLovinAdLoadListener,
         AppLovinAdDisplayListener,
@@ -129,7 +131,11 @@ final class AppLovinEventForwarder implements
     
     @Override
     public void videoPlaybackEnded(AppLovinAd appLovinAd, double v, boolean b) {
-        Log.d(BuildConfig.LOG_TAG, "Video playback ended");
+        Log.d(BuildConfig.LOG_TAG, String.format(
+                Locale.US,
+                "Video playback ended: %s/%s",
+                v,
+                b));
         complete = b;
     }
     
