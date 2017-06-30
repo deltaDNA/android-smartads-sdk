@@ -45,18 +45,19 @@ def getSnapshotRepositoryPassword() {
     return hasProperty('MAVEN_SNAPSHOT_PASSWORD') ? MAVEN_SNAPSHOT_PASSWORD : ""
 }
 
-// https://issues.gradle.org/browse/GRADLE-1749
+// workaround for adding in missing module dependencies
 def modifyPom = { pom ->
     pom.withXml {
-        def depMap = configurations.compile.dependencies.collectEntries { [it.name, it] }
-        asNode().dependencies.dependency.findAll {
-            def dep = depMap.get(it.artifactId.text())
-            return dep?.hasProperty('optional') && dep.optional
-        }.each {
-            if (it.optional) {
-                it.optional.value = 'true'
-            } else {
-                it.appendNode('optional', 'true')
+        def pomDeps = asNode().dependencies[0] ?: asNode().appendNode('dependencies')
+        def declared = pomDeps.dependency.stream().collect { it.artifactId.text() }
+        
+        configurations.api.dependencies.forEach { dep ->
+            if (!declared.contains(dep.name)) {
+                def node = pomDeps.appendNode('dependency')
+                node.appendNode('groupId', dep.group)
+                node.appendNode('artifactId', dep.name)
+                node.appendNode('version', dep.version)
+                node.appendNode('scope', 'compile')
             }
         }
     }
