@@ -55,7 +55,7 @@ def modifyPom = { pom ->
             if (!declared.contains(dep.name)) {
                 def node = pomDeps.appendNode('dependency')
                 node.appendNode('groupId', dep.group)
-                node.appendNode('artifactId', dep.name)
+                node.appendNode('artifactId', dep.getDependencyProject().POM_ARTIFACT_ID)
                 node.appendNode('version', dep.version)
                 node.appendNode('scope', 'compile')
             }
