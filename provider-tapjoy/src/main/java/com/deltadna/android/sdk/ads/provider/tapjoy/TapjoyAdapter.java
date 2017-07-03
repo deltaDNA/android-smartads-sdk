@@ -35,9 +35,6 @@ import org.json.JSONObject;
 
 import java.util.Hashtable;
 
-/**
- * Singular implementation handles both interstitial and rewarded ads.
- */
 public final class TapjoyAdapter extends MediationAdapter {
     
     private static final Handler REQUESTER = new Handler(Looper.getMainLooper());
@@ -208,10 +205,5 @@ public final class TapjoyAdapter extends MediationAdapter {
                 initialising = false;
             }
         }
-    }
-    
-    @Override
-    public String toString() {
-        return super.toString() + '@' + placementName;
     }
 }

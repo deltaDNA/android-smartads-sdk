@@ -511,12 +511,6 @@ enum AdProvider {
         String version() {
             return com.deltadna.android.sdk.ads.provider.tapjoy.BuildConfig.PROVIDER_VERSION;
         }
-        
-        @Nullable
-        @Override
-        AdProvider rewarded() {
-            return this;
-        }
     },
     
     THIRDPRESENCE(

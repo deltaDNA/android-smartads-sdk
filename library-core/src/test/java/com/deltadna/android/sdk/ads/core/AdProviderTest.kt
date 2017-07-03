@@ -278,8 +278,6 @@ class AdProviderTest {
             assertThat(this.providerVersionString).isEqualTo(TAPJOY.version())
             assertThat(this.javaClass.name).isEqualTo(TAPJOY.cls)
         }
-        
-        assertThat(TAPJOY.rewarded()).isSameAs(TAPJOY)
     }
     
     @Test
