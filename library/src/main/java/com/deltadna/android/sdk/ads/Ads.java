@@ -57,7 +57,7 @@ class Ads implements AdServiceListener, SessionListener {
         service = AdServiceWrapper.create(
                 activity,
                 this,
-                com.deltadna.android.sdk.BuildConfig.VERSION_NAME);
+                BuildConfig.VERSION_NAME);
         
         DDNA.instance().register(this);
     }
