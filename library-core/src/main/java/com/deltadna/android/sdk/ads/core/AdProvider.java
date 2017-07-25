@@ -578,7 +578,8 @@ enum AdProvider {
                     eCPM,
                     demoteOnCode,
                     index,
-                    config.getString("appId"));
+                    config.getString("appId"),
+                    config.optString("placementId"));
         }
         
         @Override

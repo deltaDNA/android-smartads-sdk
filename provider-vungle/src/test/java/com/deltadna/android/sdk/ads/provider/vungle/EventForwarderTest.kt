@@ -30,14 +30,15 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class EventForwarderTest {
     
+    private val placement = "placement"
     private val adapter = mock<MediationAdapter>()
     private val listener = mock<MediationListener>()
     
-    private var uut = EventForwarder(adapter, listener)
+    private var uut = EventForwarder(placement, adapter, listener)
     
     @Before
     fun before() {
-        uut = EventForwarder(adapter, listener)
+        uut = EventForwarder(placement, adapter, listener)
     }
     
     @After
@@ -48,8 +49,8 @@ class EventForwarderTest {
     @Test
     fun loadedAndFailedToLoad() {
         uut.requestPerformed(listener)
-        uut.onAdPlayableChanged(true)
-        uut.onAdPlayableChanged(false)
+        uut.onAdAvailabilityUpdate(placement, true)
+        uut.onAdAvailabilityUpdate(placement, false)
         
         inOrder(listener) {
             verify(listener).onAdLoaded(same(adapter))
@@ -63,8 +64,8 @@ class EventForwarderTest {
     @Test
     fun loadedAndFailedToLoadWhileAdShowing() {
         uut.requestPerformed(listener)
-        uut.onAdStart()
-        uut.onAdPlayableChanged(false)
+        uut.onAdStart(placement)
+        uut.onAdAvailabilityUpdate(placement, false)
         
         verify(listener).onAdShowing(same(adapter))
         verifyNoMoreInteractions(listener)
@@ -73,8 +74,8 @@ class EventForwarderTest {
     @Test
     fun failedToShow() {
         uut.requestPerformed(listener)
-        uut.onAdPlayableChanged(true)
-        uut.onAdUnavailable("reason")
+        uut.onAdAvailabilityUpdate(placement, true)
+        uut.onUnableToPlayAd(placement, "reason")
         
         verify(listener).onAdLoaded(same(adapter))
         verify(listener).onAdFailedToShow(
@@ -85,9 +86,9 @@ class EventForwarderTest {
     @Test
     fun fullCycleWithSuccess() {
         uut.requestPerformed(listener)
-        uut.onAdPlayableChanged(true)
-        uut.onAdStart()
-        uut.onAdEnd(true, false)
+        uut.onAdAvailabilityUpdate(placement, true)
+        uut.onAdStart(placement)
+        uut.onAdEnd(placement, true, false)
         
         inOrder(listener) {
             verify(listener).onAdLoaded(same(adapter))
@@ -100,9 +101,9 @@ class EventForwarderTest {
     @Test
     fun fullCycleWithSuccessAndClick() {
         uut.requestPerformed(listener)
-        uut.onAdPlayableChanged(true)
-        uut.onAdStart()
-        uut.onAdEnd(true, true)
+        uut.onAdAvailabilityUpdate(placement, true)
+        uut.onAdStart(placement)
+        uut.onAdEnd(placement, true, true)
         
         inOrder(listener) {
             verify(listener).onAdLoaded(same(adapter))
@@ -115,9 +116,9 @@ class EventForwarderTest {
     @Test
     fun fullCycleWithoutSuccess() {
         uut.requestPerformed(listener)
-        uut.onAdPlayableChanged(true)
-        uut.onAdStart()
-        uut.onAdEnd(false, false)
+        uut.onAdAvailabilityUpdate(placement, true)
+        uut.onAdStart(placement)
+        uut.onAdEnd(placement, false, false)
         
         inOrder(listener) {
             verify(listener).onAdLoaded(same(adapter))
@@ -130,8 +131,8 @@ class EventForwarderTest {
     @Test
     fun listenerNotifiedAfterCycle() {
         uut.requestPerformed(listener)
-        uut.onAdPlayableChanged(true)
-        uut.onAdEnd(true, false)
+        uut.onAdAvailabilityUpdate(placement, true)
+        uut.onAdEnd(placement, true, false)
         val nextListener = mock<MediationListener>()
         uut.requestPerformed(nextListener)
         
@@ -140,5 +141,17 @@ class EventForwarderTest {
             verify(listener).onAdClosed(same(adapter), eq(true))
             verify(nextListener).onAdLoaded(same(adapter))
         }
+    }
+    
+    @Test
+    fun ignoresDifferentPlacement() {
+        with("different") {
+            uut.onAdAvailabilityUpdate(this, true)
+            uut.onUnableToPlayAd(this, "reason")
+            uut.onAdStart(this)
+            uut.onAdEnd(this, true, true)
+        }
+        
+        verifyZeroInteractions(listener)
     }
 }

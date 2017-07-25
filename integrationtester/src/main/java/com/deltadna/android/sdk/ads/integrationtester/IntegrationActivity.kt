@@ -252,7 +252,8 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         0,
-                        BuildConfig.VUNGLE_APP_ID))
+                        BuildConfig.VUNGLE_APP_ID,
+                        BuildConfig.VUNGLE_PLACEMENT_ID))
         val PROVIDER_NAMES = PROVIDERS.map { it.javaClass.simpleName }
         
         fun debug(msg: String) {

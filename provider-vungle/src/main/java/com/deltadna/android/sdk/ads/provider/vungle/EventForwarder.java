@@ -16,6 +16,7 @@
 
 package com.deltadna.android.sdk.ads.provider.vungle;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -23,12 +24,13 @@ import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.vungle.publisher.EventListener;
+import com.vungle.publisher.VungleAdEventListener;
 
 import java.util.Locale;
 
-final class EventForwarder implements EventListener {
+final class EventForwarder implements VungleAdEventListener {
     
+    private final String placementId;
     private final MediationAdapter adapter;
     @Nullable
     private MediationListener listener;
@@ -38,21 +40,29 @@ final class EventForwarder implements EventListener {
     private boolean showing;
     
     EventForwarder(
+            String placementId,
             MediationAdapter adapter,
             @Nullable MediationListener listener) {
         
+        this.placementId = placementId;
         this.adapter = adapter;
         this.listener = listener;
     }
     
     @Override
-    public void onAdPlayableChanged(final boolean isAdPlayable) {
-        Log.d(BuildConfig.LOG_TAG, "Ad playable changed: " + isAdPlayable);
+    public void onAdAvailabilityUpdate(@NonNull String placementId, boolean isAdAvailable) {
+        Log.d(BuildConfig.LOG_TAG, String.format(
+                Locale.US,
+                "Ad availability update: %s/%s",
+                placementId,
+                isAdAvailable));
+        
+        if (!isSamePlacement(placementId)) return;
         
         // may be called while an ad is being played
         if (showing) return;
         
-        available = isAdPlayable;
+        available = isAdAvailable;
         
         if (listener != null) {
             if (available) {
@@ -67,8 +77,14 @@ final class EventForwarder implements EventListener {
     }
     
     @Override
-    public void onAdUnavailable(final String reason) {
-        Log.w(BuildConfig.LOG_TAG, "Ad unavailable: " + reason);
+    public void onUnableToPlayAd(@NonNull String placementId, String reason) {
+        Log.w(BuildConfig.LOG_TAG, String.format(
+                Locale.US,
+                "Unable to play ad: %s/%s",
+                placementId,
+                reason));
+        
+        if (!isSamePlacement(placementId)) return;
         
         if (listener != null) listener.onAdFailedToShow(
                 adapter,
@@ -76,8 +92,10 @@ final class EventForwarder implements EventListener {
     }
     
     @Override
-    public void onAdStart() {
-        Log.d(BuildConfig.LOG_TAG, "Ad start");
+    public void onAdStart(@NonNull String placementId) {
+        Log.d(BuildConfig.LOG_TAG, "Ad start: " + placementId);
+        
+        if (!isSamePlacement(placementId)) return;
         
         showing = true;
         
@@ -86,14 +104,18 @@ final class EventForwarder implements EventListener {
     
     @Override
     public void onAdEnd(
+            @NonNull String placementId,
             boolean wasSuccessfulView,
             boolean wasCallToActionClicked) {
         
         Log.d(BuildConfig.LOG_TAG, String.format(
                 Locale.US,
-                "Ad end: %s/%s",
+                "Ad end: %s/%s/%s",
+                placementId,
                 wasSuccessfulView,
                 wasCallToActionClicked));
+        
+        if (!isSamePlacement(placementId)) return;
         
         if (listener != null) {
             /*
@@ -123,5 +145,9 @@ final class EventForwarder implements EventListener {
                         "No fill");
             }
         }
+    }
+    
+    private boolean isSamePlacement(String value) {
+        return placementId != null && placementId.equals(value);
     }
 }
