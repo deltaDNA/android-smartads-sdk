@@ -44,6 +44,7 @@ android {
         buildConfigField 'String', 'THIRDPRESENCE_ACCOUNT_NAME', "\"${findProperty('THIRDPRESENCE_ACCOUNT_NAME')}\""
         buildConfigField 'String', 'THIRDPRESENCE_PLACEMENT_ID', "\"${findProperty('THIRDPRESENCE_PLACEMENT_ID')}\""
         buildConfigField 'String', 'UNITY_GAME_ID', "\"${findProperty('UNITY_GAME_ID')}\""
+        buildConfigField 'String', 'UNITY_PLACEMENT_ID', "\"${findProperty('UNITY_PLACEMENT_ID')}\""
         buildConfigField 'String', 'VUNGLE_APP_ID', "\"${findProperty('VUNGLE_APP_ID')}\""
         buildConfigField 'String', 'VUNGLE_PLACEMENT_ID', "\"${findProperty('VUNGLE_PLACEMENT_ID')}\""
     }

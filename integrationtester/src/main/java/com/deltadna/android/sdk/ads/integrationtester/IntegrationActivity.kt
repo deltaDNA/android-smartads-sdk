@@ -246,7 +246,7 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         BuildConfig.UNITY_GAME_ID,
-                        "defaultZone",
+                        BuildConfig.UNITY_PLACEMENT_ID,
                         true),
                 VungleAdapter(
                         0,

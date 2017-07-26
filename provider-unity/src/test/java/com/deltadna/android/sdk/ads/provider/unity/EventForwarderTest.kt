@@ -21,13 +21,12 @@ import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.nhaarman.mockito_kotlin.*
 import com.unity3d.ads.UnityAds
+import com.unity3d.ads.UnityAds.PlacementState.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
-import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
 class EventForwarderTest {
@@ -50,14 +49,9 @@ class EventForwarderTest {
     @Test
     fun loaded() {
         uut.requestPerformed(listener)
-        // simulate Unity calling ready in quick succession
-        uut.onUnityAdsReady(PLACEMENT_ID)
-        uut.onUnityAdsReady(PLACEMENT_ID)
-        advance()
+        uut.onUnityAdsPlacementStateChanged(PLACEMENT_ID, WAITING, READY)
         
-        // but we only want a single callback invocation
         verify(listener).onAdLoaded(adapter)
-        verifyNoMoreInteractions(listener)
     }
     
     @Test
@@ -74,13 +68,12 @@ class EventForwarderTest {
     @Test
     fun fullCycleCompleted() {
         uut.requestPerformed(listener)
-        uut.onUnityAdsReady(PLACEMENT_ID)
-        advance()
+        uut.onUnityAdsPlacementStateChanged(PLACEMENT_ID, WAITING, READY)
         uut.onUnityAdsStart(PLACEMENT_ID)
+        uut.onUnityAdsPlacementStateChanged(PLACEMENT_ID, READY, WAITING)
         uut.onUnityAdsFinish(PLACEMENT_ID, UnityAds.FinishState.COMPLETED)
         // simulate Unity calling ready after a cycle
-        uut.onUnityAdsReady(PLACEMENT_ID)
-        advance()
+        uut.onUnityAdsPlacementStateChanged(PLACEMENT_ID, WAITING, READY)
         
         inOrder(listener) {
             verify(listener).onAdLoaded(same(adapter))
@@ -101,12 +94,10 @@ class EventForwarderTest {
     @Test
     fun loadedCalledOnNextCycle() {
         uut.requestPerformed(listener)
-        uut.onUnityAdsReady(PLACEMENT_ID)
-        advance()
+        uut.onUnityAdsPlacementStateChanged(PLACEMENT_ID, WAITING, READY)
         uut.onUnityAdsFinish(PLACEMENT_ID, UnityAds.FinishState.COMPLETED)
         val nextListener = mock<MediationListener>()
         uut.requestPerformed(nextListener)
-        advance()
         
         inOrder(listener, nextListener) {
             verify(listener).onAdLoaded(same(adapter))
@@ -118,12 +109,30 @@ class EventForwarderTest {
     }
     
     @Test
+    fun placementStateCarriedOn() {
+        uut.requestPerformed(listener)
+        uut.onUnityAdsPlacementStateChanged(PLACEMENT_ID, NO_FILL, NO_FILL)
+        val nextListener = mock<MediationListener>()
+        uut.requestPerformed(nextListener)
+        
+        inOrder(listener, nextListener) {
+            verify(listener).onAdFailedToLoad(
+                    same(adapter),
+                    eq(AdRequestResult.NoFill),
+                    eq(NO_FILL.name))
+            verify(nextListener).onAdFailedToLoad(
+                    same(adapter),
+                    eq(AdRequestResult.NoFill),
+                    eq(NO_FILL.name))
+        }
+    }
+    
+    @Test
     fun failureCarriedOn() {
         uut.requestPerformed(listener)
         uut.onUnityAdsError(UnityAds.UnityAdsError.INTERNAL_ERROR, "message")
         val nextListener = mock<MediationListener>()
         uut.requestPerformed(nextListener)
-        advance()
         
         inOrder(listener, nextListener) {
             verify(listener).onAdFailedToLoad(
@@ -140,17 +149,10 @@ class EventForwarderTest {
     @Test
     fun differentPlacementId() {
         uut.requestPerformed(listener)
-        uut.onUnityAdsReady("differentId")
-        advance()
+        uut.onUnityAdsPlacementStateChanged("differentId", WAITING, READY)
         uut.onUnityAdsStart("differentId")
         
         verifyZeroInteractions(listener)
-    }
-    
-    private fun advance() {
-        RuntimeEnvironment
-                .getMasterScheduler()
-                .advanceBy(1500, TimeUnit.MILLISECONDS)
     }
     
     private companion object {

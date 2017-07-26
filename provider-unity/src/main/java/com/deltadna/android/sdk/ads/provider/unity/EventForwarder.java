@@ -16,24 +16,18 @@
 
 package com.deltadna.android.sdk.ads.provider.unity;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.unity3d.ads.IUnityAdsListener;
 import com.unity3d.ads.UnityAds;
+import com.unity3d.ads.mediation.IUnityAdsExtendedListener;
 
 import java.util.Locale;
 
-final class EventForwarder implements IUnityAdsListener {
-    
-    private static final short DELAY = 1000;
-    
-    private final Handler handler = new Handler(Looper.getMainLooper());
+final class EventForwarder implements IUnityAdsExtendedListener {
     
     private final MediationAdapter adapter;
     private final String placementId;
@@ -42,6 +36,8 @@ final class EventForwarder implements IUnityAdsListener {
     
     @Nullable
     private Boolean available;
+    @Nullable
+    private UnityAds.PlacementState lastPlacementState;
     @Nullable
     private UnityAds.UnityAdsError lastError;
     @Nullable
@@ -58,28 +54,67 @@ final class EventForwarder implements IUnityAdsListener {
     }
     
     @Override
+    @Deprecated
     public void onUnityAdsReady(String placementId) {
         Log.d(BuildConfig.LOG_TAG, "Unity ads ready: " + placementId);
+    }
+    
+    @Override
+    public void onUnityAdsPlacementStateChanged(
+            String placementId,
+            UnityAds.PlacementState oldState,
+            UnityAds.PlacementState newState) {
+        
+        Log.d(BuildConfig.LOG_TAG, String.format(
+                Locale.US,
+                "Unity ads placement state changed: %s/%s/%s",
+                placementId,
+                oldState,
+                newState));
         
         if (!samePlacement(placementId)) {
             Log.w(BuildConfig.LOG_TAG, "Placement ids are different");
             return;
         }
         
-        available = true;
-        lastError = null;
-        lastMessage = null;
+        lastPlacementState = newState;
         
-        // this callback may be called multiple times in quick succession
-        handler.removeCallbacksAndMessages(null);
-        handler.postDelayed(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (listener != null) listener.onAdLoaded(adapter);
-                    }
-                },
-                DELAY);
+        if (listener != null) {
+            switch (newState) {
+                case READY:
+                    available = true;
+                    listener.onAdLoaded(adapter);
+                    break;
+                    
+                case NOT_AVAILABLE:
+                    available = false;
+                    listener.onAdFailedToLoad(
+                            adapter,
+                            AdRequestResult.Configuration,
+                            newState.name());
+                    break;
+                    
+                case DISABLED:
+                    available = false;
+                    listener.onAdFailedToLoad(
+                            adapter,
+                            AdRequestResult.Configuration,
+                            newState.name());
+                    break;
+                    
+                case WAITING:
+                    available = false;
+                    break;
+                    
+                case NO_FILL:
+                    available = false;
+                    listener.onAdFailedToLoad(
+                            adapter,
+                            AdRequestResult.NoFill,
+                            newState.name());
+                    break;
+            }
+        }
     }
     
     @Override
@@ -141,29 +176,25 @@ final class EventForwarder implements IUnityAdsListener {
             return;
         }
         
-        final boolean complete;
-        switch (state) {
-            case ERROR:
-            case SKIPPED:
-                complete = false;
-                break;
-            
-            case COMPLETED:
-                complete = true;
-                break;
-            
-            default:
-                Log.w(BuildConfig.LOG_TAG, "Unknown case: " + state);
-                complete = false;
-        }
-        
         if (listener != null) {
             // stops further unexpected callbacks by the network
             final MediationListener listener = this.listener;
             this.listener = null;
             
-            listener.onAdClosed(adapter, complete);
+            listener.onAdClosed(adapter, state == UnityAds.FinishState.COMPLETED);
         }
+    }
+    
+    @Override
+    public void onUnityAdsClick(String placementId) {
+        Log.d(BuildConfig.LOG_TAG, "Unity ads click: " + placementId);
+        
+        if (!samePlacement(placementId)) {
+            Log.w(BuildConfig.LOG_TAG, "Placement ids are different");
+            return;
+        }
+        
+        if (listener != null) listener.onAdClicked(adapter);
     }
     
     void requestPerformed(MediationListener listener) {
@@ -171,9 +202,19 @@ final class EventForwarder implements IUnityAdsListener {
         
         if (available != null) {
             if (available) {
-                onUnityAdsReady(placementId);
+                onUnityAdsPlacementStateChanged(
+                        placementId,
+                        UnityAds.PlacementState.READY,
+                        UnityAds.PlacementState.READY);
             } else {
-                onUnityAdsError(lastError, lastMessage);
+                if (lastPlacementState != null) {
+                    onUnityAdsPlacementStateChanged(
+                            placementId,
+                            lastPlacementState,
+                            lastPlacementState);
+                } else if (lastError != null && lastMessage != null) {
+                    onUnityAdsError(lastError, lastMessage);
+                }
             }
         }
     }
