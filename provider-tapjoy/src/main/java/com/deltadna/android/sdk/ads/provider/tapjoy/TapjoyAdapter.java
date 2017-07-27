@@ -157,6 +157,8 @@ public final class TapjoyAdapter extends MediationAdapter {
                         TapjoyAdapter.this,
                         listener,
                         placementName));
+                ad.setMediationName("deltadna");
+                ad.setAdapterVersion(BuildConfig.VERSION_NAME);
                 ad.requestContent();
             } else {
                 listener.onAdFailedToLoad(

@@ -225,14 +225,7 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         BuildConfig.TAPJOY_SDK_KEY,
-                        BuildConfig.TAPJOY_INTERSTITIAL_PLACEMENT,
-                        true),
-                TapjoyAdapter(
-                        0,
-                        0,
-                        0,
-                        BuildConfig.TAPJOY_SDK_KEY,
-                        BuildConfig.TAPJOY_REWARDED_PLACEMENT,
+                        BuildConfig.TAPJOY_PLACEMENT,
                         true),
                 ThirdPresenceRewardedAdapter(
                         0,
