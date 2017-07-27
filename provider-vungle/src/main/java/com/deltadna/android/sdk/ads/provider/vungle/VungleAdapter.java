@@ -17,6 +17,9 @@
 package com.deltadna.android.sdk.ads.provider.vungle;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -31,6 +34,11 @@ import com.vungle.publisher.VunglePub;
 import org.json.JSONObject;
 
 public final class VungleAdapter extends MediationAdapter {
+    
+    private static final short INTERVAL = 500;
+    
+    private final Handler handler = new Handler(Looper.myLooper());
+    private final Checker checker = new Checker();
     
     private final String appId;
     private final String placementId;
@@ -70,41 +78,54 @@ public final class VungleAdapter extends MediationAdapter {
         if (!initialised) {
             Log.d(BuildConfig.LOG_TAG, "Initialising");
             
-            forwarder = new EventForwarder(placementId, this, listener);
-            
             vunglePub = VunglePub.getInstance();
             vunglePub.init(
                     activity,
                     appId,
                     new String[] {placementId},
-                    new VungleInitListener() {
-                        @Override
-                        public void onSuccess() {
-                            initialised = true;
-                            Log.d(BuildConfig.LOG_TAG, "Initialised");
-                            
-                            vunglePub.clearAndSetEventListeners(MainThread.redirect(
-                                    forwarder,
-                                    VungleAdEventListener.class));
-                            forwarder.requestPerformed(listener);
-                        }
-                        
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            Log.w(  BuildConfig.LOG_TAG,
-                                    "Failed to initialise",
-                                    throwable);
-                            listener.onAdFailedToLoad(
-                                    VungleAdapter.this,
-                                    AdRequestResult.Configuration,
-                                    throwable.getMessage());
-                        }
-                    });
+                    MainThread.redirect(
+                            new VungleInitListener() {
+                                @Override
+                                public void onSuccess() {
+                                    initialised = true;
+                                    Log.d(BuildConfig.LOG_TAG, "Initialised");
+                                    
+                                    forwarder = new EventForwarder(
+                                            vunglePub,
+                                            placementId,
+                                            VungleAdapter.this,
+                                            listener);
+                                    vunglePub.clearAndSetEventListeners(
+                                            MainThread.redirect(
+                                                    forwarder,
+                                                    VungleAdEventListener.class),
+                                            MainThread.redirect(
+                                                    checker,
+                                                    VungleAdEventListener.class));
+                                    
+                                    vunglePub.loadAd(placementId);
+                                }
+                                
+                                @Override
+                                public void onFailure(Throwable throwable) {
+                                    Log.w(  BuildConfig.LOG_TAG,
+                                            "Failed to initialise",
+                                            throwable);
+                                    listener.onAdFailedToLoad(
+                                            VungleAdapter.this,
+                                            AdRequestResult.Configuration,
+                                            throwable.getMessage());
+                                }
+                            },
+                            VungleInitListener.class));
         } else {
-            vunglePub.clearAndSetEventListeners(MainThread.redirect(
-                    forwarder,
-                    VungleAdEventListener.class));
-            forwarder.requestPerformed(listener);
+            /*
+             * Requesting an ad load here results in an invalid availability
+             * update on the listener, thus also poll for the status.
+             */
+            vunglePub.loadAd(placementId);
+            handler.removeCallbacks(checker);
+            handler.postDelayed(checker, INTERVAL);
         }
     }
     
@@ -141,6 +162,63 @@ public final class VungleAdapter extends MediationAdapter {
     public void onResume() {
         if (vunglePub != null) {
             vunglePub.onResume();
+        }
+    }
+    
+    @Override
+    public void onSwappedOut() {
+        super.onSwappedOut();
+        
+        handler.removeCallbacks(checker);
+    }
+
+    private final class Checker implements Runnable, VungleAdEventListener {
+        
+        private boolean showing;
+        
+        @Override
+        public void run() {
+            if (vunglePub != null && vunglePub.isAdPlayable(placementId)) {
+                forwarder.onAdAvailabilityUpdate(placementId, true);
+            } else {
+                handler.postDelayed(this, INTERVAL);
+            }
+        }
+        
+        @Override
+        public void onAdAvailabilityUpdate(
+                @NonNull String placementId,
+                boolean isAdAvailable) {
+            
+            if (!isSamePlacement(placementId)) return;
+            
+            if (showing) return;
+            
+            if (vunglePub.isAdPlayable(placementId)) {
+                // other listener will take care of the listener notification
+                handler.removeCallbacks(this);
+            }
+        }
+        
+        @Override
+        public void onUnableToPlayAd(@NonNull String s, String s1) {}
+        
+        @Override
+        public void onAdStart(@NonNull String placementId) {
+            if (!isSamePlacement(placementId)) return;
+            
+            showing = true;
+        }
+        
+        @Override
+        public void onAdEnd(@NonNull String placementId, boolean b, boolean b1) {
+            if (!isSamePlacement(placementId)) return;
+            
+            showing = false;
+        }
+        
+        private boolean isSamePlacement(String value) {
+            return placementId != null && placementId.equals(value);
         }
     }
 }

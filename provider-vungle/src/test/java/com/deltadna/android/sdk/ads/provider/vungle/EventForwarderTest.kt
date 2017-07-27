@@ -21,6 +21,7 @@ import com.deltadna.android.sdk.ads.bindings.AdRequestResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.nhaarman.mockito_kotlin.*
+import com.vungle.publisher.VunglePub
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -30,25 +31,27 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class EventForwarderTest {
     
+    private val vunglePub = mock<VunglePub>()
     private val placement = "placement"
     private val adapter = mock<MediationAdapter>()
     private val listener = mock<MediationListener>()
     
-    private var uut = EventForwarder(placement, adapter, listener)
+    private var uut = EventForwarder(vunglePub, placement, adapter, listener)
     
     @Before
     fun before() {
-        uut = EventForwarder(placement, adapter, listener)
+        uut = EventForwarder(vunglePub, placement, adapter, listener)
     }
     
     @After
     fun after() {
-        reset(adapter, listener)
+        reset(vunglePub, adapter, listener)
     }
     
     @Test
     fun loadedAndFailedToLoad() {
-        uut.requestPerformed(listener)
+        whenever(vunglePub.isAdPlayable(eq(placement))).then { true }
+        
         uut.onAdAvailabilityUpdate(placement, true)
         uut.onAdAvailabilityUpdate(placement, false)
         
@@ -63,7 +66,8 @@ class EventForwarderTest {
     
     @Test
     fun loadedAndFailedToLoadWhileAdShowing() {
-        uut.requestPerformed(listener)
+        whenever(vunglePub.isAdPlayable(eq(placement))).then { true }
+        
         uut.onAdStart(placement)
         uut.onAdAvailabilityUpdate(placement, false)
         
@@ -73,7 +77,8 @@ class EventForwarderTest {
     
     @Test
     fun failedToShow() {
-        uut.requestPerformed(listener)
+        whenever(vunglePub.isAdPlayable(eq(placement))).then { true }
+        
         uut.onAdAvailabilityUpdate(placement, true)
         uut.onUnableToPlayAd(placement, "reason")
         
@@ -85,7 +90,8 @@ class EventForwarderTest {
     
     @Test
     fun fullCycleWithSuccess() {
-        uut.requestPerformed(listener)
+        whenever(vunglePub.isAdPlayable(eq(placement))).then { true }
+        
         uut.onAdAvailabilityUpdate(placement, true)
         uut.onAdStart(placement)
         uut.onAdEnd(placement, true, false)
@@ -100,7 +106,8 @@ class EventForwarderTest {
     
     @Test
     fun fullCycleWithSuccessAndClick() {
-        uut.requestPerformed(listener)
+        whenever(vunglePub.isAdPlayable(eq(placement))).then { true }
+        
         uut.onAdAvailabilityUpdate(placement, true)
         uut.onAdStart(placement)
         uut.onAdEnd(placement, true, true)
@@ -115,7 +122,8 @@ class EventForwarderTest {
     
     @Test
     fun fullCycleWithoutSuccess() {
-        uut.requestPerformed(listener)
+        whenever(vunglePub.isAdPlayable(eq(placement))).then { true }
+        
         uut.onAdAvailabilityUpdate(placement, true)
         uut.onAdStart(placement)
         uut.onAdEnd(placement, false, false)
@@ -130,17 +138,32 @@ class EventForwarderTest {
     
     @Test
     fun listenerNotifiedAfterCycle() {
-        uut.requestPerformed(listener)
+        whenever(vunglePub.isAdPlayable(eq(placement))).thenReturn(true, true)
+        
         uut.onAdAvailabilityUpdate(placement, true)
         uut.onAdEnd(placement, true, false)
-        val nextListener = mock<MediationListener>()
-        uut.requestPerformed(nextListener)
+        uut.onAdAvailabilityUpdate(placement, true)
         
-        inOrder(listener, nextListener) {
+        inOrder(listener) {
             verify(listener).onAdLoaded(same(adapter))
             verify(listener).onAdClosed(same(adapter), eq(true))
-            verify(nextListener).onAdLoaded(same(adapter))
+            verify(listener).onAdLoaded(same(adapter))
         }
+    }
+    
+    @Test
+    fun listenerNotifiedAfterCycleButNotYetReady() {
+        whenever(vunglePub.isAdPlayable(eq(placement))).thenReturn(true, false)
+        
+        uut.onAdAvailabilityUpdate(placement, true)
+        uut.onAdEnd(placement, true, false)
+        uut.onAdAvailabilityUpdate(placement, true)
+        
+        inOrder(listener) {
+            verify(listener).onAdLoaded(same(adapter))
+            verify(listener).onAdClosed(same(adapter), eq(true))
+        }
+        verifyNoMoreInteractions(listener)
     }
     
     @Test

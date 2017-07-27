@@ -17,7 +17,6 @@
 package com.deltadna.android.sdk.ads.provider.vungle;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
@@ -25,32 +24,36 @@ import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.vungle.publisher.VungleAdEventListener;
+import com.vungle.publisher.VunglePub;
 
 import java.util.Locale;
 
 final class EventForwarder implements VungleAdEventListener {
     
+    private final VunglePub vunglePub;
     private final String placementId;
     private final MediationAdapter adapter;
-    @Nullable
     private MediationListener listener;
     
-    @Nullable
-    private Boolean available;
     private boolean showing;
     
     EventForwarder(
+            VunglePub vunglePub,
             String placementId,
             MediationAdapter adapter,
-            @Nullable MediationListener listener) {
+            MediationListener listener) {
         
+        this.vunglePub = vunglePub;
         this.placementId = placementId;
         this.adapter = adapter;
         this.listener = listener;
     }
     
     @Override
-    public void onAdAvailabilityUpdate(@NonNull String placementId, boolean isAdAvailable) {
+    public void onAdAvailabilityUpdate(
+            @NonNull String placementId,
+            boolean isAdAvailable) {
+        
         Log.d(BuildConfig.LOG_TAG, String.format(
                 Locale.US,
                 "Ad availability update: %s/%s",
@@ -59,20 +62,27 @@ final class EventForwarder implements VungleAdEventListener {
         
         if (!isSamePlacement(placementId)) return;
         
-        // may be called while an ad is being played
         if (showing) return;
         
-        available = isAdAvailable;
-        
-        if (listener != null) {
-            if (available) {
+        if (isAdAvailable) {
+            /*
+             * This isn't great as it creates a cyclic dependency, however
+             * Vungle will notify us after an ad show just finished that an
+             * ad is available despite this not being true. The adapter takes
+             * care of this scenario by polling for the ready state. This does
+             * not happen with test ads.
+             */
+            if (vunglePub.isAdPlayable(placementId)) {
                 listener.onAdLoaded(adapter);
             } else {
-                listener.onAdFailedToLoad(
-                        adapter,
-                        AdRequestResult.NoFill,
-                        "No fill");
+                Log.w(  BuildConfig.LOG_TAG,
+                        "Ad not actually playable for: " + placementId);
             }
+        } else {
+            listener.onAdFailedToLoad(
+                    adapter,
+                    AdRequestResult.NoFill,
+                    "No fill");
         }
     }
     
@@ -86,9 +96,7 @@ final class EventForwarder implements VungleAdEventListener {
         
         if (!isSamePlacement(placementId)) return;
         
-        if (listener != null) listener.onAdFailedToShow(
-                adapter,
-                AdClosedResult.EXPIRED);
+        listener.onAdFailedToShow(adapter, AdClosedResult.EXPIRED);
     }
     
     @Override
@@ -99,7 +107,7 @@ final class EventForwarder implements VungleAdEventListener {
         
         showing = true;
         
-        if (listener != null) listener.onAdShowing(adapter);
+        listener.onAdShowing(adapter);
     }
     
     @Override
@@ -117,34 +125,12 @@ final class EventForwarder implements VungleAdEventListener {
         
         if (!isSamePlacement(placementId)) return;
         
-        if (listener != null) {
-            /*
-             * Avoids odd interaction between the adapter and agent when Vungle
-             * invokes this callback out of sequence sometimes
-             */
-            final MediationListener listener = this.listener;
-            this.listener = null;
-            
-            if (wasCallToActionClicked) {
-                listener.onAdClicked(adapter);
-            }
-            listener.onAdClosed(adapter, wasSuccessfulView);
-        }
-    }
-    
-    void requestPerformed(MediationListener listener) {
-        this.listener = listener;
+        showing = false;
         
-        if (available != null) {
-            if (available) {
-                listener.onAdLoaded(adapter);
-            } else {
-                listener.onAdFailedToLoad(
-                        adapter,
-                        AdRequestResult.NoFill,
-                        "No fill");
-            }
+        if (wasCallToActionClicked) {
+            listener.onAdClicked(adapter);
         }
+        listener.onAdClosed(adapter, wasSuccessfulView);
     }
     
     private boolean isSamePlacement(String value) {

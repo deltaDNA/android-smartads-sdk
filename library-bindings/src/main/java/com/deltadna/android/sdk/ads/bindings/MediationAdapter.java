@@ -93,4 +93,10 @@ public abstract class MediationAdapter implements Comparable<MediationAdapter> {
     public abstract void onPause();
 
     public abstract void onResume();
+    
+    /**
+     * Will be called when the adapter is swapped out for the next one, removed,
+     * or when the waterfall has been reset.
+     */
+    public void onSwappedOut() {}
 }

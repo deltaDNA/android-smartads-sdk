@@ -65,6 +65,7 @@ class IntegrationActivity : AppCompatActivity() {
                 android.R.layout.simple_list_item_single_choice,
                 PROVIDER_NAMES)
         providers.setOnItemClickListener { _, _, position, _ ->
+            provider.onSwappedOut()
             provider = PROVIDERS[position]
             debug("Using ${provider.javaClass.simpleName}")
         }

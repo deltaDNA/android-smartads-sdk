@@ -331,6 +331,8 @@ class AdAgent implements MediationListener {
     }
     
     private void changeToNextAdapter(boolean reset) {
+        if (currentAdapter != null) currentAdapter.onSwappedOut();
+        
         currentAdapter = (reset)
                 ? waterfall.resetAndGetFirst()
                 : waterfall.getNext();

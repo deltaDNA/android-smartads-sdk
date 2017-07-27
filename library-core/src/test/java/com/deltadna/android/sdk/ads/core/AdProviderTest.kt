@@ -315,7 +315,9 @@ class AdProviderTest {
     fun vungle() {
         with(VUNGLE.createAdapter(
                 1, 2, 3, 4,
-                JSONObject().put("appId", "appId"))) {
+                JSONObject()
+                        .put("appId", "appId")
+                        .put("placementId", "placementId"))) {
             assertThat(this).isInstanceOf(VungleAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(VUNGLE.version())
             assertThat(this.javaClass.name).isEqualTo(VUNGLE.cls)

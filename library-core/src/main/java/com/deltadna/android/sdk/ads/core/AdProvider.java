@@ -579,7 +579,7 @@ enum AdProvider {
                     demoteOnCode,
                     index,
                     config.getString("appId"),
-                    config.optString("placementId"));
+                    config.getString("placementId"));
         }
         
         @Override
