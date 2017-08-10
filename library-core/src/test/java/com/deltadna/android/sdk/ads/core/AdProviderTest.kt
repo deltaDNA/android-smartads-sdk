@@ -221,7 +221,8 @@ class AdProviderTest {
         with(IRONSOURCE.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
-                        .put("appKey", "appKey"))) {
+                        .put("appKey", "appKey")
+                        .put("placementName", "placementName"))) {
             assertThat(this).isInstanceOf(IronSourceInterstitialAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(IRONSOURCE.version())
             assertThat(this.javaClass.name).isEqualTo(IRONSOURCE.cls)
@@ -233,7 +234,8 @@ class AdProviderTest {
         with(IRONSOURCE_REWARDED.createAdapter(
                 1, 2, 3, 4,
                 JSONObject()
-                        .put("appKey", "appKey"))) {
+                        .put("appKey", "appKey")
+                        .put("placementName", "placementName"))) {
             assertThat(this).isInstanceOf(IronSourceRewardedAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(IRONSOURCE_REWARDED.version())
             assertThat(this.javaClass.name).isEqualTo(IRONSOURCE_REWARDED.cls)
@@ -376,7 +378,7 @@ class AdProviderTest {
     fun defines() {
         assertThat(defines(AdMobInterstitialAdapter(0, 0, 0, "")))
                 .isEqualTo(ADMOB)
-        assertThat(defines(IronSourceRewardedAdapter(0, 0, 0, "", false)))
+        assertThat(defines(IronSourceRewardedAdapter(0, 0, 0, "", "", false)))
                 .isEqualTo(IRONSOURCE_REWARDED)
     }
     

@@ -4,6 +4,7 @@
 Added rewarded ads for AdMob.  
 Added rewarded Tapjoy ads.  
 Added LoopMe ads.  
+Added IronSource ads placement support.  
 Fixed IronSource only loading a single type of ad.  
 Updated Thirdpresence ads.  
 Updated MoPub ads.  

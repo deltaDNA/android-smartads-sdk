@@ -18,6 +18,7 @@ package com.deltadna.android.sdk.ads.provider.ironsource;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.MainThread;
@@ -35,22 +36,24 @@ import java.util.Locale;
 public final class IronSourceInterstitialAdapter extends MediationAdapter {
     
     private final String appKey;
+    @Nullable
+    private final String placementName;
     
     @Nullable
     private Activity activity;
-    
-    private static boolean initialised;
     
     public IronSourceInterstitialAdapter(
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
             String appKey,
+            @Nullable String placementName,
             boolean logging) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.appKey = appKey;
+        this.placementName = placementName;
         
         if (logging) {
             IronSource.setLogListener(new LogListener() {
@@ -90,7 +93,11 @@ public final class IronSourceInterstitialAdapter extends MediationAdapter {
     @Override
     public void showAd() {
         if (IronSource.isInterstitialReady()) {
-            IronSource.showInterstitial();
+            if (TextUtils.isEmpty(placementName)) {
+                IronSource.showInterstitial();
+            } else {
+                IronSource.showInterstitial(placementName);
+            }
         }
     }
     

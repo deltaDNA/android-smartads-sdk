@@ -205,12 +205,14 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         BuildConfig.IRONSOURCE_APP_KEY,
+                        null,
                         true),
                 IronSourceRewardedAdapter(
                         0,
                         0,
                         0,
                         BuildConfig.IRONSOURCE_APP_KEY,
+                        null,
                         true),
                 LoopMeAdapter(
                         0,

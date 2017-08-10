@@ -96,7 +96,6 @@ enum AdProvider {
             return com.deltadna.android.sdk.ads.provider.admob.BuildConfig.PROVIDER_VERSION;
         }
         
-        @Nullable
         @Override
         AdProvider rewarded() {
             return ADMOB_REWARDED;
@@ -204,7 +203,6 @@ enum AdProvider {
             return com.deltadna.android.sdk.ads.provider.chartboost.BuildConfig.PROVIDER_VERSION;
         }
         
-        @Nullable
         @Override
         AdProvider rewarded() {
             return CHARTBOOST_REWARDED;
@@ -288,7 +286,6 @@ enum AdProvider {
             return com.deltadna.android.sdk.ads.provider.flurry.BuildConfig.PROVIDER_VERSION;
         }
         
-        @Nullable
         @Override
         AdProvider rewarded() {
             return FLURRY_REWARDED;
@@ -350,7 +347,6 @@ enum AdProvider {
             return com.deltadna.android.sdk.ads.provider.inmobi.BuildConfig.PROVIDER_VERSION;
         }
         
-        @Nullable
         @Override
         AdProvider rewarded() {
             return INMOBI_REWARDED;
@@ -403,6 +399,7 @@ enum AdProvider {
                     demoteOnCode,
                     index,
                     config.getString("appKey"),
+                    config.optString("placementName", null),
                     false);
         }
         
@@ -411,7 +408,6 @@ enum AdProvider {
             return com.deltadna.android.sdk.ads.provider.ironsource.BuildConfig.PROVIDER_VERSION;
         }
         
-        @Nullable
         @Override
         AdProvider rewarded() {
             return IRONSOURCE_REWARDED;
@@ -434,6 +430,7 @@ enum AdProvider {
                     demoteOnCode,
                     index,
                     config.getString("appKey"),
+                    config.optString("placementName", null),
                     false);
         }
         

@@ -18,6 +18,7 @@ package com.deltadna.android.sdk.ads.provider.ironsource;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.MainThread;
@@ -35,23 +36,26 @@ import java.util.Locale;
 public final class IronSourceRewardedAdapter extends MediationAdapter {
     
     private final String appKey;
+    @Nullable
+    private final String placementName;
+    
     private final IronSourceRewardedEventForwarder forwarder;
     
     @Nullable
     private Activity activity;
-    
-    private static boolean initialised;
     
     public IronSourceRewardedAdapter(
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
             String appKey,
+            @Nullable String placementName,
             boolean logging) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.appKey = appKey;
+        this.placementName = placementName;
         
         forwarder = new IronSourceRewardedEventForwarder(this);
         
@@ -94,7 +98,11 @@ public final class IronSourceRewardedAdapter extends MediationAdapter {
     @Override
     public void showAd() {
         if (IronSource.isRewardedVideoAvailable()) {
-            IronSource.showRewardedVideo();
+            if (TextUtils.isEmpty(placementName)) {
+                IronSource.showRewardedVideo();
+            } else {
+                IronSource.showRewardedVideo(placementName);
+            }
         }
     }
     
