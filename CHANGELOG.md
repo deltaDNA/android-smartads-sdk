@@ -3,6 +3,7 @@
 ## [1.5.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.5.0) (YYYY-MM-DD)
 Added rewarded ads for AdMob.  
 Added rewarded Tapjoy ads.  
+Added LoopMe ads.  
 Fixed IronSource only loading a single type of ad.  
 Updated Thirdpresence ads.  
 Updated MoPub ads.  

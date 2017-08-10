@@ -39,6 +39,7 @@ import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceRewardedAdapter
+import com.deltadna.android.sdk.ads.provider.loopme.LoopMeAdapter
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter
 import com.deltadna.android.sdk.ads.provider.tapjoy.TapjoyAdapter
@@ -210,6 +211,12 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         BuildConfig.IRONSOURCE_APP_KEY,
+                        true),
+                LoopMeAdapter(
+                        0,
+                        0,
+                        0,
+                        "",
                         true),
                 MobFoxAdapter(
                         0,

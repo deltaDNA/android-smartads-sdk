@@ -33,6 +33,7 @@ import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceRewardedAdapter
+import com.deltadna.android.sdk.ads.provider.loopme.LoopMeAdapter
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter
 import com.deltadna.android.sdk.ads.provider.tapjoy.TapjoyAdapter
@@ -239,6 +240,22 @@ class AdProviderTest {
         }
         
         assertThat(IRONSOURCE.rewarded()).isSameAs(IRONSOURCE_REWARDED)
+    }
+    
+    @Test
+    fun loopMe() {
+        with(LOOPME.createAdapter(
+                1,
+                2,
+                3,
+                4,
+                JSONObject()
+                        .put("appKey", "appKey")
+                        .put("testMode", false))) {
+            assertThat(this).isInstanceOf(LoopMeAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(LOOPME.version())
+            assertThat(this.javaClass.name).isEqualTo(LOOPME.cls)
+        }
     }
     
     @Test
