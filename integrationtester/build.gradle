@@ -32,6 +32,8 @@ android {
         buildConfigField 'String', 'FLURRY_API_KEY', "\"${findProperty('FLURRY_API_KEY')}\""
         buildConfigField 'String', 'FLURRY_INTERSTITIAL_AD_SPACE', "\"${findProperty('FLURRY_INTERSTITIAL_AD_SPACE')}\""
         buildConfigField 'String', 'FLURRY_REWARDED_AD_SPACE', "\"${findProperty('FLURRY_REWARDED_AD_SPACE')}\""
+        buildConfigField 'String', 'HYPRMX_DISTRIBUTOR_ID', "\"${findProperty('HYPRMX_DISTRIBUTOR_ID')}\""
+        buildConfigField 'String', 'HYPRMX_PROPERTY_ID', "\"${findProperty('HYPRMX_PROPERTY_ID')}\""
         buildConfigField 'String', 'INMOBI_ACCOUNT_ID', "\"${findProperty('INMOBI_ACCOUNT_ID')}\""
         buildConfigField 'long', 'INMOBI_INTERSTITIAL_PLACEMENT_ID', "${findProperty('INMOBI_INTERSTITIAL_PLACEMENT_ID') ?: 0L}"
         buildConfigField 'long', 'INMOBI_REWARDED_PLACEMENT_ID', "${findProperty('INMOBI_REWARDED_PLACEMENT_ID') ?: 0L}"
@@ -87,6 +89,7 @@ dependencies {
     implementation project(':provider-chartboost')
     implementation project(':provider-facebook')
     implementation project(':provider-flurry')
+    implementation project(':provider-hyprmx')
     implementation project(':provider-inmobi')
     implementation project(':provider-ironsource')
     implementation project(':provider-loopme')

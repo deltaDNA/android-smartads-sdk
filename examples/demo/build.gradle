@@ -78,6 +78,9 @@ android {
         flurry {
             dimension 'default'
         }
+        hyprmx {
+            dimension 'default'
+        }
         inmobi {
             dimension 'default'
         }
@@ -118,6 +121,7 @@ dependencies {
     all_Implementation project(':provider-chartboost')
     all_Implementation project(':provider-facebook')
     all_Implementation project(':provider-flurry')
+    all_Implementation project(':provider-hyprmx')
     all_Implementation project(':provider-inmobi')
     all_Implementation project(':provider-ironsource')
     all_Implementation project(':provider-loopme')
@@ -135,6 +139,7 @@ dependencies {
     chartboostImplementation project(':provider-chartboost')
     facebookImplementation project(':provider-facebook')
     flurryImplementation project(':provider-flurry')
+    hyprmxImplementation project(':provider-hyprmx')
     inmobiImplementation project(':provider-inmobi')
     ironsourceImplementation project(':provider-ironsource')
     loopmeImplementation project(':provider-loopme')

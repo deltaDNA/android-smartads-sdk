@@ -29,6 +29,7 @@ import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostRewardedAdapte
 import com.deltadna.android.sdk.ads.provider.facebook.FacebookInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryRewardedAdapter
+import com.deltadna.android.sdk.ads.provider.hyprmx.HyprMxAdapter
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter
@@ -184,6 +185,22 @@ class AdProviderTest {
         }
         
         assertThat(FLURRY.rewarded()).isSameAs(FLURRY_REWARDED)
+    }
+    
+    @Test
+    fun hyprmx() {
+        with(HYPRMX.createAdapter(
+                1,
+                2,
+                3,
+                4,
+                JSONObject()
+                        .put("distributorId", "distributorId")
+                        .put("propertyId", "propertyId"))) {
+            assertThat(this).isInstanceOf(HyprMxAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(HYPRMX.version())
+            assertThat(this.javaClass.name).isEqualTo(HYPRMX.cls)
+        }
     }
     
     @Test

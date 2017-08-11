@@ -35,6 +35,7 @@ import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostRewardedAdapte
 import com.deltadna.android.sdk.ads.provider.facebook.FacebookInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryRewardedAdapter
+import com.deltadna.android.sdk.ads.provider.hyprmx.HyprMxAdapter
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter
@@ -188,6 +189,12 @@ class IntegrationActivity : AppCompatActivity() {
                         BuildConfig.FLURRY_REWARDED_AD_SPACE,
                         true,
                         true),
+                HyprMxAdapter(
+                        0,
+                        0,
+                        0,
+                        BuildConfig.HYPRMX_DISTRIBUTOR_ID,
+                        BuildConfig.HYPRMX_PROPERTY_ID),
                 InMobiInterstitialAdapter(
                         0,
                         0,
