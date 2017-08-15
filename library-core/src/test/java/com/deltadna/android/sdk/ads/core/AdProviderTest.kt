@@ -69,7 +69,9 @@ class AdProviderTest {
     fun adMob() {
         with(ADMOB.createAdapter(
                 1, 2, 3, 4,
-                JSONObject().put("adUnitId", "adUnitId"))) {
+                JSONObject()
+                        .put("adUnitId", "adUnitId")
+                        .put("testMode", true))) {
             assertThat(this).isInstanceOf(AdMobInterstitialAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(ADMOB.version())
             assertThat(this.javaClass.name).isEqualTo(ADMOB.cls)
@@ -80,7 +82,9 @@ class AdProviderTest {
     fun adMobRewarded() {
         with(ADMOB_REWARDED.createAdapter(
                 1, 2, 3, 4,
-                JSONObject().put("adUnitId", "adUnitId"))) {
+                JSONObject()
+                        .put("adUnitId", "adUnitId")
+                        .put("testMode", true))) {
             assertThat(this).isInstanceOf(AdMobRewardedAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(ADMOB_REWARDED.version())
             assertThat(this.javaClass.name).isEqualTo(ADMOB_REWARDED.cls)
@@ -393,7 +397,7 @@ class AdProviderTest {
     
     @Test
     fun defines() {
-        assertThat(defines(AdMobInterstitialAdapter(0, 0, 0, "")))
+        assertThat(defines(AdMobInterstitialAdapter(0, 0, 0, "", false)))
                 .isEqualTo(ADMOB)
         assertThat(defines(IronSourceRewardedAdapter(0, 0, 0, "", "", false)))
                 .isEqualTo(IRONSOURCE_REWARDED)

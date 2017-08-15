@@ -30,6 +30,7 @@ import org.json.JSONObject;
 final public class AdMobInterstitialAdapter extends MediationAdapter {
     
     private final String adUnitId;
+    private final boolean testMode;
     
     private InterstitialAd interstitial;
     
@@ -37,11 +38,13 @@ final public class AdMobInterstitialAdapter extends MediationAdapter {
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
-            String adUnitId) {
+            String adUnitId,
+            boolean testMode) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.adUnitId = adUnitId;
+        this.testMode = testMode;
     }
     
     @Override
@@ -64,9 +67,10 @@ final public class AdMobInterstitialAdapter extends MediationAdapter {
         }
         
         try {
-            interstitial.loadAd(new AdRequest.Builder()
-                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .build());
+            final AdRequest.Builder request = new AdRequest.Builder();
+            if (testMode) request.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+            
+            interstitial.loadAd(request.build());
         } catch (Exception e) {
             Log.w(BuildConfig.LOG_TAG, "Failed to request ad", e);
             listener.onAdFailedToLoad(

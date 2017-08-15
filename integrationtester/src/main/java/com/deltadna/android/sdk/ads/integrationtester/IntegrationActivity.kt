@@ -135,12 +135,14 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         0,
-                        BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID),
+                        BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID,
+                        true),
                 AdMobRewardedAdapter(
                         0,
                         0,
                         0,
-                        BuildConfig.ADMOB_REWARDED_AD_UNIT_ID),
+                        BuildConfig.ADMOB_REWARDED_AD_UNIT_ID,
+                        true),
                 AmazonAdapter(
                         0,
                         0,

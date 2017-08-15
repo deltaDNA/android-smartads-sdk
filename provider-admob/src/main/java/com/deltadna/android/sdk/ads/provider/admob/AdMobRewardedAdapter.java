@@ -31,6 +31,7 @@ import org.json.JSONObject;
 public final class AdMobRewardedAdapter extends MediationAdapter {
     
     private final String adUnitId;
+    private final boolean testMode;
     
     @Nullable
     private Activity activity;
@@ -43,11 +44,13 @@ public final class AdMobRewardedAdapter extends MediationAdapter {
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
-            String adUnitId) {
+            String adUnitId,
+            boolean testMode) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.adUnitId = adUnitId;
+        this.testMode = testMode;
     }
     
     @Override
@@ -61,7 +64,11 @@ public final class AdMobRewardedAdapter extends MediationAdapter {
         
         ad = MobileAds.getRewardedVideoAdInstance(activity);
         ad.setRewardedVideoAdListener(new RewardedEventForwarder(this, listener));
-        ad.loadAd(adUnitId, new AdRequest.Builder().build());
+        
+        final AdRequest.Builder request = new AdRequest.Builder();
+        if (testMode) request.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+        
+        ad.loadAd(adUnitId, request.build());
     }
     
     @Override
