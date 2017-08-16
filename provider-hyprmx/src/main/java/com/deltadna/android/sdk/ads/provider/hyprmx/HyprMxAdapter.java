@@ -26,6 +26,7 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Preferences;
 import com.hyprmx.android.sdk.HyprMXHelper;
 import com.hyprmx.android.sdk.HyprMXPresentation;
 import com.hyprmx.android.sdk.api.data.OffersAvailableResponse;
@@ -39,7 +40,6 @@ public final class HyprMxAdapter extends MediationAdapter {
     
     private final String distributorId;
     private final String propertyId;
-    private final String userId;
     
     private HyprMXHelper helper;
     
@@ -61,7 +61,6 @@ public final class HyprMxAdapter extends MediationAdapter {
         
         this.distributorId = distributorId;
         this.propertyId = propertyId;
-        this.userId = "deltadna";
     }
     
     @Override
@@ -78,7 +77,7 @@ public final class HyprMxAdapter extends MediationAdapter {
                     activity,
                     distributorId,
                     propertyId,
-                    userId);
+                    UserId.get(new Preferences(activity)));
         }
         
         presentation = new HyprMXPresentation();
