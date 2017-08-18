@@ -21,6 +21,7 @@ limitations under the License.
     package="com.deltadna.android.sdk.ads.integrationtester">
     
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
