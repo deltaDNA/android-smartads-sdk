@@ -121,7 +121,7 @@ final class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     private static void add(StringBuilder to, StackTraceElement[] elements) {
         StackTraceElement lastAdded = null;
         for (int i = 0; i < elements.length; i++) {
-            if (i != 0 || i != elements.length - 1) {
+            if (i != 0 && i != elements.length - 1) {
                 if (sameDomain(elements[i], elements[i-1])) {
                     continue;
                 } else if (
