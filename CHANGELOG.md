@@ -7,6 +7,7 @@ Added LoopMe ads.
 Added HyprMX ads.  
 Added IronSource ads placement support.  
 Fixed IronSource only loading a single type of ad.  
+Fixed invalid events due to long ad error strings.  
 Updated Thirdpresence ads.  
 Updated MoPub ads.  
 Updated MobFox ads.  

@@ -466,7 +466,7 @@ final class AdServiceImpl implements AdService {
             if (!TextUtils.isEmpty(errorReason)) {
                 eventParams.put(
                         "adProviderError",
-                        errorReason.substring(0, Math.min(2048, errorReason.length())));
+                        errorReason.substring(0, Math.min(512, errorReason.length())));
             }
         } catch (JSONException e) {
             Log.e(BuildConfig.LOG_TAG, e.getMessage());

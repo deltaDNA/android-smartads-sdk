@@ -24,8 +24,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,14 +61,23 @@ final class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-        for (StackTraceElement element : e.getStackTrace()) {
+        final StackTraceElement[] elements = e.getStackTrace();
+        for (StackTraceElement element : elements) {
             for (AdProvider provider : AdProvider.values()) {
                 if (    element.getClassName().equals(provider.cls) ||
                         element.getClassName().startsWith(provider.namespace)) {
                     
-                    final StringWriter sw = new StringWriter();
-                    final PrintWriter pw = new PrintWriter(sw);
-                    e.printStackTrace(pw);
+                    final StringBuilder builder = new StringBuilder()
+                            .append(e)
+                            .append('\n');
+                    add(builder, elements);
+                    if (e.getCause() != null) {
+                        final Throwable cause = e.getCause();
+                        builder .append("Caused by: ")
+                                .append(cause)
+                                .append('\n');
+                        add(builder, cause.getStackTrace());
+                    }
                     
                     db.add( new Date().getTime(),
                             provider.name(),
@@ -79,7 +86,7 @@ final class ExceptionHandler implements Thread.UncaughtExceptionHandler {
                             versionSdk,
                             versionSmartAdsSdk,
                             provider.version(),
-                            sw.toString());
+                            builder.toString());
                 }
             }
         }
@@ -104,6 +111,57 @@ final class ExceptionHandler implements Thread.UncaughtExceptionHandler {
         cursor.close();
         
         return crashes;
+    }
+    
+    /**
+     * Adds the stack trace elements to the builder, skipping elements which
+     * come from the same domain, but keeping entry and exit points between
+     * different domains.
+     */
+    private static void add(StringBuilder to, StackTraceElement[] elements) {
+        StackTraceElement lastAdded = null;
+        for (int i = 0; i < elements.length; i++) {
+            if (i != 0 || i != elements.length - 1) {
+                if (sameDomain(elements[i], elements[i-1])) {
+                    continue;
+                } else if (
+                        lastAdded == null
+                                || !lastAdded.getClassName().equals(
+                                elements[i - 1].getClassName())) {
+                    to      .append(elements[i-1].getClassName())
+                            .append('.')
+                            .append(elements[i-1].getMethodName())
+                            .append('\n');
+                }
+            }
+            
+            if (i == 0) {
+                to      .append(elements[i])
+                        .append('\n');
+            } else {
+                lastAdded = elements[i];
+                to      .append(elements[i].getClassName())
+                        .append('.')
+                        .append(elements[i].getMethodName())
+                        .append('\n');
+            }
+        }
+    }
+    
+    /**
+     * Checks if two stack trace elements come from the same domain, by
+     * checking that the first two parts of the package name match.
+     */
+    private static boolean sameDomain(
+            StackTraceElement first,
+            StackTraceElement second) {
+        
+        final String[] firstSplit = first.getClassName().split("\\.");
+        final String[] secondSplit = second.getClassName().split("\\.");
+        return  firstSplit.length >= 2
+                && secondSplit.length >= 2
+                && firstSplit[0].equals(secondSplit[0])
+                && firstSplit[1].equals(secondSplit[1]);
     }
     
     private static final class DbHelper extends SQLiteOpenHelper {
