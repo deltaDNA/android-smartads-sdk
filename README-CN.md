@@ -36,23 +36,26 @@ allprojects {
 在你APP的构建脚本
 ```groovy
 compile 'com.deltadna.android:deltadna-sdk:VERSION'
-compile 'com.deltadna.android:deltadna-smartads:1.5.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads:1.5.0'
 
 // 广告提供商
-compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-facebook:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-ironsource:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-thirdpresence:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.5.0-SNAPSHOT'
-compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.5.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-facebook:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-hyprmx:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-ironsource:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-loopme:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-tapjoy:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-thirdpresence:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.5.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.5.0'
 ```
 上述广告提供商的任何组合都可以在你的构建脚本中定义，这取决于你想在你的应用程序中使用哪个广告网络。
 
