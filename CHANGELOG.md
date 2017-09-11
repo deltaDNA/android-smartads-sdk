@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.5.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.5.2) (YYYY-MM-DD)
+Fixed missing icons in Tapjoy on Unity.  
+
 ## [1.5.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.5.1) (2017-09-11)
 Fixed missing resources in Tapjoy.  
 
