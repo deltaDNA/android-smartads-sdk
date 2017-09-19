@@ -28,6 +28,7 @@ import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.facebook.FacebookInterstitialAdapter;
+import com.deltadna.android.sdk.ads.provider.facebook.FacebookRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.hyprmx.HyprMxAdapter;
@@ -252,6 +253,35 @@ enum AdProvider {
                 JSONObject config) throws JSONException {
             
             return new FacebookInterstitialAdapter(
+                    eCPM,
+                    demoteOnCode,
+                    index,
+                    config.getString("placementId"));
+        }
+        
+        @Override
+        String version() {
+            return com.deltadna.android.sdk.ads.provider.facebook.BuildConfig.PROVIDER_VERSION;
+        }
+        
+        @Override
+        AdProvider rewarded() {
+            return FACEBOOK_REWARDED;
+        }
+    },
+    
+    FACEBOOK_REWARDED(
+            "com.deltadna.android.sdk.ads.provider.facebook.FacebookRewardedAdapter",
+            FACEBOOK.namespace) {
+        @Override
+        MediationAdapter createAdapter(
+                int eCPM,
+                int adFloorPrice,
+                int demoteOnCode,
+                int index,
+                JSONObject config) throws JSONException {
+            
+            return new FacebookRewardedAdapter(
                     eCPM,
                     demoteOnCode,
                     index,

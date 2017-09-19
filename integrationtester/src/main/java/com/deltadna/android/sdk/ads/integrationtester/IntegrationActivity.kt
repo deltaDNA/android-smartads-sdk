@@ -33,6 +33,7 @@ import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.facebook.FacebookInterstitialAdapter
+import com.deltadna.android.sdk.ads.provider.facebook.FacebookRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.hyprmx.HyprMxAdapter
@@ -174,7 +175,12 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         0,
-                        BuildConfig.FACEBOOK_PLACEMENT_ID),
+                        BuildConfig.FACEBOOK_INTERSTITIAL_PLACEMENT_ID),
+                FacebookRewardedAdapter(
+                        0,
+                        0,
+                        0,
+                        BuildConfig.FACEBOOK_REWARDED_PLACEMENT_ID),
                 FlurryInterstitialAdapter(
                         0,
                         0,

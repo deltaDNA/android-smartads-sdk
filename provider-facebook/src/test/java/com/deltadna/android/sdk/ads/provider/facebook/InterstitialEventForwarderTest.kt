@@ -28,16 +28,16 @@ import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class FacebookInterstitialEventForwarderTest {
+class InterstitialEventForwarderTest {
     
     private val adapter = mock<MediationAdapter>()
     private val listener = mock<MediationListener>()
     
-    private var uut = FacebookInterstitialEventForwarder(adapter, listener)
+    private var uut = InterstitialEventForwarder(adapter, listener)
     
     @Before
     fun before() {
-        uut = FacebookInterstitialEventForwarder(adapter, listener)
+        uut = InterstitialEventForwarder(adapter, listener)
     }
     
     @After

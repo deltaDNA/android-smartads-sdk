@@ -23,14 +23,16 @@ import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
-import com.facebook.ads.InterstitialAdListener;
+import com.facebook.ads.RewardedVideoAdListener;
 
-final class FacebookInterstitialEventForwarder implements InterstitialAdListener {
+final class RewardedEventForwarder implements RewardedVideoAdListener {
     
     private final MediationAdapter adapter;
     private final MediationListener listener;
     
-    FacebookInterstitialEventForwarder(
+    private boolean complete;
+    
+    RewardedEventForwarder(
             MediationAdapter adapter,
             MediationListener listener) {
         
@@ -53,11 +55,11 @@ final class FacebookInterstitialEventForwarder implements InterstitialAdListener
             case AdError.NO_FILL_ERROR_CODE:
                 result = AdRequestResult.NoFill;
                 break;
-            
+                
             case AdError.NETWORK_ERROR_CODE:
                 result = AdRequestResult.Network;
                 break;
-            
+                
             default:
                 result = AdRequestResult.Error;
         }
@@ -66,8 +68,8 @@ final class FacebookInterstitialEventForwarder implements InterstitialAdListener
     }
     
     @Override
-    public void onInterstitialDisplayed(Ad ad) {
-        Log.d(BuildConfig.LOG_TAG, "Interstitial displayed");
+    public void onLoggingImpression(Ad ad) {
+        Log.d(BuildConfig.LOG_TAG, "Logging impression");
         listener.onAdShowing(adapter);
     }
     
@@ -78,13 +80,14 @@ final class FacebookInterstitialEventForwarder implements InterstitialAdListener
     }
     
     @Override
-    public void onInterstitialDismissed(Ad ad) {
-        Log.d(BuildConfig.LOG_TAG, "Interstitial dismissed");
-        listener.onAdClosed(adapter, true);
+    public void onRewardedVideoCompleted() {
+        Log.d(BuildConfig.LOG_TAG, "Rewarded video completed");
+        complete = true;
     }
     
     @Override
-    public void onLoggingImpression(Ad ad) {
-        Log.d(BuildConfig.LOG_TAG, "Logging impression");
+    public void onRewardedVideoClosed() {
+        Log.d(BuildConfig.LOG_TAG, "Rewarded video closed");
+        listener.onAdClosed(adapter, complete);
     }
 }

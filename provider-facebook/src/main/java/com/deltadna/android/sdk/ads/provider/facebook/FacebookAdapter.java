@@ -16,49 +16,36 @@
 
 package com.deltadna.android.sdk.ads.provider.facebook;
 
-import android.app.Activity;
+import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 
-import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.facebook.ads.InterstitialAd;
-
-import org.json.JSONObject;
-
-public final class FacebookInterstitialAdapter extends FacebookAdapter {
+abstract class FacebookAdapter extends MediationAdapter {
     
-    private InterstitialAd ad;
+    String placementId;
     
-    public FacebookInterstitialAdapter(
+    FacebookAdapter(
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
             String placementId) {
         
-        super(eCPM, demoteOnCode, waterfallIndex, placementId);
-    }
-    
-    @Override
-    public void requestAd(
-            Activity activity,
-            MediationListener listener,
-            JSONObject configuration) {
+        super(eCPM, demoteOnCode, waterfallIndex);
         
-        ad = new InterstitialAd(activity, placementId);
-        ad.setAdListener(new InterstitialEventForwarder(this, listener));
-        ad.loadAd();
+        this.placementId = placementId;
     }
     
     @Override
-    public void showAd() {
-        if (ad != null && ad.isAdLoaded()) {
-            ad.show();
-        }
+    public String getProviderString() {
+        return BuildConfig.PROVIDER_NAME;
     }
     
     @Override
-    public void onDestroy() {
-        if (ad != null) {
-            ad.destroy();
-            ad = null;
-        }
+    public String getProviderVersionString() {
+        return BuildConfig.PROVIDER_VERSION;
     }
+    
+    @Override
+    public void onPause() {}
+    
+    @Override
+    public void onResume() {}
 }

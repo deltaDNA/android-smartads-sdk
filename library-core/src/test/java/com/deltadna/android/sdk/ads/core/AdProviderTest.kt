@@ -27,6 +27,7 @@ import com.deltadna.android.sdk.ads.provider.applovin.AppLovinRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.chartboost.ChartBoostRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.facebook.FacebookInterstitialAdapter
+import com.deltadna.android.sdk.ads.provider.facebook.FacebookRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.flurry.FlurryRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.hyprmx.HyprMxAdapter
@@ -159,6 +160,20 @@ class AdProviderTest {
             assertThat(this.providerVersionString).isEqualTo(FACEBOOK.version())
             assertThat(this.javaClass.name).isEqualTo(FACEBOOK.cls)
         }
+    }
+    
+    @Test
+    fun facebookRewarded() {
+        with(FACEBOOK_REWARDED.createAdapter(
+                1, 2, 3, 4,
+                JSONObject()
+                        .put("placementId", "placement"))) {
+            assertThat(this).isInstanceOf(FacebookRewardedAdapter::class.java)
+            assertThat(this.providerVersionString).isEqualTo(FACEBOOK_REWARDED.version())
+            assertThat(this.javaClass.name).isEqualTo(FACEBOOK_REWARDED.cls)
+        }
+        
+        assertThat(FACEBOOK.rewarded()).isSameAs(FACEBOOK_REWARDED)
     }
     
     @Test

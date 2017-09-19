@@ -19,15 +19,15 @@ package com.deltadna.android.sdk.ads.provider.facebook;
 import android.app.Activity;
 
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.facebook.ads.InterstitialAd;
+import com.facebook.ads.RewardedVideoAd;
 
 import org.json.JSONObject;
 
-public final class FacebookInterstitialAdapter extends FacebookAdapter {
+public final class FacebookRewardedAdapter extends FacebookAdapter {
     
-    private InterstitialAd ad;
+    private RewardedVideoAd ad;
     
-    public FacebookInterstitialAdapter(
+    public FacebookRewardedAdapter(
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
@@ -42,8 +42,8 @@ public final class FacebookInterstitialAdapter extends FacebookAdapter {
             MediationListener listener,
             JSONObject configuration) {
         
-        ad = new InterstitialAd(activity, placementId);
-        ad.setAdListener(new InterstitialEventForwarder(this, listener));
+        ad = new RewardedVideoAd(activity, placementId);
+        ad.setAdListener(new RewardedEventForwarder(this, listener));
         ad.loadAd();
     }
     
