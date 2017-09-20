@@ -3,6 +3,11 @@
 ## [1.6.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.6.0) (YYYY-MM-DD)
 Added rewarded ads for Facebook.  
 
+## [1.5.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.5.3) (2017-09-20)
+Workaround for hardware not supported error when using Tapjoy on Unity.  
+Updated AdColony ads.  
+Updated analytics SDK dependency.  
+
 ## [1.5.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.5.2) (2017-09-11)
 Fixed missing icons in Tapjoy on Unity.  
 

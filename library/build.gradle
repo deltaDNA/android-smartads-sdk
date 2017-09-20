@@ -28,5 +28,5 @@ configurations.all {
 dependencies {
     api project(':library-core')
     
-    api 'com.deltadna.android:deltadna-sdk:4.5.0'
+    api 'com.deltadna.android:deltadna-sdk:4.5.3'
 }
