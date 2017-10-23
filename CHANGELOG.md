@@ -4,6 +4,7 @@
 Added rewarded ads for Facebook.  
 Updated AdMob ads.  
 Updated AppLovin ads.  
+Updated Chartboost ads.  
 Updated build and runtime dependencies.  
 
 ## [1.5.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.5.3) (2017-09-20)
