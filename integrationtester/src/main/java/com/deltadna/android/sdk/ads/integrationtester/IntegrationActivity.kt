@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
@@ -53,7 +54,7 @@ import org.json.JSONObject
 class IntegrationActivity : AppCompatActivity() {
     
     private val providers by lazy {
-        findViewById(R.id.integration_providers) as ListView
+        findViewById<ListView>(R.id.integration_providers)
     }
     
     private var provider: MediationAdapter = PROVIDERS[0]
@@ -74,10 +75,10 @@ class IntegrationActivity : AppCompatActivity() {
         }
         providers.setItemChecked(0, true)
         
-        findViewById(R.id.request_ad).setOnClickListener {
+        findViewById<Button>(R.id.request_ad).setOnClickListener {
             provider.requestAd(this, Listener(), JSONObject())
         }
-        findViewById(R.id.show_ad).setOnClickListener {
+        findViewById<Button>(R.id.show_ad).setOnClickListener {
             provider.showAd()
         }
     }
