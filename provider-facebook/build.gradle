@@ -28,12 +28,10 @@ android {
 dependencies {
     api project(':library-bindings')
     
-    implementation "com.facebook.android:audience-network-sdk:$PROVIDER_VERSION"
+    implementation("com.facebook.android:audience-network-sdk:$PROVIDER_VERSION") {
+        exclude group: 'com.google.android.gms', module: 'play-services-ads'
+    }
     // workaround for strange 'GradleCompatible' lint error
-    implementation "com.android.support:appcompat-v7:$supportVersion"
-    implementation "com.android.support:recyclerview-v7:$supportVersion"
-    implementation "com.android.support:support-annotations:$supportVersion"
-    implementation "com.android.support:support-v4:$supportVersion"
     implementation "com.google.android.gms:play-services-ads:$playServicesVersion"
     
     // needed for advertising id retrieval
