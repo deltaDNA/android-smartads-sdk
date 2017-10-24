@@ -11,6 +11,7 @@ Updated Flurry ads.
 Updated InMobi ads.  
 Updated IronSource ads.  
 Updated MobFox ads.  
+Updated Unity ads.  
 Updated build and runtime dependencies.  
 
 ## [1.5.3](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.5.3) (2017-09-20)
