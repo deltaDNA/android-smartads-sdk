@@ -25,7 +25,7 @@ final class InMobiHelper {
     
     private static boolean initialised;
     
-    public static void initialise(Activity activity, String accountId) {
+    static void initialise(Activity activity, String accountId) {
         if (!initialised) {
             Log.d(BuildConfig.LOG_TAG, "Initialising InMobi");
             InMobiSdk.init(activity, accountId);
@@ -33,7 +33,7 @@ final class InMobiHelper {
         }
     }
     
-    public static boolean isInitialised() {
+    static boolean isInitialised() {
         return initialised;
     }
 }
