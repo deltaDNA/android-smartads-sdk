@@ -25,6 +25,7 @@ dependencies {
     api project(':library-bindings')
     
     implementation files("libs/MobFox-Android-SDK-Core-${PROVIDER_VERSION}.jar")
+    implementation 'com.danikula:videocache:2.7.0'
     
     // needed for advertising id retrieval
     implementation "com.google.android.gms:play-services-basement:$playServicesVersion"

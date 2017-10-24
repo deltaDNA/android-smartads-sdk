@@ -22,11 +22,9 @@ limitations under the License.
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     
-    <!-- optional
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    -->
-    
     <application>
-        <activity android:name="com.mobfox.sdk.interstitialads.InterstitialActivity"/>
+        <activity android:name="com.mobfox.sdk.interstitialads.InterstitialActivity" android:hardwareAccelerated="true" />
+        <activity android:name="com.mobfox.sdk.interstitial.InterstitialActivity" android:hardwareAccelerated="true"/>
+        <service android:name="com.mobfox.sdk.services.MobFoxService" android:launchMode="singleTop" />
     </application>
 </manifest>
