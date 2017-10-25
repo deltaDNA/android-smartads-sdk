@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 public final class AdMobRewardedAdapter extends MediationAdapter {
     
+    private final String appId;
     private final String adUnitId;
     private final boolean testMode;
     
@@ -44,12 +45,16 @@ public final class AdMobRewardedAdapter extends MediationAdapter {
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
+            String appId,
             String adUnitId,
             boolean testMode) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
-        this.adUnitId = adUnitId;
+        this.appId = appId;
+        this.adUnitId = testMode
+                ? "ca-app-pub-3940256099942544/5224354917"
+                : adUnitId;
         this.testMode = testMode;
     }
     
@@ -61,6 +66,8 @@ public final class AdMobRewardedAdapter extends MediationAdapter {
         
         this.activity = activity;
         this.listener = listener;
+        
+        InitialisationHelper.initialise(activity, appId);
         
         ad = MobileAds.getRewardedVideoAdInstance(activity);
         ad.setRewardedVideoAdListener(new RewardedEventForwarder(this, listener));

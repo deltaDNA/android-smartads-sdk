@@ -22,6 +22,7 @@ android {
         
         buildConfigField 'String', 'ADCOLONY_APP_ID', "\"${findProperty('ADCOLONY_APP_ID')}\""
         buildConfigField 'String', 'ADCOLONY_ZONE_IDS', "\"${findProperty('ADCOLONY_ZONE_IDS')}\""
+        buildConfigField 'String', 'ADMOB_APP_ID', "\"${findProperty('ADMOB_APP_ID')}\""
         buildConfigField 'String', 'ADMOB_INTERSTITIAL_AD_UNIT_ID', "\"${findProperty('ADMOB_INTERSTITIAL_AD_UNIT_ID')}\""
         buildConfigField 'String', 'ADMOB_REWARDED_AD_UNIT_ID', "\"${findProperty('ADMOB_REWARDED_AD_UNIT_ID')}\""
         buildConfigField 'String', 'AMAZON_APP_KEY', "\"${findProperty('AMAZON_APP_KEY')}\""

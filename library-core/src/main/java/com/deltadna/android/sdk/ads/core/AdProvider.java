@@ -90,6 +90,7 @@ enum AdProvider {
                     eCPM,
                     demoteOnCode,
                     index,
+                    config.getString("appId"),
                     config.getString("adUnitId"),
                     config.optBoolean("testMode"));
         }
@@ -120,6 +121,7 @@ enum AdProvider {
                     eCPM,
                     demoteOnCode,
                     index,
+                    config.getString("appId"),
                     config.getString("adUnitId"),
                     config.optBoolean("testMode"));
         }

@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 final public class AdMobInterstitialAdapter extends MediationAdapter {
     
+    private final String appId;
     private final String adUnitId;
     private final boolean testMode;
     
@@ -38,17 +39,24 @@ final public class AdMobInterstitialAdapter extends MediationAdapter {
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
+            String appId,
             String adUnitId,
             boolean testMode) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
-        this.adUnitId = adUnitId;
+        this.appId = appId;
+        this.adUnitId = testMode
+                ? "ca-app-pub-3940256099942544/1033173712"
+                : adUnitId;
         this.testMode = testMode;
     }
     
     @Override
     public void requestAd(final Activity activity, final MediationListener listener, JSONObject configuration) {
+        
+        InitialisationHelper.initialise(activity, appId);
+        
         if(interstitial == null) {
             try {
                 Log.d(BuildConfig.LOG_TAG, "Initialising");

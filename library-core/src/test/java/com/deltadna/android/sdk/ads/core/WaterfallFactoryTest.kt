@@ -92,6 +92,7 @@ class WaterfallFactoryTest {
     private fun buildAdMob(eCpm: Int) = JSONObject()
             .put("adProvider", AdProvider.ADMOB.legacyName())
             .put("eCPM", eCpm)
+            .put("appId", "appId")
             .put("adUnitId", "adUnitId")
     
     private fun buildAmazon(eCpm: Int) = JSONObject()
