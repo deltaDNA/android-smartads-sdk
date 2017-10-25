@@ -30,7 +30,12 @@ dependencies {
     
     implementation files("libs/publisher-sdk-android-${PROVIDER_VERSION}.jar")
     
+    implementation 'com.google.code.gson:gson:2.7'
     implementation 'com.google.dagger:dagger:2.7'
+    implementation 'com.squareup.okhttp3:okhttp:3.6.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.2.0'
     implementation 'de.greenrobot:eventbus:2.2.1'
     implementation 'io.reactivex:rxjava:1.2.0'
     implementation 'javax.inject:javax.inject:1'
