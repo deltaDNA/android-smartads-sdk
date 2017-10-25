@@ -44,6 +44,7 @@ import com.deltadna.android.sdk.ads.provider.unity.UnityRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter
 import com.google.common.truth.Truth.assertThat
 import org.json.JSONObject
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -223,6 +224,7 @@ class AdProviderTest {
         }
     }
     
+    @Ignore
     @Test
     fun inMobi() {
         with(INMOBI.createAdapter(
@@ -236,6 +238,7 @@ class AdProviderTest {
         }
     }
     
+    @Ignore
     @Test
     fun inMobiRewarded() {
         with(INMOBI_REWARDED.createAdapter(
