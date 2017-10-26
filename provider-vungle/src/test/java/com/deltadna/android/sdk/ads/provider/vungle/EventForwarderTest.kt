@@ -21,7 +21,6 @@ import com.deltadna.android.sdk.ads.bindings.AdRequestResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.nhaarman.mockito_kotlin.*
-import com.vungle.publisher.VunglePub
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -31,29 +30,44 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class EventForwarderTest {
     
-    private val vunglePub = mock<VunglePub>()
     private val placement = "placement"
     private val adapter = mock<MediationAdapter>()
     private val listener = mock<MediationListener>()
     
-    private var uut = EventForwarder(vunglePub, placement, adapter, listener)
+    private var uut = EventForwarder(placement, adapter, listener)
     
     @Before
     fun before() {
-        uut = EventForwarder(vunglePub, placement, adapter, listener)
+        uut = EventForwarder(placement, adapter, listener)
     }
     
     @After
     fun after() {
-        reset(vunglePub, adapter, listener)
+        reset(adapter, listener)
     }
     
     @Test
-    fun loadedAndFailedToLoad() {
-        whenever(vunglePub.isAdPlayable(eq(placement))).then { true }
+    fun firstAvailabilityUpdate() {
+        uut.onAdAvailabilityUpdate(placement, true)
         
+        verify(listener).onAdLoaded(same(adapter))
+    }
+    
+    @Test
+    fun firstAvailabilityUpdateFailure() {
+        uut.onAdAvailabilityUpdate(placement, false)
+        
+        verify(listener).onAdFailedToLoad(
+                same(adapter),
+                eq(AdRequestResult.NoFill),
+                any())
+    }
+    
+    @Test
+    fun successiveAvailabilityUpdate() {
         uut.onAdAvailabilityUpdate(placement, true)
         uut.onAdAvailabilityUpdate(placement, false)
+        uut.requestPerformed(listener)
         
         inOrder(listener) {
             verify(listener).onAdLoaded(same(adapter))
@@ -65,102 +79,43 @@ class EventForwarderTest {
     }
     
     @Test
-    fun loadedAndFailedToLoadWhileAdShowing() {
-        whenever(vunglePub.isAdPlayable(eq(placement))).then { true }
-        
-        uut.onAdStart(placement)
-        uut.onAdAvailabilityUpdate(placement, false)
-        
-        verify(listener).onAdShowing(same(adapter))
-        verifyNoMoreInteractions(listener)
-    }
-    
-    @Test
-    fun failedToShow() {
-        whenever(vunglePub.isAdPlayable(eq(placement))).then { true }
-        
-        uut.onAdAvailabilityUpdate(placement, true)
+    fun unableToPlayAd() {
         uut.onUnableToPlayAd(placement, "reason")
         
-        verify(listener).onAdLoaded(same(adapter))
         verify(listener).onAdFailedToShow(
                 same(adapter),
                 eq(AdClosedResult.EXPIRED))
     }
     
     @Test
-    fun fullCycleWithSuccess() {
-        whenever(vunglePub.isAdPlayable(eq(placement))).then { true }
-        
-        uut.onAdAvailabilityUpdate(placement, true)
+    fun adStart() {
         uut.onAdStart(placement)
+        
+        verify(listener).onAdShowing(same(adapter))
+    }
+    
+    @Test
+    fun adEndSuccessfulView() {
         uut.onAdEnd(placement, true, false)
         
-        inOrder(listener) {
-            verify(listener).onAdLoaded(same(adapter))
-            verify(listener).onAdShowing(same(adapter))
-            verify(listener).onAdClosed(same(adapter), eq(true))
-        }
+        verify(listener).onAdClosed(same(adapter), eq(true))
         verifyNoMoreInteractions(listener)
     }
     
     @Test
-    fun fullCycleWithSuccessAndClick() {
-        whenever(vunglePub.isAdPlayable(eq(placement))).then { true }
+    fun adEndUnsuccessfulView() {
+        uut.onAdEnd(placement, false, false)
         
-        uut.onAdAvailabilityUpdate(placement, true)
-        uut.onAdStart(placement)
+        verify(listener).onAdClosed(same(adapter), eq(false))
+        verifyNoMoreInteractions(listener)
+    }
+    
+    @Test
+    fun adEndWithClicked() {
         uut.onAdEnd(placement, true, true)
         
         inOrder(listener) {
-            verify(listener).onAdLoaded(same(adapter))
-            verify(listener).onAdShowing(same(adapter))
             verify(listener).onAdClicked(same(adapter))
-            verify(listener).onAdClosed(same(adapter), eq(true))
-        }
-    }
-    
-    @Test
-    fun fullCycleWithoutSuccess() {
-        whenever(vunglePub.isAdPlayable(eq(placement))).then { true }
-        
-        uut.onAdAvailabilityUpdate(placement, true)
-        uut.onAdStart(placement)
-        uut.onAdEnd(placement, false, false)
-        
-        inOrder(listener) {
-            verify(listener).onAdLoaded(same(adapter))
-            verify(listener).onAdShowing(same(adapter))
-            verify(listener).onAdClosed(same(adapter), eq(false))
-        }
-        verifyNoMoreInteractions(listener)
-    }
-    
-    @Test
-    fun listenerNotifiedAfterCycle() {
-        whenever(vunglePub.isAdPlayable(eq(placement))).thenReturn(true, true)
-        
-        uut.onAdAvailabilityUpdate(placement, true)
-        uut.onAdEnd(placement, true, false)
-        uut.onAdAvailabilityUpdate(placement, true)
-        
-        inOrder(listener) {
-            verify(listener).onAdLoaded(same(adapter))
-            verify(listener).onAdClosed(same(adapter), eq(true))
-            verify(listener).onAdLoaded(same(adapter))
-        }
-    }
-    
-    @Test
-    fun listenerNotifiedAfterCycleButNotYetReady() {
-        whenever(vunglePub.isAdPlayable(eq(placement))).thenReturn(true, false)
-        
-        uut.onAdAvailabilityUpdate(placement, true)
-        uut.onAdEnd(placement, true, false)
-        uut.onAdAvailabilityUpdate(placement, true)
-        
-        inOrder(listener) {
-            verify(listener).onAdLoaded(same(adapter))
             verify(listener).onAdClosed(same(adapter), eq(true))
         }
         verifyNoMoreInteractions(listener)
