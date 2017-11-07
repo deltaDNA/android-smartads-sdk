@@ -20,6 +20,7 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -62,6 +63,7 @@ class ExceptionHandlerTest {
         }
     }
     
+    @Ignore
     @Test
     fun capturesAdapter() {
         uut.uncaughtException(
@@ -79,6 +81,7 @@ class ExceptionHandlerTest {
                 .forEach { assertThat(uut.listCrashes(it)).isEmpty() }
     }
     
+    @Ignore
     @Test
     fun capturesNetwork() {
         uut.uncaughtException(
