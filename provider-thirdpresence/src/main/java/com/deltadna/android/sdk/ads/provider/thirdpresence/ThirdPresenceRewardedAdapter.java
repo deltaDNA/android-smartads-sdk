@@ -73,18 +73,26 @@ public final class ThirdPresenceRewardedAdapter extends MediationAdapter {
             JSONObject configuration) {
         
         this.listener = listener;
-        forwarder = new ThirdPresenceRewardedEventForwarder(listener, this);
         
         try {
-            ad = VideoAdManager.getInstance().create(
-                    VideoAd.PLACEMENT_TYPE_INTERSTITIAL,
-                    placementId);
-            ad.setListener(forwarder);
-            ad.init(activity,
-                    environment,
-                    parameters,
-                    VideoAd.DEFAULT_TIMEOUT);
-            ad.loadAd();
+            if (ad == null) {
+                forwarder = new ThirdPresenceRewardedEventForwarder(
+                        listener,
+                        this);
+                
+                ad = VideoAdManager.getInstance().create(
+                        VideoAd.PLACEMENT_TYPE_INTERSTITIAL,
+                        placementId);
+                ad.setListener(forwarder);
+                ad.init(activity,
+                        environment,
+                        parameters,
+                        VideoAd.DEFAULT_TIMEOUT);
+                
+                ad.loadAd();
+            } else {
+                ad.resetAndLoadAd();
+            }
         } catch (Exception e) {
             final String msg = "Failed to initialise ThirdPresence: " + e.getMessage();
             Log.w(BuildConfig.LOG_TAG, msg);
