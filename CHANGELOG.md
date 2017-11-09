@@ -1,9 +1,10 @@
 # Change Log
 
-## [1.6.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.6.0) (YYYY-MM-DD)
+## [1.6.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.6.0) (2017-11-09)
 Added rewarded ads for Facebook.  
 Added AdMob app id support.  
 Fixed MobFox completed state.  
+Updated analytics dependency.  
 Updated AdMob ads.  
 Updated AppLovin ads.  
 Updated Chartboost ads.  

@@ -71,6 +71,13 @@ class ThirdPresenceRewardedEventForwarder implements VideoAd.Listener {
                                 AdRequestResult.Configuration,
                                 arg1);
                         break;
+                    
+                    case "failed to load player":
+                        listener.onAdFailedToLoad(
+                                adapter,
+                                AdRequestResult.Error,
+                                arg1);
+                        break;
                 }
                 break;
             
