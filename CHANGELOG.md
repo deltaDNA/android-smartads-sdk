@@ -4,6 +4,7 @@
 Added rewarded ads for Facebook.  
 Added AdMob app id support.  
 Fixed MobFox completed state.  
+Updated analytics dependency.  
 Updated AdMob ads.  
 Updated AppLovin ads.  
 Updated Chartboost ads.  
