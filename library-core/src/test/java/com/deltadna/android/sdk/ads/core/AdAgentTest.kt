@@ -413,7 +413,7 @@ class AdAgentTest {
             crashes: List<String> = listOf(),
             block: AdAgent.(List<MediationAdapter>) -> Unit) {
         block.invoke(
-                AdAgent(listener,
+                AdAgent(setOf(listener),
                         Waterfall(adapters, maxPerNetwork),
                         maxPerSession,
                         mock<ExceptionHandler>().apply {

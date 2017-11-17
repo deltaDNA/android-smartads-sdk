@@ -17,14 +17,18 @@
 package com.deltadna.android.sdk.ads.core;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.deltadna.android.sdk.ads.bindings.Actions;
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MainThread;
@@ -34,6 +38,11 @@ import com.deltadna.android.sdk.ads.core.utils.Preconditions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 final class AdServiceImpl implements AdService {
     
@@ -50,8 +59,9 @@ final class AdServiceImpl implements AdService {
     private final ExceptionHandler exceptionHandler;
     private final Activity activity;
     private final AdServiceListener listener;
-    
-    private final AdAgentListener agentListener;
+
+    private final LocalBroadcastManager broadcasts;
+    private final Set<AdAgentListener> adAgentListeners;
     
     private String decisionPoint;
     
@@ -96,17 +106,39 @@ final class AdServiceImpl implements AdService {
         this.activity = activity;
         this.listener = MainThread.redirect(listener, AdServiceListener.class);
         
-        agentListener = new AgentListener();
+        broadcasts = LocalBroadcastManager.getInstance(activity);
+        adAgentListeners = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+                new AgentListener(),
+                new Broadcaster())));
+        
+        // dynamically load the DebugReceiver
+        try {
+            @SuppressWarnings("unchecked") final Class<BroadcastReceiver> cls =
+                    (Class<BroadcastReceiver>) Class.forName(
+                            "com.deltadna.android.sdk.ads.debug.DebugReceiver");
+            broadcasts.registerReceiver(cls.newInstance(), Actions.FILTER);
+            Log.d(BuildConfig.LOG_TAG, "DebugReceiver registered");
+        }  catch (ClassNotFoundException ignored) {
+            Log.d(BuildConfig.LOG_TAG, "DebugReceiver not found in classpath");
+        } catch (IllegalAccessException e) {
+            Log.w(BuildConfig.LOG_TAG, "Failed to load DebugReceiver", e);
+        } catch (InstantiationException e) {
+            Log.w(BuildConfig.LOG_TAG, "Failed to load DebugReceiver", e);
+        }
     }
     
     @Override
-    public void init(String decisionPoint) {
+    public void init(boolean sessionUpdated, String decisionPoint) {
         Log.d(  BuildConfig.LOG_TAG,
                 "Initialising AdService version " + VERSION);
         
         this.decisionPoint = decisionPoint;
         
         requestAdConfiguration();
+        
+        if (sessionUpdated) {
+            broadcasts.sendBroadcast(new Intent(Actions.SESSION_UPDATED));
+        }
     }
     
     @Override
@@ -577,7 +609,13 @@ final class AdServiceImpl implements AdService {
             if (!result.has("parameters")) {
                 Log.w(  BuildConfig.LOG_TAG,
                         "Invalid Engage response, missing 'parameters' key");
+                
+                broadcasts.sendBroadcast(
+                        new Intent(Actions.FAILED_TO_REGISTER).putExtra(
+                                Actions.REASON,
+                                "Missing parameters key in Engage response"));
                 scheduleConfigurationRequest();
+                
                 return;
             }
             
@@ -588,6 +626,10 @@ final class AdServiceImpl implements AdService {
                         "Ads disabled for this session");
                 listener.onFailedToRegisterForRewardedAds(
                         "Ads disabled for this session");
+                broadcasts.sendBroadcast(
+                        new Intent(Actions.FAILED_TO_REGISTER).putExtra(
+                                Actions.REASON,
+                                "Ads disabled for this session"));
                 return;
             }
             
@@ -597,6 +639,10 @@ final class AdServiceImpl implements AdService {
                         "Invalid Engage response, missing 'adProviders' key");
                 listener.onFailedToRegisterForRewardedAds(
                         "Invalid Engage response, missing 'adRewardedProviders' key");
+                broadcasts.sendBroadcast(
+                        new Intent(Actions.FAILED_TO_REGISTER).putExtra(
+                                Actions.REASON,
+                                "Missing providers key in Engage response"));
                 return;
             }
             
@@ -623,9 +669,16 @@ final class AdServiceImpl implements AdService {
                     
                     listener.onFailedToRegisterForInterstitialAds(
                             "Invalid ad configuration");
+                    broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
+                            .putExtra(
+                                    Actions.AGENT,
+                                    Actions.Agent.INTERSTITIAL)
+                            .putExtra(
+                                    Actions.REASON,
+                                    "Invalid interstitial ad configuration"));
                 } else {
                     interstitialAgent = new AdAgent(
-                            agentListener,
+                            adAgentListeners,
                             waterfall,
                             adMaxPerSession,
                             exceptionHandler);
@@ -636,6 +689,13 @@ final class AdServiceImpl implements AdService {
             } else {
                 listener.onFailedToRegisterForInterstitialAds(
                         "No interstitial ad providers defined");
+                broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
+                        .putExtra(
+                                Actions.AGENT,
+                                Actions.Agent.INTERSTITIAL)
+                        .putExtra(
+                                Actions.REASON,
+                                "No interstitial ad providers defined"));
             }
             
             final JSONArray rewardedProviders =
@@ -653,9 +713,16 @@ final class AdServiceImpl implements AdService {
                     
                     listener.onFailedToRegisterForRewardedAds(
                             "Invalid ad configuration");
+                    broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
+                            .putExtra(
+                                    Actions.AGENT,
+                                    Actions.Agent.REWARDED)
+                            .putExtra(
+                                    Actions.REASON,
+                                    "Invalid rewarded ad configuration"));
                 } else {
                     rewardedAgent = new AdAgent(
-                            agentListener,
+                            adAgentListeners,
                             waterfall,
                             adMaxPerSession,
                             exceptionHandler);
@@ -666,12 +733,24 @@ final class AdServiceImpl implements AdService {
             } else {
                 listener.onFailedToRegisterForRewardedAds(
                         "No rewarded ad providers defined");
+                broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
+                        .putExtra(
+                                Actions.AGENT,
+                                Actions.Agent.REWARDED)
+                        .putExtra(
+                                Actions.REASON,
+                                "No rewarded ad providers defined"));
             }
         }
         
         @Override
         public void onFailure(Throwable t) {
             Log.w(BuildConfig.LOG_TAG, "Engage request failed: " + t);
+            
+            broadcasts.sendBroadcast(
+                    new Intent(Actions.FAILED_TO_REGISTER).putExtra(
+                            Actions.REASON,
+                            "Engage request failed: " + t.getMessage()));
             scheduleConfigurationRequest();
         }
         
@@ -686,6 +765,83 @@ final class AdServiceImpl implements AdService {
                         }
                     },
                     TIME_ONE_SECOND);
+        }
+    }
+    
+    private final class Broadcaster implements AdAgentListener {
+        
+        @Nullable
+        private String lastShown;
+        
+        @Override
+        public void onAdLoaded(
+                AdAgent agent,
+                MediationAdapter adapter,
+                long requestTime) {
+            
+            if (agent == null) return;
+            
+            final String network = adapter.getProviderString();
+            if (lastShown == null) {
+                broadcasts.sendBroadcast(new Intent(Actions.LOADED)
+                        .putExtra(Actions.AGENT, toAgent(agent))
+                        .putExtra(Actions.NETWORK, network));
+            } else {
+                broadcasts.sendBroadcast(new Intent(Actions.SHOWN_AND_LOADED)
+                        .putExtra(Actions.AGENT, toAgent(agent))
+                        .putExtra(Actions.NETWORK_SHOWN, lastShown)
+                        .putExtra(Actions.NETWORK_LOADED, network));
+            }
+        }
+        
+        @Override
+        public void onAdFailedToLoad(
+                AdAgent agent,
+                MediationAdapter adapter,
+                String reason,
+                long requestTime,
+                AdRequestResult result) {}
+        
+        @Override
+        public void onAdOpened(
+                AdAgent agent,
+                MediationAdapter adapter) {
+            
+            if (agent == null) return;
+            
+            broadcasts.sendBroadcast(new Intent(Actions.SHOWING)
+                    .putExtra(Actions.AGENT, toAgent(agent))
+                    .putExtra(Actions.NETWORK, adapter.getProviderString()));
+        }
+        
+        @Override
+        public void onAdFailedToOpen(
+                AdAgent agent,
+                MediationAdapter adapter,
+                String reason,
+                AdClosedResult result) {}
+        
+        @Override
+        public void onAdClosed(
+                AdAgent agent,
+                MediationAdapter adapter,
+                boolean complete) {
+            
+            if (agent == null) return;
+            
+            broadcasts.sendBroadcast(new Intent(Actions.SHOWN)
+                    .putExtra(Actions.AGENT, toAgent(agent))
+                    .putExtra(Actions.NETWORK, adapter.getProviderString()));
+            
+            lastShown = adapter.getProviderString();
+        }
+        
+        private Actions.Agent toAgent(AdAgent agent) {
+            if (agent == interstitialAgent) {
+                return Actions.Agent.INTERSTITIAL;
+            } else {
+                return Actions.Agent.REWARDED;
+            }
         }
     }
 }

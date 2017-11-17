@@ -18,6 +18,7 @@ android {}
 
 dependencies {
     api project(':library-bindings')
+    compileOnly project(':library-debug')
     
     compileOnly project(':provider-admob')
     compileOnly project(':provider-adcolony')
@@ -37,6 +38,8 @@ dependencies {
     compileOnly project(':provider-thirdpresence')
     compileOnly project(':provider-unity')
     compileOnly project(':provider-vungle')
+    
+    implementation "com.android.support:support-v4:$supportVersion"
     
     testImplementation project(':provider-admob')
     testImplementation project(':provider-adcolony')

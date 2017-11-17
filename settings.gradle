@@ -1,4 +1,7 @@
-include ':library', ':library-core', ':library-bindings'
+include ':library'
+include ':library-bindings'
+include ':library-core'
+include ':library-debug'
 include ':provider-adcolony'
 include ':provider-admob'
 include ':provider-amazon'

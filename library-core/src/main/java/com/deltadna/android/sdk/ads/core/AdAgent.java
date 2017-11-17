@@ -35,6 +35,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 class AdAgent implements MediationListener {
     
@@ -68,7 +69,7 @@ class AdAgent implements MediationListener {
         }
     };
     
-    private final AdAgentListener listener;
+    private final Set<AdAgentListener> listeners;
     private final Waterfall waterfall;
     private final int adMaxPerSession;
     private final ExceptionHandler exceptionHandler;
@@ -91,12 +92,12 @@ class AdAgent implements MediationListener {
     @Nullable
     private String adPoint;
     
-    AdAgent(AdAgentListener listener,
+    AdAgent(Set<AdAgentListener> listeners,
             Waterfall waterfall,
             int adMaxPerSession,
             ExceptionHandler exceptionHandler) {
         
-        this.listener = listener;
+        this.listeners = listeners;
         this.waterfall = waterfall;
         this.adMaxPerSession = adMaxPerSession;
         this.exceptionHandler = exceptionHandler;
@@ -142,7 +143,16 @@ class AdAgent implements MediationListener {
         if (isAdLoaded()) {
             currentAdapter.showAd();
         } else {
-            listener.onAdFailedToOpen(this, currentAdapter, "Not loaded an ad", AdClosedResult.NOT_READY);
+            notifyListeners(new Action() {
+                @Override
+                public void perform(AdAgentListener listener) {
+                    listener.onAdFailedToOpen(
+                            AdAgent.this,
+                            currentAdapter,
+                            "Not loaded an ad",
+                            AdClosedResult.NOT_READY);
+                }
+            });
         }
     }
 
@@ -189,7 +199,7 @@ class AdAgent implements MediationListener {
     }
     
     @Override
-    public void onAdLoaded(MediationAdapter adapter) {
+    public void onAdLoaded(final MediationAdapter adapter) {
         // some adapters keep loading without being requested to
         if (adapter.equals(currentAdapter)) {
             Log.d(TAG, "Ad loaded for " + adapter);
@@ -197,8 +207,15 @@ class AdAgent implements MediationListener {
             handler.removeCallbacksAndMessages(null);
             
             lastRequestEnd = System.currentTimeMillis();
-            listener.onAdLoaded(
-                    this, adapter, lastRequestEnd - lastRequestStart);
+            notifyListeners(new Action() {
+                @Override
+                public void perform(AdAgentListener listener) {
+                    listener.onAdLoaded(
+                            AdAgent.this,
+                            adapter,
+                            lastRequestEnd - lastRequestStart);
+                }
+            });
             
             state = State.LOADED;
             
@@ -210,9 +227,9 @@ class AdAgent implements MediationListener {
     
     @Override
     public void onAdFailedToLoad(
-            MediationAdapter adapter,
-            AdRequestResult result,
-            String reason) {
+            final MediationAdapter adapter,
+            final AdRequestResult result,
+            final String reason) {
         
         // some adapters keep loading without being requested to
         if (adapter.equals(currentAdapter)) {
@@ -229,12 +246,17 @@ class AdAgent implements MediationListener {
             handler.removeCallbacksAndMessages(null);
             
             lastRequestEnd = System.currentTimeMillis();
-            listener.onAdFailedToLoad(
-                    this,
-                    adapter,
-                    reason,
-                    lastRequestEnd - lastRequestStart,
-                    result);
+            notifyListeners(new Action() {
+                @Override
+                public void perform(AdAgentListener listener) {
+                    listener.onAdFailedToLoad(
+                            AdAgent.this,
+                            adapter,
+                            reason,
+                            lastRequestEnd - lastRequestStart,
+                            result);
+                }
+            });
             
             state = State.READY;
             
@@ -256,12 +278,17 @@ class AdAgent implements MediationListener {
     }
     
     @Override
-    public void onAdShowing(MediationAdapter adapter) {
+    public void onAdShowing(final MediationAdapter adapter) {
         if (adapter.equals(currentAdapter)) {
             if (state != State.SHOWING) {
                 Log.d(TAG, "Ad showing for " + adapter);
                 
-                listener.onAdOpened(this, adapter);
+                notifyListeners(new Action() {
+                    @Override
+                    public void perform(AdAgentListener listener) {
+                        listener.onAdOpened(AdAgent.this, adapter);
+                    }
+                });
                 
                 shownCount++;
                 state = State.SHOWING;
@@ -275,8 +302,8 @@ class AdAgent implements MediationListener {
     
     @Override
     public void onAdFailedToShow(
-            MediationAdapter adapter,
-            AdClosedResult result) {
+            final MediationAdapter adapter,
+            final AdClosedResult result) {
         
         if (adapter.equals(currentAdapter)) {
             Log.d(TAG, String.format(
@@ -284,11 +311,16 @@ class AdAgent implements MediationListener {
                     "Ad failed to show for %s due to %s",
                     adapter,
                     result));
-            listener.onAdFailedToOpen(
-                    this,
-                    currentAdapter,
-                    "Ad failed to show",
-                    result);
+            notifyListeners(new Action() {
+                @Override
+                public void perform(AdAgentListener listener) {
+                    listener.onAdFailedToOpen(
+                            AdAgent.this,
+                            currentAdapter,
+                            "Ad failed to show",
+                            result);
+                }
+            });
             
             state = State.READY;
             
@@ -311,11 +343,19 @@ class AdAgent implements MediationListener {
     }
     
     @Override
-    public void onAdClosed(MediationAdapter adapter, boolean complete) {
+    public void onAdClosed(
+            final MediationAdapter adapter,
+            final boolean complete) {
+        
         if (adapter.equals(currentAdapter)) {
             if (state == State.SHOWING) {
                 Log.d(TAG, "Ad closed for " + adapter);
-                listener.onAdClosed(this, adapter, complete);
+                notifyListeners(new Action() {
+                    @Override
+                    public void perform(AdAgentListener listener) {
+                        listener.onAdClosed(AdAgent.this, adapter, complete);
+                    }
+                });
                 
                 lastShownTime = System.currentTimeMillis();
                 state = State.READY;
@@ -384,5 +424,16 @@ class AdAgent implements MediationListener {
     
     private boolean hasReachedAdLimit() {
         return (adMaxPerSession != -1 && shownCount >= adMaxPerSession);
+    }
+    
+    private void notifyListeners(Action action) {
+        for (final AdAgentListener listener : listeners) {
+            action.perform(listener);
+        }
+    }
+    
+    private interface Action {
+        
+        void perform(AdAgentListener listener);
     }
 }

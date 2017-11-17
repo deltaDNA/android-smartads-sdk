@@ -14,6 +14,7 @@ The deltaDNA SmartAds SDK provides your Android game with access to our intellig
 * [Initialising](#initialising)
 * [Showing ads](#showing-ads)
 * [Permissions](#permissions)
+* [Diagnostics](#diagnostics)
 * [ProGuard](#proguard)
 * [FAQs](#faqs)
 * [Changelog](#changelog)
@@ -150,6 +151,16 @@ Both classes allow for a listener to be passed in at creation for listening to a
 The library includes all the required permissions in its manifest file which will get included by Android's manifest merger during the build process. The included permissions are the minimal required set for ensuring functionality of the ad providers, and all of them are non-dangerous permissions and thus don't require explicit granting of permissions on Android 6+ versions.
 
 Additional (often dangerous) permissions may be added to increase the functionality/performance for the ad network providers. These have been listed in every provider's manifest file as a comment. You may add any of these to your application's manifest as needed.
+
+## Diagnostics
+More details can be shown about which ads are loaded and have been shown by adding the `deltadna-smartads-debug` dependency to your project. We only recommend adding this for debug builds of your application. You can achieve this with Gradle with the following example:
+```groovy
+dependencies {
+    compile 'com.deltadna.android:deltadna-smartads:1.7.0.-SNAPSHOT'
+    debugCompile 'com.deltadna.android:deltadna-smartads-debug:1.7.0-SNAPSHOT'
+}
+```
+The notification can be hidden, until the application is restarted, by swiping away on it.
 
 ## ProGuard
 There is no need to add additional directives in your ProGuard configuration if you are setting `minifyEnabled true` for your application as the library provides its own configuration file which gets included by the Android build tools during the build process.
