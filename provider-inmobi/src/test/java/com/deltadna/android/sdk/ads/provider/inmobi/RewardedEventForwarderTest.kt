@@ -30,17 +30,17 @@ import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class InMobiInterstitialEventForwarderTest {
+class RewardedEventForwarderTest {
     
     private val listener = mock<MediationListener>()
     private val adapter = mock<MediationAdapter>()
-    private val ad = mock<InMobiInterstitialEventForwarder>()
+    private val ad = mock<RewardedEventForwarder>()
     
-    private var uut = InMobiInterstitialEventForwarder(listener, adapter)
+    private var uut = RewardedEventForwarder(listener, adapter)
     
     @Before
     fun before() {
-        uut = InMobiInterstitialEventForwarder(listener, adapter)
+        uut = RewardedEventForwarder(listener, adapter)
     }
     
     @After
@@ -143,7 +143,7 @@ class InMobiInterstitialEventForwarderTest {
     }
     
     @Test
-    fun onAdDismissed() {
+    fun onAdDismissedWithoutReward() {
         with(mock<InMobiInterstitial>()) {
             uut.onAdReceived(this)
             uut.onAdLoadSucceeded(this)
@@ -155,23 +155,25 @@ class InMobiInterstitialEventForwarderTest {
         inOrder(listener) {
             verify(listener).onAdLoaded(same(adapter))
             verify(listener).onAdShowing(same(adapter))
-            verify(listener).onAdClosed(same(adapter), eq(true))
+            verify(listener).onAdClosed(same(adapter), eq(false))
         }
     }
     
     @Test
-    fun onAdRewardActionCompleted() {
+    fun onAdDismissedWithReward() {
         with(mock<InMobiInterstitial>()) {
             uut.onAdReceived(this)
             uut.onAdLoadSucceeded(this)
             uut.onAdWillDisplay(this)
             uut.onAdDisplayed(this)
             uut.onAdRewardActionCompleted(this, mock())
+            uut.onAdDismissed(this)
         }
         
         inOrder(listener) {
             verify(listener).onAdLoaded(same(adapter))
             verify(listener).onAdShowing(same(adapter))
+            verify(listener).onAdClosed(same(adapter), eq(true))
         }
     }
     

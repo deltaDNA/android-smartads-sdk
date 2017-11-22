@@ -16,85 +16,24 @@
 
 package com.deltadna.android.sdk.ads.provider.inmobi;
 
-import android.app.Activity;
-import android.support.annotation.Nullable;
-
-import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.inmobi.ads.InMobiInterstitial;
 
-import org.json.JSONObject;
-
-public final class InMobiInterstitialAdapter extends MediationAdapter {
-    
-    private final String accountId;
-    private final Long placementId;
-    
-    @Nullable
-    private InMobiInterstitial interstitial;
+public final class InMobiInterstitialAdapter
+        extends InMobiAdapter<InterstitialEventForwarder> {
     
     public InMobiInterstitialAdapter(
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
             String accountId,
-            Long placementId) {
+            Long placementId,
+            boolean logging) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
-        
-        this.accountId = accountId;
-        this.placementId = placementId;
+        super(eCPM, demoteOnCode, waterfallIndex, accountId, placementId, logging);
     }
     
     @Override
-    public void requestAd(
-            Activity activity,
-            MediationListener listener,
-            JSONObject mediationParams) {
-        
-        synchronized (InMobiHelper.class) {
-            if (!InMobiHelper.isInitialised()) {
-                InMobiHelper.initialise(activity, accountId);
-            }
-        }
-        
-        interstitial = new InMobiInterstitial(
-                activity,
-                placementId,
-                new InMobiInterstitialEventForwarder(listener, this));
-        interstitial.load();
-    }
-    
-    @Override
-    public void showAd() {
-        if (interstitial != null && interstitial.isReady()) {
-            interstitial.show();
-            interstitial = null;
-        }
-    }
-    
-    @Override
-    public String getProviderString() {
-        return BuildConfig.PROVIDER_NAME;
-    }
-    
-    @Override
-    public String getProviderVersionString() {
-        return BuildConfig.PROVIDER_VERSION;
-    }
-    
-    @Override
-    public void onDestroy() {
-        interstitial = null;
-    }
-    
-    @Override
-    public void onPause() {
-        // cannot forward
-    }
-    
-    @Override
-    public void onResume() {
-        // cannot forward
+    protected InterstitialEventForwarder createListener(MediationListener listener) {
+        return new InterstitialEventForwarder(listener, this);
     }
 }

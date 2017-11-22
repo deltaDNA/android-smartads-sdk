@@ -16,24 +16,20 @@
 
 package com.deltadna.android.sdk.ads.provider.inmobi;
 
-import android.app.Activity;
-import android.util.Log;
+import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
+import com.deltadna.android.sdk.ads.bindings.MediationListener;
 
-import com.inmobi.sdk.InMobiSdk;
-
-final class InMobiHelper {
+final class InterstitialEventForwarder extends EventForwarder {
     
-    private static boolean initialised;
-    
-    static void initialise(Activity activity, String accountId) {
-        if (!initialised) {
-            Log.d(BuildConfig.LOG_TAG, "Initialising InMobi");
-            InMobiSdk.init(activity, accountId);
-            initialised = true;
-        }
+    InterstitialEventForwarder(
+            MediationListener listener,
+            MediationAdapter adapter) {
+        
+        super(listener, adapter);
     }
     
-    static boolean isInitialised() {
-        return initialised;
+    @Override
+    protected boolean hasCompleted() {
+        return true;
     }
 }
