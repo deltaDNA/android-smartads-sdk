@@ -2,6 +2,7 @@
 
 ## [1.6.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.6.1) (YYYY-MM-DD)
 Fixed InMobi completed callbacks not invoking.  
+Fixed database cursors not being potentially closed.  
 
 ## [1.6.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.6.0) (2017-11-09)
 Added rewarded ads for Facebook.  

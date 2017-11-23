@@ -95,22 +95,26 @@ final class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     }
     
     List<String> listCrashes(AdProvider provider) {
-        final Cursor cursor = db.list(
-                provider.name(),
-                version,
-                versionCode,
-                versionSdk,
-                versionSmartAdsSdk,
-                provider.version());
-        final List<String> crashes = new ArrayList<>(cursor.getCount());
-        
-        while (cursor.moveToNext()) {
-            crashes.add(cursor.getString(cursor.getColumnIndex(
-                    DbHelper.CRASHES_STACK_TRACE)));
+        Cursor cursor = null;
+        try {
+            cursor = db.list(
+                    provider.name(),
+                    version,
+                    versionCode,
+                    versionSdk,
+                    versionSmartAdsSdk,
+                    provider.version());
+            final List<String> crashes = new ArrayList<>(cursor.getCount());
+            
+            while (cursor.moveToNext()) {
+                crashes.add(cursor.getString(cursor.getColumnIndex(
+                        DbHelper.CRASHES_STACK_TRACE)));
+            }
+            
+            return crashes;
+        } finally {
+            if (cursor != null) cursor.close();
         }
-        cursor.close();
-        
-        return crashes;
     }
     
     /**
