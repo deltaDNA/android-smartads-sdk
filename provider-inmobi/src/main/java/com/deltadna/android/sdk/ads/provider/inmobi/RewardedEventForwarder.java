@@ -16,24 +16,34 @@
 
 package com.deltadna.android.sdk.ads.provider.inmobi;
 
+import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.inmobi.ads.InMobiInterstitial;
 
-public final class InMobiRewardedAdapter
-        extends InMobiAdapter<RewardedEventForwarder> {
+import java.util.Map;
+
+final class RewardedEventForwarder extends EventForwarder {
     
-    public InMobiRewardedAdapter(
-            int eCPM,
-            int demoteOnCode,
-            int waterfallIndex,
-            String accountId,
-            Long placementId,
-            boolean logging) {
+    private boolean completed;
+    
+    RewardedEventForwarder(
+            MediationListener listener,
+            MediationAdapter adapter) {
         
-        super(eCPM, demoteOnCode, waterfallIndex, accountId, placementId, logging);
+        super(listener, adapter);
     }
     
     @Override
-    protected RewardedEventForwarder createListener(MediationListener listener) {
-        return new RewardedEventForwarder(listener, this);
+    protected boolean hasCompleted() {
+        return completed;
+    }
+    
+    @Override
+    public void onAdRewardActionCompleted(
+            InMobiInterstitial ad,
+            Map<Object, Object> map) {
+        
+        super.onAdRewardActionCompleted(ad, map);
+        completed = true;
     }
 }

@@ -30,17 +30,17 @@ import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class InMobiRewardedEventForwarderTest {
+class InterstitialEventForwarderTest {
     
     private val listener = mock<MediationListener>()
     private val adapter = mock<MediationAdapter>()
-    private val ad = mock<InMobiRewardedEventForwarder>()
+    private val ad = mock<InterstitialEventForwarder>()
     
-    private var uut = InMobiRewardedEventForwarder(listener, adapter)
+    private var uut = InterstitialEventForwarder(listener, adapter)
     
     @Before
     fun before() {
-        uut = InMobiRewardedEventForwarder(listener, adapter)
+        uut = InterstitialEventForwarder(listener, adapter)
     }
     
     @After
@@ -143,30 +143,12 @@ class InMobiRewardedEventForwarderTest {
     }
     
     @Test
-    fun onAdDismissedWithoutReward() {
+    fun onAdDismissed() {
         with(mock<InMobiInterstitial>()) {
             uut.onAdReceived(this)
             uut.onAdLoadSucceeded(this)
             uut.onAdWillDisplay(this)
             uut.onAdDisplayed(this)
-            uut.onAdDismissed(this)
-        }
-        
-        inOrder(listener) {
-            verify(listener).onAdLoaded(same(adapter))
-            verify(listener).onAdShowing(same(adapter))
-            verify(listener).onAdClosed(same(adapter), eq(false))
-        }
-    }
-    
-    @Test
-    fun onAdDismissedWithReward() {
-        with(mock<InMobiInterstitial>()) {
-            uut.onAdReceived(this)
-            uut.onAdLoadSucceeded(this)
-            uut.onAdWillDisplay(this)
-            uut.onAdDisplayed(this)
-            uut.onAdRewardActionCompleted(this, mock())
             uut.onAdDismissed(this)
         }
         
@@ -174,6 +156,22 @@ class InMobiRewardedEventForwarderTest {
             verify(listener).onAdLoaded(same(adapter))
             verify(listener).onAdShowing(same(adapter))
             verify(listener).onAdClosed(same(adapter), eq(true))
+        }
+    }
+    
+    @Test
+    fun onAdRewardActionCompleted() {
+        with(mock<InMobiInterstitial>()) {
+            uut.onAdReceived(this)
+            uut.onAdLoadSucceeded(this)
+            uut.onAdWillDisplay(this)
+            uut.onAdDisplayed(this)
+            uut.onAdRewardActionCompleted(this, mock())
+        }
+        
+        inOrder(listener) {
+            verify(listener).onAdLoaded(same(adapter))
+            verify(listener).onAdShowing(same(adapter))
         }
     }
     

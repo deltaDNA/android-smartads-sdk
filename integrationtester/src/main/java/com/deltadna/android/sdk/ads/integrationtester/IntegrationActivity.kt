@@ -211,13 +211,15 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         BuildConfig.INMOBI_ACCOUNT_ID,
-                        BuildConfig.INMOBI_INTERSTITIAL_PLACEMENT_ID),
+                        BuildConfig.INMOBI_INTERSTITIAL_PLACEMENT_ID,
+                        true),
                 InMobiRewardedAdapter(
                         0,
                         0,
                         0,
                         BuildConfig.INMOBI_ACCOUNT_ID,
-                        BuildConfig.INMOBI_REWARDED_PLACEMENT_ID),
+                        BuildConfig.INMOBI_REWARDED_PLACEMENT_ID,
+                        true),
                 IronSourceInterstitialAdapter(
                         0,
                         0,

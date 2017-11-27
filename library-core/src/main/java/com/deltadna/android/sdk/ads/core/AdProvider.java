@@ -393,12 +393,8 @@ enum AdProvider {
                     demoteOnCode,
                     index,
                     config.getString("accountId"),
-                    config.getLong("placementId"));
-        }
-        
-        @Override
-        boolean present() {
-            return false; // SA-193
+                    config.getLong("placementId"),
+                    false);
         }
         
         @Override
@@ -428,12 +424,8 @@ enum AdProvider {
                     demoteOnCode,
                     index,
                     config.getString("accountId"),
-                    config.getLong("placementId"));
-        }
-        
-        @Override
-        boolean present() {
-            return false; // SA-193
+                    config.getLong("placementId"),
+                    false);
         }
         
         @Override
