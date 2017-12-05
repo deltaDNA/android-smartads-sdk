@@ -114,6 +114,10 @@ subprojects {
                     testCoverageEnabled true
                 }
             }
+            
+            jacoco {
+                version = '0.7.9'
+            }
         }
     }
     
@@ -127,8 +131,8 @@ subprojects {
             testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
             testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
             testImplementation 'org.json:json:20171018'
-            testImplementation 'org.mockito:mockito-core:2.11.0'
-            testImplementation 'org.robolectric:robolectric:3.5'
+            testImplementation 'org.mockito:mockito-core:2.12.0'
+            testImplementation 'org.robolectric:robolectric:3.5.1'
         }
     }
     
