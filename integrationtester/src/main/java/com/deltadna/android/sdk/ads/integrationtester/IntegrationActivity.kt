@@ -43,6 +43,8 @@ import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.loopme.LoopMeAdapter
+import com.deltadna.android.sdk.ads.provider.machinezone.MachineZoneInterstitialAdapter
+import com.deltadna.android.sdk.ads.provider.machinezone.MachineZoneRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter
 import com.deltadna.android.sdk.ads.provider.tapjoy.TapjoyAdapter
@@ -240,6 +242,16 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         "",
                         true),
+                MachineZoneInterstitialAdapter(
+                        0,
+                        0,
+                        0,
+                        BuildConfig.MACHINEZONE_INTERSTITIAL_AD_UNIT_ID),
+                MachineZoneRewardedAdapter(
+                        0,
+                        0,
+                        0,
+                        BuildConfig.MACHINEZONE_REWARDED_AD_UNIT_ID),
                 MobFoxAdapter(
                         0,
                         0,

@@ -32,7 +32,7 @@ buildscript {
     }
     
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.2'
         classpath 'gradle.plugin.com.nimbledroid:gradle-profiler:1.1.7'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
@@ -114,6 +114,10 @@ subprojects {
                     testCoverageEnabled true
                 }
             }
+            
+            jacoco {
+                version = '0.7.9'
+            }
         }
     }
     
@@ -127,8 +131,8 @@ subprojects {
             testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
             testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
             testImplementation 'org.json:json:20171018'
-            testImplementation 'org.mockito:mockito-core:2.11.0'
-            testImplementation 'org.robolectric:robolectric:3.5'
+            testImplementation 'org.mockito:mockito-core:2.12.0'
+            testImplementation 'org.robolectric:robolectric:3.5.1'
         }
     }
     
@@ -144,7 +148,7 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
+    gradleVersion = '4.3.1'
 }
 
 task clean(type: Delete) {
