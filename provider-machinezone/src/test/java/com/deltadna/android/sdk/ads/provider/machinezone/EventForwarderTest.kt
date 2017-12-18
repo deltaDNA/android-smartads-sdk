@@ -84,13 +84,6 @@ class EventForwarderTest {
     }
     
     @Test
-    fun onExpanded() {
-        uut.onExpanded(mock())
-        
-        verify(listener).onAdShowing(same(adapter))
-    }
-    
-    @Test
     fun onClicked() {
         uut.onClicked(mock())
         
