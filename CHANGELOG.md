@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.6.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.6.2) (YYYY-MM-DD)
+Updated HyprMX ads.  
+
 ## [1.6.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.6.1) (2017-11-27)
 Fixed InMobi completed callbacks not invoking.  
 Fixed database cursors not being potentially closed.  
