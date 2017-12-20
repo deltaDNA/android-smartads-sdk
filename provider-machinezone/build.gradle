@@ -26,7 +26,7 @@ android {
 dependencies {
     api project(':library-bindings')
     
-    implementation files("libs/adzone-android-sdk-${PROVIDER_VERSION}.aar")
+    implementation "com.deltadna.android:adzone-android-sdk:${PROVIDER_VERSION}"
     
     // needed for advertising id retrieval
     implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
