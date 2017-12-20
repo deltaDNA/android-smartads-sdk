@@ -2,6 +2,7 @@
 
 ## [1.7.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.7.0) (YYYY-MM-DD)
 Added MachineZone ads.  
+Updated HyprMX ads.  
 
 ## [1.6.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.6.1) (2017-11-27)
 Fixed InMobi completed callbacks not invoking.  

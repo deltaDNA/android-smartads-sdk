@@ -29,6 +29,7 @@ In your top-level build script
 allprojects {
     repositories {
         maven { url 'http://deltadna.bintray.com/android' }
+        maven { url 'https://raw.githubusercontent.com/HyprMXMobile/Android-SDKs/master' }
         // repositories for your other dependencies...
     }
 }
