@@ -33,8 +33,8 @@ class AdColony(Parser):
   
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://raw.githubusercontent.com/AdColony/AdColony-Android-SDK-3/master/CHANGELOG.md', \
+      self,
+      'https://raw.githubusercontent.com/AdColony/AdColony-Android-SDK-3/master/CHANGELOG.md',
       r'\#\#\s+((\d+\.)+\d+)')
 
   def content(self, content, url):
@@ -44,8 +44,8 @@ class AdMob(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://firebase.google.com/docs/admob/android/quick-start', \
+      self,
+      'https://firebase.google.com/docs/admob/android/quick-start',
       r'compile \'com\.google\.firebase:firebase-ads:((\d+\.)+\d+)\'')
 
   def content(self, content, url):
@@ -55,8 +55,8 @@ class Amazon(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://developer.amazon.com/sdk-download', \
+      self,
+      'https://developer.amazon.com/sdk-download',
       r'Amazon Mobile Ads \(((\d+\.)+\d+)\)')
 
   def content(self, content, url):
@@ -74,19 +74,19 @@ class Chartboost(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://answers.chartboost.com/hc/en-us/articles/207697966', \
-      r'Version ((\d+\.)+\d+)')
+      self,
+      'http://www.chartboo.st/sdk/android',
+      r'((\d+\.)+\d+)')
 
   def content(self, content, url):
-    return content
+    return url
 
 class Facebook(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'http://central.maven.org/maven2/com/facebook/android/audience-network-sdk/maven-metadata.xml', \
+      self,
+      'http://central.maven.org/maven2/com/facebook/android/audience-network-sdk/maven-metadata.xml',
       r'<latest>((\d+\.)+\d+)')
 
   def content(self, content, url):
@@ -96,19 +96,30 @@ class Flurry(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://bintray.com/yahoo/maven/com.flurry/_latestVersion', \
+      self,
+      'https://bintray.com/yahoo/maven/com.flurry/_latestVersion',
       r'((\d+\.)+\d+)')
 
   def content(self, content, url):
     return url
 
+class HyprMx(Parser):
+
+  def __init__(self):
+    Parser.__init__(
+      self,
+      None,
+      None)
+
+  def content(self, content, url):
+    return None
+
 class InMobi(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://bintray.com/inmobi/maven/inmobi-ads/_latestVersion', \
+      self,
+      'https://bintray.com/inmobi/maven/inmobi-ads/_latestVersion',
       r'((\d+\.)+\d+)')
 
   def content(self, content, url):
@@ -118,19 +129,41 @@ class Ironsource(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://bintray.com/ironsource-mobile/android-sdk/mediation/_latestVersion', \
+      self,
+      'https://bintray.com/ironsource-mobile/android-sdk/mediation/_latestVersion',
       r'((\d+\.)+\d+)')
 
   def content(self, content, url):
     return url
 
+class LoopMe(Parser):
+
+  def __init__(self):
+    Parser.__init__(
+      self,
+      'https://bintray.com/loopme/maven/loopme-sdk/_latestVersion',
+      r'((\d+\.)+\d+)')
+
+  def content(self, content, url):
+    return url
+
+class MachineZone(Parser):
+
+  def __init__(self):
+    Parser.__init__(
+      self,
+      None,
+      None)
+
+  def content(self, content, url):
+    return None
+
 class MobFox(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://api.github.com/repos/mobfox/MobFox-Android-SDK/releases/latest', \
+      self,
+      'https://api.github.com/repos/mobfox/MobFox-Android-SDK/releases/latest',
       r'((\d+\.)+\d+)')
 
   def content(self, content, url):
@@ -140,8 +173,8 @@ class MoPub(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://bintray.com/mopub/mopub-android-sdk/mopub-android-sdk/_latestVersion', \
+      self,
+      'https://bintray.com/mopub/mopub-android-sdk/mopub-android-sdk/_latestVersion',
       r'((\d+\.)+\d+)')
 
   def content(self, content, url):
@@ -151,8 +184,8 @@ class Tapjoy(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://bintray.com/tapjoy/tapjoy-sdk/android-sdk/_latestVersion', \
+      self,
+      'https://bintray.com/tapjoy/tapjoy-sdk/android-sdk/_latestVersion',
       r'((\d+\.)+\d+)')
 
   def content(self, content, url):
@@ -162,8 +195,8 @@ class Thirdpresence(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://bintray.com/thirdpresence/thirdpresence-ad-sdk-android/com.thirdpresence.adsdk.sdk/_latestVersion', \
+      self,
+      'https://bintray.com/thirdpresence/thirdpresence-ad-sdk-android/com.thirdpresence.adsdk.sdk/_latestVersion',
       r'((\d+\.)+\d+)')
 
   def content(self, content, url):
@@ -173,8 +206,8 @@ class Unity(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://api.github.com/repos/Unity-Technologies/unity-ads-android/releases/latest', \
+      self,
+      'https://api.github.com/repos/Unity-Technologies/unity-ads-android/releases/latest',
       r'((\d+\.)+\d+)')
 
   def content(self, content, url):
@@ -184,8 +217,8 @@ class Vungle(Parser):
 
   def __init__(self):
     Parser.__init__(
-      self, \
-      'https://v.vungle.com/dashboard/api/1/sdk/android', \
+      self,
+      'https://v.vungle.com/dashboard/api/1/sdk/android',
       r'((\d+\.)+\d+)')
 
   def content(self, content, url):
@@ -199,8 +232,11 @@ providers = {
   'chartboost': Chartboost(),
   'facebook': Facebook(),
   'flurry': Flurry(),
+  'hyprmx': HyprMx(),
   'inmobi': InMobi(),
   'ironsource': Ironsource(),
+  'loopme': LoopMe(),
+  'machinezone': MachineZone(),
   'mobfox': MobFox(),
   'mopub': MoPub(),
   'tapjoy': Tapjoy(),
