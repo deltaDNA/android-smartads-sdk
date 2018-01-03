@@ -34,6 +34,7 @@ public final class AdColonyAdapter extends MediationAdapter {
     
     private final String appId;
     private final String[] zoneIds;
+    private final boolean testMode;
     
     @Nullable
     private AdColonyEventForwarder forwarder;
@@ -43,12 +44,14 @@ public final class AdColonyAdapter extends MediationAdapter {
             int demoteOnCode,
             int waterfallIndex,
             String appId,
-            String zoneIds) {
+            String zoneIds,
+            boolean testMode) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.appId = appId;
         this.zoneIds = zoneIds.split(",");
+        this.testMode = testMode;
     }
     
     @Override
@@ -59,6 +62,10 @@ public final class AdColonyAdapter extends MediationAdapter {
         
         if (!initialised) {
             initialised = AdColony.configure(activity, appId, zoneIds);
+            
+            AdColony.setAppOptions(AdColony.getAppOptions()
+                    .setTestModeEnabled(testMode)
+                    .setMediationNetwork("DeltaDNA", BuildConfig.VERSION_NAME));
         }
         
         if (!initialised) {

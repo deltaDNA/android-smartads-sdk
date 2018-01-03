@@ -60,7 +60,8 @@ class AdProviderTest {
                 JSONObject()
                         .put("appId", "appId")
                         .put("clientOptions", "clientOptions")
-                        .put("zoneId", "zoneId"))) {
+                        .put("zoneId", "zoneId")
+                        .put("testMode", true))) {
             assertThat(this).isInstanceOf(AdColonyAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(ADCOLONY.version())
             assertThat(this.javaClass.name).isEqualTo(ADCOLONY.cls)

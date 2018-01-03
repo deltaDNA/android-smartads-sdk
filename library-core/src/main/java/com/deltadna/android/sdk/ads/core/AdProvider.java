@@ -69,7 +69,8 @@ enum AdProvider {
                     demoteOnCode,
                     index,
                     config.getString("appId"),
-                    config.getString("zoneId"));
+                    config.getString("zoneId"),
+                    config.optBoolean("testMode"));
         }
         
         @Override

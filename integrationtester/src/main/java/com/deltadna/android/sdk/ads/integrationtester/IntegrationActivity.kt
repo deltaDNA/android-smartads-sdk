@@ -134,7 +134,8 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         BuildConfig.ADCOLONY_APP_ID,
-                        BuildConfig.ADCOLONY_ZONE_IDS),
+                        BuildConfig.ADCOLONY_ZONE_IDS,
+                        true),
                 AdMobInterstitialAdapter(
                         0,
                         0,
