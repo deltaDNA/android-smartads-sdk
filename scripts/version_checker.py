@@ -270,7 +270,7 @@ def main():
     if newest is False:
       print("# %s is not supported" % provider)
     elif newer(newest, current):
-      print("# %s has a new version %s" % (provider, newest))
+      print("# %s has a new version %s (%s)" % (provider, newest, current))
 
 if __name__ == "__main__":
   main()
