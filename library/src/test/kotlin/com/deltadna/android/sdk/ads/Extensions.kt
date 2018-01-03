@@ -3,8 +3,8 @@ package com.deltadna.android.sdk.ads
 import com.deltadna.android.sdk.Engagement
 import com.google.gson.JsonObject
 import org.json.JSONObject
+import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.javaField
-import kotlin.reflect.memberProperties
 
 internal fun DDNASmartAds.inject(with: Ads?) {
     with(DDNASmartAds::class

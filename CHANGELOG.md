@@ -2,6 +2,7 @@
 
 ## [1.7.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.7.0) (YYYY-MM-DD)
 Added MachineZone ads.  
+Updated build tools and runtime libraries.  
 Updated AdColony ads  
 Updated HyprMX ads.  
 Updated IronSource to set mediation type.  
