@@ -28,6 +28,7 @@ class Helper {
         synchronized (Helper.class) {
             if (!initialised) {
                 IronSource.init(activity, appKey);
+                IronSource.setMediationType("DeltaDNA");
                 initialised = true;
             }
         }
