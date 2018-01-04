@@ -4,6 +4,7 @@
 Added MachineZone ads.  
 Updated build tools and runtime libraries.  
 Updated AdColony ads  
+Updated AppLovin ads.  
 Updated HyprMX ads.  
 Updated IronSource to set mediation type.  
 

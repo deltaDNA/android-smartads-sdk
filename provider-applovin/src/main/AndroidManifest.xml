@@ -29,6 +29,8 @@ limitations under the License.
         <activity
             android:name="com.applovin.adview.AppLovinInterstitialActivity"
             android:configChanges="orientation|screenSize"/>
-        <activity android:name="com.applovin.adview.AppLovinConfirmationActivity"/>
+        <activity
+            android:name="com.applovin.adview.AppLovinConfirmationActivity"
+            android:configChanges="orientation|screenSize"/>
     </application>
 </manifest>
