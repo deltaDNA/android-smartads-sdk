@@ -220,66 +220,81 @@ extends java.lang.Enum&lt;<a href="../../../../com/chartboost/sdk/Model/CBError.
 </td>
 </tr>
 <tr class="altColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#INTERNET_UNAVAILABLE_AT_SHOW">INTERNET_UNAVAILABLE_AT_SHOW</a></span></code>
+<div class="block">No internet connection during Ad display with cached Ad</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#INVALID_LOCATION">INVALID_LOCATION</a></span></code>
 <div class="block">Invalid location</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#INVALID_RESPONSE">INVALID_RESPONSE</a></span></code>
 <div class="block">Invalid response</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#NETWORK_FAILURE">NETWORK_FAILURE</a></span></code>
 <div class="block">An error occurred during network communication with the Chartboost server</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#NO_AD_FOUND">NO_AD_FOUND</a></span></code>
 <div class="block">No ad was available for the user from the Chartboost server</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#NO_HOST_ACTIVITY">NO_HOST_ACTIVITY</a></span></code>
 <div class="block">There is no currently active activity with Chartboost properly integrated</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#PENDING_IMPRESSION_ERROR">PENDING_IMPRESSION_ERROR</a></span></code>
 <div class="block">Pending impression error</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#SESSION_NOT_STARTED">SESSION_NOT_STARTED</a></span></code>
 <div class="block">The startSession() method was not called as per implementation instructions</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#TOO_MANY_CONNECTIONS">TOO_MANY_CONNECTIONS</a></span></code>
 <div class="block">Too many simultaneous requests (eg more than one show request, more than one cache request of the same type and location)</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#USER_CANCELLATION">USER_CANCELLATION</a></span></code>
 <div class="block">User cancels the alert notification pop-up</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#VIDEO_ID_MISSING">VIDEO_ID_MISSING</a></span></code>
 <div class="block">Video url missing in response</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#VIDEO_UNAVAILABLE">VIDEO_UNAVAILABLE</a></span></code>
 <div class="block">Video not available in cache</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#VIDEO_UNAVAILABLE_FOR_CURRENT_ORIENTATION">VIDEO_UNAVAILABLE_FOR_CURRENT_ORIENTATION</a></span></code>
 <div class="block">Response do not include video for the current orientation</div>
 </td>
 </tr>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#WEB_VIEW_CLIENT_RECEIVED_ERROR">WEB_VIEW_CLIENT_RECEIVED_ERROR</a></span></code>
+<div class="block">The WebViewClient onReceivedError method was called</div>
+</td>
+</tr>
 <tr class="altColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#WEB_VIEW_PAGE_LOAD_TIMEOUT">WEB_VIEW_PAGE_LOAD_TIMEOUT</a></span></code>
+<div class="block">A WebView took longer than 3 seconds to load</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html#WRONG_ORIENTATION">WRONG_ORIENTATION</a></span></code>
 <div class="block">The impression sent was not compatible with the device orientation</div>
 </td>
@@ -624,11 +639,41 @@ the order they are declared.</div>
 <a name="ASSET_MISSING">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>ASSET_MISSING</h4>
 <pre>public static final&nbsp;<a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html" title="enum in com.chartboost.sdk.Model">CBError.CBImpressionError</a> ASSET_MISSING</pre>
 <div class="block">a previously-download asset was missing at show time</div>
+</li>
+</ul>
+<a name="WEB_VIEW_PAGE_LOAD_TIMEOUT">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WEB_VIEW_PAGE_LOAD_TIMEOUT</h4>
+<pre>public static final&nbsp;<a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html" title="enum in com.chartboost.sdk.Model">CBError.CBImpressionError</a> WEB_VIEW_PAGE_LOAD_TIMEOUT</pre>
+<div class="block">A WebView took longer than 3 seconds to load</div>
+</li>
+</ul>
+<a name="WEB_VIEW_CLIENT_RECEIVED_ERROR">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WEB_VIEW_CLIENT_RECEIVED_ERROR</h4>
+<pre>public static final&nbsp;<a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html" title="enum in com.chartboost.sdk.Model">CBError.CBImpressionError</a> WEB_VIEW_CLIENT_RECEIVED_ERROR</pre>
+<div class="block">The WebViewClient onReceivedError method was called</div>
+</li>
+</ul>
+<a name="INTERNET_UNAVAILABLE_AT_SHOW">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>INTERNET_UNAVAILABLE_AT_SHOW</h4>
+<pre>public static final&nbsp;<a href="../../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html" title="enum in com.chartboost.sdk.Model">CBError.CBImpressionError</a> INTERNET_UNAVAILABLE_AT_SHOW</pre>
+<div class="block">No internet connection during Ad display with cached Ad</div>
 </li>
 </ul>
 </li>
