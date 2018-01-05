@@ -30,7 +30,7 @@ class Parser:
     pass
 
 class AdColony(Parser):
-  
+
   def __init__(self):
     Parser.__init__(
       self,
@@ -254,7 +254,7 @@ def newer(new, old):
     newl.extend(['0' for _ in xrange(len(oldl) - len(newl))])
 
   for o, n in zip(oldl, newl):
-    if (int(o) < int(n)):
+    if int(o) < int(n):
         return True
 
   return False
@@ -265,7 +265,11 @@ def main():
     provider = directory[len('provider-'):]
     properties = dict(line.strip().split('=') for line in open(path.join('.', directory, 'gradle.properties'), 'r'))
     current = properties['PROVIDER_VERSION']
-    newest = providers[provider].newest()
+    try:
+      newest = providers[provider].newest()
+    except Exception, e:
+      print("# %s has failed checking for a new version (%s)" % (provider, e))
+      continue
 
     if newest is False:
       print("# %s is not supported" % provider)
