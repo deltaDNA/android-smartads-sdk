@@ -32,7 +32,7 @@ final class FlurryHelper {
                     .withListener(new FlurryAgentListener() {
                         @Override
                         public void onSessionStarted() {
-                            // logs an error otherwise...
+                            Log.d(BuildConfig.LOG_TAG, "Session started");
                         }
                     })
                     .withLogEnabled(logging)

@@ -15,22 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 !-->
 
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.deltadna.android.sdk.ads.provider.flurry">
-    
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    
+<manifest package="com.deltadna.android.sdk.ads.provider.flurry">
     <!-- optional
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     -->
-    
-    <application>
-        <activity
-            android:name="com.flurry.android.FlurryFullscreenTakeoverActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
-        </activity>
-    </application>
 </manifest>

@@ -17,7 +17,13 @@
 dependencies {
     api project(':library-bindings')
     
-    implementation "com.flurry.android:ads:$PROVIDER_VERSION"
+    implementation(group: 'com.flurry.android', name: 'ads', version: PROVIDER_VERSION) {
+        artifact {
+            name = 'ads'
+            extension = 'aar'
+            type = 'aar'
+        }
+    }
     
     // needed for advertising id retrieval
     implementation "com.google.android.gms:play-services-basement:$playServicesVersion"

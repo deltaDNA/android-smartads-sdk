@@ -7,6 +7,7 @@ Updated AdColony ads
 Updated AppLovin ads.  
 Updated Chartboost ads.  
 Updated Facebook ads.  
+Updated Flurry ads.  
 Updated HyprMX ads.  
 Updated IronSource to set mediation type.  
 
