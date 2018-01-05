@@ -9,6 +9,7 @@ Updated Chartboost ads.
 Updated Facebook ads.  
 Updated Flurry ads.  
 Updated HyprMX ads.  
+Updated InMobi ads.  
 Updated IronSource to set mediation type.  
 
 ## [1.6.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.6.1) (2017-11-27)
