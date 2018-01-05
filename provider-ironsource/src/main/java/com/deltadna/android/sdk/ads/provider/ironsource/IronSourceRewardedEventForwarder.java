@@ -95,6 +95,12 @@ final class IronSourceRewardedEventForwarder implements RewardedVideoListener {
     }
     
     @Override
+    public void onRewardedVideoAdClicked(Placement placement) {
+        Log.d(BuildConfig.LOG_TAG, "Rewarded video ad clicked: " + placement);
+        if (listener != null) listener.onAdClicked(adapter);
+    }
+    
+    @Override
     public void onRewardedVideoAdEnded() {
         Log.d(BuildConfig.LOG_TAG, "Rewarded video ad ended");
     }
@@ -114,7 +120,7 @@ final class IronSourceRewardedEventForwarder implements RewardedVideoListener {
     
     @Override
     public void onRewardedVideoAdRewarded(Placement placement) {
-        Log.d(BuildConfig.LOG_TAG, "Rewarded video ad rewarded");
+        Log.d(BuildConfig.LOG_TAG, "Rewarded video ad rewarded: " + placement);
         complete = true;
     }
 }
