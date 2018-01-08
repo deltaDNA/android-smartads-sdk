@@ -12,6 +12,7 @@ Updated HyprMX ads.
 Updated InMobi ads.  
 Updated IronSource ads.  
 Updated MoPub ads.  
+Updated Tapjoy ads.  
 Updated Unity ads.  
 Updated Vungle ads.  
 Updated IronSource to set mediation type.  
