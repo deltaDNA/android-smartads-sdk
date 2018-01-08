@@ -337,7 +337,9 @@ class AdProviderTest {
     fun moPub() {
         with(MOPUB.createAdapter(
                 1, 2, 3, 4,
-                JSONObject().put("adUnitId", "adUnitId"))) {
+                JSONObject()
+                        .put("adUnitId", "adUnitId")
+                        .put("testMode", true))) {
             assertThat(this).isInstanceOf(MoPubAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(MOPUB.version())
             assertThat(this.javaClass.name).isEqualTo(MOPUB.cls)

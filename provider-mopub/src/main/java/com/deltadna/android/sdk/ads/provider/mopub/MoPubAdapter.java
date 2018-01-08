@@ -29,6 +29,7 @@ import org.json.JSONObject;
 public final class MoPubAdapter extends MediationAdapter {
     
     private final String adUnitId;
+    private final boolean testMode;
     
     private MoPubInterstitial interstitial;
     
@@ -36,11 +37,13 @@ public final class MoPubAdapter extends MediationAdapter {
             int eCPM,
             int demoteOnCode,
             int waterfallIndex,
-            String adUnitId) {
+            String adUnitId,
+            boolean testMode) {
         
         super(eCPM, demoteOnCode, waterfallIndex);
         
         this.adUnitId = adUnitId;
+        this.testMode = testMode;
     }
     
     @Override
@@ -50,6 +53,7 @@ public final class MoPubAdapter extends MediationAdapter {
             public void run() {
                 try {
                     interstitial = new MoPubInterstitial(activity, adUnitId);
+                    interstitial.setTesting(testMode);
                     interstitial.setInterstitialAdListener(new MoPubEventForwarder(listener, MoPubAdapter.this));
                 } catch (Exception e) {
                     Log.w(BuildConfig.LOG_TAG, "Failed to initialise", e);

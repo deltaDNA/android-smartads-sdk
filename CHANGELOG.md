@@ -30,6 +30,7 @@ Updated Flurry ads.
 Updated InMobi ads.  
 Updated IronSource ads.  
 Updated MobFox ads.  
+Updated MoPub ads.  
 Updated Unity ads.  
 Updated Vungle ads.  
 Updated build and runtime dependencies.  

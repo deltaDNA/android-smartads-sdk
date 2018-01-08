@@ -262,7 +262,8 @@ class IntegrationActivity : AppCompatActivity() {
                         0,
                         0,
                         0,
-                        BuildConfig.MOPUB_AD_UNIT_ID),
+                        BuildConfig.MOPUB_AD_UNIT_ID,
+                        true),
                 TapjoyAdapter(
                         0,
                         0,
