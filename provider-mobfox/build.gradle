@@ -26,6 +26,7 @@ dependencies {
     
     implementation files("libs/MobFox-Android-SDK-Core-${PROVIDER_VERSION}.jar")
     implementation 'com.danikula:videocache:2.7.0'
+    implementation "com.deltadna.android:MAT-moat-mobile-app-kit:${PROVIDER_VERSION}"
     
     // needed for advertising id retrieval
     implementation "com.google.android.gms:play-services-basement:$playServicesVersion"

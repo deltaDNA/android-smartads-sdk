@@ -23,8 +23,8 @@ limitations under the License.
     <uses-permission android:name="android.permission.INTERNET"/>
     
     <application>
-        <activity android:name="com.mobfox.sdk.interstitialads.InterstitialActivity" android:hardwareAccelerated="true" />
-        <activity android:name="com.mobfox.sdk.interstitial.InterstitialActivity" android:hardwareAccelerated="true"/>
-        <service android:name="com.mobfox.sdk.services.MobFoxService" android:launchMode="singleTop" />
+        <activity android:name="com.mobfox.sdk.interstitialads.InterstitialActivity" android:hardwareAccelerated="true"/>
+        <activity android:name="com.mobfox.sdk.interstitial.InterstitialActivity" android:hardwareAccelerated="true" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+        <service android:name="com.mobfox.sdk.services.MobFoxService" android:launchMode="singleTop"/>
     </application>
 </manifest>

@@ -11,6 +11,7 @@ Updated Flurry ads.
 Updated HyprMX ads.  
 Updated InMobi ads.  
 Updated IronSource ads.  
+Updated MobFox ads.  
 Updated MoPub ads.  
 Updated Tapjoy ads.  
 Updated Unity ads.  
