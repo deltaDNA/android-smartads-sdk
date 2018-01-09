@@ -4,6 +4,7 @@
 Added MachineZone ads.  
 Updated build tools and runtime libraries.  
 Updated AdColony ads  
+Updated AdMob ads.  
 Updated AppLovin ads.  
 Updated Chartboost ads.  
 Updated Facebook ads.  

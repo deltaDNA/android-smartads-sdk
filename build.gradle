@@ -18,7 +18,7 @@ buildscript {
     ext {
         kotlinVersion = '1.2.10'
         multidexVersion = '1.0.1'
-        playServicesVersion = '11.4.2'
+        playServicesVersion = '11.8.0'
         supportVersion = '26.1.0'
         
         logTagName  = 'LOG_TAG'
