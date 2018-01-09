@@ -1,8 +1,8 @@
 # Change Log
 
-## [1.7.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.7.0) (YYYY-MM-DD)
+## [1.7.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.7.0) (2018-01-24)
 Added MachineZone ads.  
-Added debug diagnostics addon.  
+Added debug diagnostics library.  
 Updated build tools and runtime libraries.  
 Updated analytics library.  
 Updated AdColony ads  
