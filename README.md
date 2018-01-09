@@ -30,6 +30,8 @@ allprojects {
     repositories {
         maven { url 'http://deltadna.bintray.com/android' }
         maven { url 'https://raw.githubusercontent.com/HyprMXMobile/Android-SDKs/master' }
+        maven { url 'https://s3.amazonaws.com/moat-sdk-builds' }
+        maven { url 'https://tapjoy.bintray.com/maven' }
         // repositories for your other dependencies...
     }
 }
@@ -163,6 +165,7 @@ Can be found [here](CHANGELOG.md).
 ## Migrations
 * [Version 1.1](docs/migrations/1.1.md)
 * [Version 1.2](docs/migrations/1.2.md)
+* [Version 1.7](docs/migrations/1.7.md)
 
 ## License
 The sources are available under the Apache 2.0 license.
