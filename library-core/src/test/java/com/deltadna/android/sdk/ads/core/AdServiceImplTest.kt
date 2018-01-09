@@ -268,7 +268,7 @@ class AdServiceImplTest {
                     eq("SmartAds v${BuildConfig.VERSION_NAME}"),
                     any())
             
-            uut.init(decisionPoint)
+            uut.init(false, decisionPoint)
         }
         
         block.invoke(uut)
