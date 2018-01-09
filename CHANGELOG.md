@@ -4,6 +4,7 @@
 Added MachineZone ads.  
 Added debug diagnostics addon.  
 Updated build tools and runtime libraries.  
+Updated analytics library.  
 Updated AdColony ads  
 Updated AdMob ads.  
 Updated AppLovin ads.  
