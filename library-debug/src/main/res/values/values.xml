@@ -19,8 +19,8 @@ limitations under the License.
     <string name="ddna_channel_name">deltaDNA Debug</string>
     <string name="ddna_title">deltaDNA SmartAds</string>
     <string name="ddna_session_updated">Session updated</string>
-    <string name="ddna_loaded">Loaded %s ad from %s</string>
-    <string name="ddna_showing">Showing %s ad from %s</string>
-    <string name="ddna_shown">Shown %s ad from %s</string>
-    <string name="ddna_shown_and_loaded">Shown %s ad from %s and loaded ad from %s</string>
+    <string name="ddna_loaded" formatted="false">Loaded %s ad from %s</string>
+    <string name="ddna_showing" formatted="false">Showing %s ad from %s</string>
+    <string name="ddna_shown" formatted="false">Shown %s ad from %s</string>
+    <string name="ddna_shown_and_loaded" formatted="false">Shown %s ad from %s and loaded ad from %s</string>
 </resources>
