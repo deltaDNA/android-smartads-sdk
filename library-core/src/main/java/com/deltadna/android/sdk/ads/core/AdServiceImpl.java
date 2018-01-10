@@ -128,17 +128,18 @@ final class AdServiceImpl implements AdService {
     }
     
     @Override
-    public void init(boolean sessionUpdated, String decisionPoint) {
+    public void registerForAds(String decisionPoint) {
         Log.d(  BuildConfig.LOG_TAG,
                 "Initialising AdService version " + VERSION);
         
         this.decisionPoint = decisionPoint;
         
         requestAdConfiguration();
-        
-        if (sessionUpdated) {
-            broadcasts.sendBroadcast(new Intent(Actions.SESSION_UPDATED));
-        }
+    }
+    
+    @Override
+    public void onSessionUpdated() {
+        broadcasts.sendBroadcast(new Intent(Actions.SESSION_UPDATED));
     }
     
     @Override

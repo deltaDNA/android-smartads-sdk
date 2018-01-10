@@ -23,7 +23,8 @@ import org.json.JSONObject;
 @UnityInterOp
 public interface AdService {
     
-    void init(boolean sessionUpdated, String decisionPoint);
+    void registerForAds(String decisionPoint);
+    void onSessionUpdated();
     
     boolean isInterstitialAdAllowed(
             @Nullable String decisionPoint,

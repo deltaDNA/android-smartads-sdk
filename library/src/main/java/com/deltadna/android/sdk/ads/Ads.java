@@ -80,8 +80,8 @@ class Ads implements AdServiceListener, SessionListener {
         rewardedListener = new WeakReference<>(listener);
     }
     
-    void registerForAds(boolean sessionUpdated) {
-        service.init(sessionUpdated, DECISION_POINT);
+    void registerForAds() {
+        service.registerForAds(DECISION_POINT);
     }
     
     boolean isInterstitialAdAllowed(@Nullable Engagement engagement) {
@@ -269,7 +269,8 @@ class Ads implements AdServiceListener, SessionListener {
     
     @Override
     public void onSessionUpdated() {
-        registerForAds(true);
+        registerForAds();
+        service.onSessionUpdated();
     }
     
     private <T> void on(WeakReference<T> reference, WeakAction<T> action) {

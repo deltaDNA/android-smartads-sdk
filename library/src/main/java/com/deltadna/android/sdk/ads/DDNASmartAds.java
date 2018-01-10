@@ -71,7 +71,7 @@ public final class DDNASmartAds {
         }
         
         ads.setAdRegistrationListener(registrationListener.get());
-        ads.registerForAds(false);
+        ads.registerForAds();
     }
     
     /**
