@@ -116,6 +116,7 @@ android {
 
 dependencies {
     implementation project(':library')
+    debugImplementation project(':library-debug')
     
     all_Implementation project(':provider-adcolony')
     all_Implementation project(':provider-admob')
