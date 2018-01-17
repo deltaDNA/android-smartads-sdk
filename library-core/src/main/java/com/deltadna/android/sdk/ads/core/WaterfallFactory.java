@@ -50,7 +50,7 @@ final class WaterfallFactory {
                 Log.w(BuildConfig.LOG_TAG,
                         String.format(
                                 Locale.US,
-                                "Failed to find ad provider at index %d",
+                                "Failed to find ad network at index %d",
                                 i),
                         e);
                 continue;
@@ -58,7 +58,7 @@ final class WaterfallFactory {
             
             if (!provider.present()) {
                 Log.d(BuildConfig.LOG_TAG,
-                        "Ad provider " + provider + " is not present");
+                        "Ad network " + provider + " is not built into app");
                 continue;
             }
             
@@ -72,14 +72,14 @@ final class WaterfallFactory {
                             i,
                             config));
                     
-                    Log.d(BuildConfig.LOG_TAG, "Added ad provider " + provider);
+                    Log.d(BuildConfig.LOG_TAG, "Added ad network " + provider);
                 } else {
                     Log.d(BuildConfig.LOG_TAG,
-                            "Ad provider " + provider + " not being added as eCPM < adFloorPrice");
+                            "Ad network " + provider + " not being added as eCPM < adFloorPrice");
                 }
             } catch (JSONException e) {
                 Log.w(BuildConfig.LOG_TAG,
-                        "Failed to build adapter for ad provider " + provider,
+                        "Failed to build adapter for ad network " + provider,
                         e);
             }
         }
