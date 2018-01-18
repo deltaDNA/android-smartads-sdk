@@ -609,12 +609,12 @@ final class AdServiceImpl implements AdService {
             
             if (!result.has("parameters")) {
                 Log.w(  BuildConfig.LOG_TAG,
-                        "Invalid Engage response, missing 'parameters' key");
+                        "No configuration returned by Engage due to missing 'parameters' key");
                 
                 broadcasts.sendBroadcast(
                         new Intent(Actions.FAILED_TO_REGISTER).putExtra(
                                 Actions.REASON,
-                                "Missing parameters key in Engage response"));
+                                "No configuration returned by Engage due to missing 'parameters' key"));
                 scheduleConfigurationRequest();
                 
                 return;
@@ -666,17 +666,17 @@ final class AdServiceImpl implements AdService {
                         AdProviderType.INTERSTITIAL);
                 
                 if (waterfall.adapters.isEmpty()) {
-                    Log.w(BuildConfig.LOG_TAG, "Interstitial adapters empty");
+                    Log.w(BuildConfig.LOG_TAG, "No interstitial ad networks enabled");
                     
                     listener.onFailedToRegisterForInterstitialAds(
-                            "Invalid ad configuration");
+                            "No interstitial ad networks enabled");
                     broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
                             .putExtra(
                                     Actions.AGENT,
                                     Actions.Agent.INTERSTITIAL)
                             .putExtra(
                                     Actions.REASON,
-                                    "Invalid interstitial ad configuration"));
+                                    "No interstitial ad networks enabled"));
                 } else {
                     interstitialAgent = new AdAgent(
                             adAgentListeners,
@@ -689,7 +689,7 @@ final class AdServiceImpl implements AdService {
                 }
             } else {
                 listener.onFailedToRegisterForInterstitialAds(
-                        "No interstitial ad providers defined");
+                        "No interstitial ad networks configured");
                 broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
                         .putExtra(
                                 Actions.AGENT,
@@ -710,17 +710,17 @@ final class AdServiceImpl implements AdService {
                         AdProviderType.REWARDED);
                 
                 if (waterfall.adapters.isEmpty()) {
-                    Log.w(BuildConfig.LOG_TAG, "Rewarded adapters empty");
+                    Log.w(BuildConfig.LOG_TAG, "No rewarded ad networks enabled");
                     
                     listener.onFailedToRegisterForRewardedAds(
-                            "Invalid ad configuration");
+                            "No rewarded ad networks enabled");
                     broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
                             .putExtra(
                                     Actions.AGENT,
                                     Actions.Agent.REWARDED)
                             .putExtra(
                                     Actions.REASON,
-                                    "Invalid rewarded ad configuration"));
+                                    "No rewarded ad networks enabled"));
                 } else {
                     rewardedAgent = new AdAgent(
                             adAgentListeners,
@@ -733,14 +733,14 @@ final class AdServiceImpl implements AdService {
                 }
             } else {
                 listener.onFailedToRegisterForRewardedAds(
-                        "No rewarded ad providers defined");
+                        "No rewarded ad networks configured");
                 broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
                         .putExtra(
                                 Actions.AGENT,
                                 Actions.Agent.REWARDED)
                         .putExtra(
                                 Actions.REASON,
-                                "No rewarded ad providers defined"));
+                                "No rewarded ad networks configured"));
             }
         }
         
