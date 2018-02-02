@@ -17,6 +17,7 @@
 package com.deltadna.android.sdk.ads;
 
 import android.app.Activity;
+import android.app.Application;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -28,23 +29,40 @@ import com.deltadna.android.sdk.ads.core.AdService;
 import com.deltadna.android.sdk.ads.core.AdServiceListener;
 import com.deltadna.android.sdk.ads.core.AdServiceWrapper;
 import com.deltadna.android.sdk.ads.core.EngagementListener;
+import com.deltadna.android.sdk.ads.exceptions.EngagementFailureException;
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
 import com.deltadna.android.sdk.ads.listeners.InterstitialAdsListener;
 import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener;
-import com.deltadna.android.sdk.ads.exceptions.EngagementFailureException;
 import com.deltadna.android.sdk.listeners.EngageListener;
-import com.deltadna.android.sdk.listeners.SessionListener;
+import com.deltadna.android.sdk.listeners.EventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
-class Ads implements AdServiceListener, SessionListener {
+class Ads implements
+        AdServiceListener,
+        EventListener,
+        ActivityCatcher.LifecycleCallbacks {
     
     private static final String DECISION_POINT = "advertising";
     
-    private final AdService service;
+    private final Runnable serviceCreator = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(BuildConfig.LOG_TAG, "Creating service");
+            service = AdServiceWrapper.create(
+                    catcher.getActivity(),
+                    Ads.this,
+                    BuildConfig.VERSION_NAME);
+        }
+    };
+    
+    private final ActivityCatcher catcher;
+    
+    @Nullable
+    private AdService service;
     
     private WeakReference<AdRegistrationListener> registrationListener =
             new WeakReference<>(null);
@@ -53,13 +71,15 @@ class Ads implements AdServiceListener, SessionListener {
     private WeakReference<RewardedAdsListener> rewardedListener =
             new WeakReference<>(null);
     
-    Ads(Activity activity) {
-        service = AdServiceWrapper.create(
-                activity,
-                this,
-                BuildConfig.VERSION_NAME);
+    Ads(Application application, @Nullable Class<? extends Activity> activity) {
+        if (activity != null) {
+            catcher = new ConcreteActivityCatcher(this, activity);
+        } else {
+            catcher = new DynamicActivityCatcher(this);
+        }
         
         DDNA.instance().register(this);
+        application.registerActivityLifecycleCallbacks(catcher);
     }
     
     void setAdRegistrationListener(
@@ -80,11 +100,12 @@ class Ads implements AdServiceListener, SessionListener {
         rewardedListener = new WeakReference<>(listener);
     }
     
-    void registerForAds() {
-        service.registerForAds(DECISION_POINT);
-    }
-    
     boolean isInterstitialAdAllowed(@Nullable Engagement engagement) {
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+            return false;
+        }
+        
         return service.isInterstitialAdAllowed(
                 (engagement == null) ? null : engagement.getDecisionPoint(),
                 (engagement == null || engagement.getJson() == null)
@@ -93,6 +114,11 @@ class Ads implements AdServiceListener, SessionListener {
     }
     
     boolean isRewardedAdAllowed(@Nullable Engagement engagement) {
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+            return false;
+        }
+        
         return service.isRewardedAdAllowed(
                 (engagement == null) ? null : engagement.getDecisionPoint(),
                 (engagement == null || engagement.getJson() == null)
@@ -101,36 +127,42 @@ class Ads implements AdServiceListener, SessionListener {
     }
     
     boolean isInterstitialAdAvailable() {
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+            return false;
+        }
+        
         return service.isInterstitialAdAvailable();
     }
     
     boolean isRewardedAdAvailable() {
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+            return false;
+        }
+        
         return service.isRewardedAdAvailable();
     }
     
     void showInterstitialAd(@Nullable String adPoint) {
-        service.showInterstitialAd(adPoint);
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+        } else {
+            service.showInterstitialAd(adPoint);
+        }
     }
     
     void showRewardedAd(@Nullable String adPoint) {
-        service.showRewardedAd(adPoint);
-    }
-    
-    void onPause() {
-        service.onPause();
-    }
-    
-    void onResume() {
-        service.onResume();
-    }
-    
-    void onDestroy() {
-        service.onDestroy();
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+        } else {
+            service.showRewardedAd(adPoint);
+        }
     }
     
     @Override
     public void onRegisteredForInterstitialAds() {
-        on(registrationListener, new WeakAction<AdRegistrationListener>() {
+        on(registrationListener, new Action<AdRegistrationListener>() {
             @Override
             public void perform(AdRegistrationListener item) {
                 item.onRegisteredForInterstitial();
@@ -140,7 +172,7 @@ class Ads implements AdServiceListener, SessionListener {
     
     @Override
     public void onFailedToRegisterForInterstitialAds(final String reason) {
-        on(registrationListener, new WeakAction<AdRegistrationListener>() {
+        on(registrationListener, new Action<AdRegistrationListener>() {
             @Override
             public void perform(AdRegistrationListener item) {
                 item.onFailedToRegisterForInterstitial(reason);
@@ -150,7 +182,7 @@ class Ads implements AdServiceListener, SessionListener {
     
     @Override
     public void onRegisteredForRewardedAds() {
-        on(registrationListener, new WeakAction<AdRegistrationListener>() {
+        on(registrationListener, new Action<AdRegistrationListener>() {
             @Override
             public void perform(AdRegistrationListener item) {
                 item.onRegisteredForRewarded();
@@ -160,7 +192,7 @@ class Ads implements AdServiceListener, SessionListener {
     
     @Override
     public void onFailedToRegisterForRewardedAds(final String reason) {
-        on(registrationListener, new WeakAction<AdRegistrationListener>() {
+        on(registrationListener, new Action<AdRegistrationListener>() {
             @Override
             public void perform(AdRegistrationListener item) {
                 item.onFailedToRegisterForRewarded(reason);
@@ -170,7 +202,7 @@ class Ads implements AdServiceListener, SessionListener {
     
     @Override
     public void onInterstitialAdOpened() {
-        on(interstitialListener, new WeakAction<InterstitialAdsListener>() {
+        on(interstitialListener, new Action<InterstitialAdsListener>() {
             @Override
             public void perform(InterstitialAdsListener item) {
                 item.onOpened();
@@ -180,7 +212,7 @@ class Ads implements AdServiceListener, SessionListener {
     
     @Override
     public void onInterstitialAdFailedToOpen(final String reason) {
-        on(interstitialListener, new WeakAction<InterstitialAdsListener>() {
+        on(interstitialListener, new Action<InterstitialAdsListener>() {
             @Override
             public void perform(InterstitialAdsListener item) {
                 item.onFailedToOpen(reason);
@@ -190,7 +222,7 @@ class Ads implements AdServiceListener, SessionListener {
     
     @Override
     public void onInterstitialAdClosed() {
-        on(interstitialListener, new WeakAction<InterstitialAdsListener>() {
+        on(interstitialListener, new Action<InterstitialAdsListener>() {
             @Override
             public void perform(InterstitialAdsListener item) {
                 item.onClosed();
@@ -200,7 +232,7 @@ class Ads implements AdServiceListener, SessionListener {
     
     @Override
     public void onRewardedAdOpened() {
-        on(rewardedListener, new WeakAction<RewardedAdsListener>() {
+        on(rewardedListener, new Action<RewardedAdsListener>() {
             @Override
             public void perform(RewardedAdsListener item) {
                 item.onOpened();
@@ -210,7 +242,7 @@ class Ads implements AdServiceListener, SessionListener {
     
     @Override
     public void onRewardedAdFailedToOpen(final String reason) {
-        on(rewardedListener, new WeakAction<RewardedAdsListener>() {
+        on(rewardedListener, new Action<RewardedAdsListener>() {
             @Override
             public void perform(RewardedAdsListener item) {
                 item.onFailedToOpen(reason);
@@ -220,7 +252,7 @@ class Ads implements AdServiceListener, SessionListener {
     
     @Override
     public void onRewardedAdClosed(final boolean completed) {
-        on(rewardedListener, new WeakAction<RewardedAdsListener>() {
+        on(rewardedListener, new Action<RewardedAdsListener>() {
             @Override
             public void perform(RewardedAdsListener item) {
                 item.onClosed(completed);
@@ -268,19 +300,77 @@ class Ads implements AdServiceListener, SessionListener {
     }
     
     @Override
-    public void onSessionUpdated() {
-        registerForAds();
-        service.onSessionUpdated();
+    public void onStarted() {
+        Log.d(BuildConfig.LOG_TAG, "Received onStarted event");
+        catcher.onAnalyticsStarted();
+        
+        if (service == null) {
+            if (catcher.getActivity() != null) {
+                serviceCreator.run();
+                service.registerForAds(DECISION_POINT);
+            } else {
+                Log.w(BuildConfig.LOG_TAG, "Activity has not been captured");
+            }
+        }
     }
     
-    private <T> void on(WeakReference<T> reference, WeakAction<T> action) {
+    @Override
+    public void onStopped() {
+        Log.d(BuildConfig.LOG_TAG, "Received onStopped event");
+        catcher.onAnalyticsStopped();
+        
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+        } else {
+            service.onDestroy();
+        }
+    }
+    
+    @Override
+    public void onNewSession() {
+        Log.d(BuildConfig.LOG_TAG, "Received onNewSession event");
+        
+        if (service == null) {
+            if (catcher.getActivity() != null) {
+                serviceCreator.run();
+            } else {
+                // may happen on first-time analytics creation
+                Log.w(BuildConfig.LOG_TAG, "Activity has not been captured");
+            }
+        }
+        
+        if (service != null) {
+            service.registerForAds(DECISION_POINT);
+            service.onNewSession();
+        }
+    }
+    
+    @Override
+    public void onResumed() {
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+        } else {
+            service.onResume();
+        }
+    }
+    
+    @Override
+    public void onPaused() {
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+        } else {
+            service.onPause();
+        }
+    }
+    
+    private <T> void on(WeakReference<T> reference, Action<T> action) {
         final T item = reference.get();
         if (item != null) {
             action.perform(item);
         }
     }
     
-    private interface WeakAction<T> {
+    private interface Action<T> {
         
         void perform(T item);
     }

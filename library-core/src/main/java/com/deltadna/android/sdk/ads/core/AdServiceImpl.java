@@ -83,6 +83,9 @@ final class AdServiceImpl implements AdService {
         Preconditions.checkArg(activity != null, "activity cannot be null");
         Preconditions.checkArg(listener != null, "listener cannot be null");
         
+        Log.d(  BuildConfig.LOG_TAG,
+                "Initialising AdService version " + VERSION);
+        
         String version = "";
         int versionCode = -1;
         try {
@@ -96,7 +99,7 @@ final class AdServiceImpl implements AdService {
             Log.w(BuildConfig.LOG_TAG, "Failed to read app versions", e);
         }
         exceptionHandler = new ExceptionHandler(
-                activity,
+                activity.getApplicationContext(),
                 version,
                 versionCode,
                 sdkVersion,
@@ -106,7 +109,7 @@ final class AdServiceImpl implements AdService {
         this.activity = activity;
         this.listener = MainThread.redirect(listener, AdServiceListener.class);
         
-        broadcasts = LocalBroadcastManager.getInstance(activity);
+        broadcasts = LocalBroadcastManager.getInstance(activity.getApplicationContext());
         adAgentListeners = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                 new AgentListener(),
                 new Broadcaster())));
@@ -130,7 +133,7 @@ final class AdServiceImpl implements AdService {
     @Override
     public void registerForAds(String decisionPoint) {
         Log.d(  BuildConfig.LOG_TAG,
-                "Initialising AdService version " + VERSION);
+                "Registering for ads with decision point " + decisionPoint);
         
         this.decisionPoint = decisionPoint;
         
@@ -138,7 +141,7 @@ final class AdServiceImpl implements AdService {
     }
     
     @Override
-    public void onSessionUpdated() {
+    public void onNewSession() {
         broadcasts.sendBroadcast(new Intent(Actions.SESSION_UPDATED));
     }
     

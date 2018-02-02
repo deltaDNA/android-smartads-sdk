@@ -67,41 +67,32 @@ Any combination of the above ad providers can be defined in your build script, d
 Please note that the versions used for SmartAds and the providers should be the same. We cannot guarantee that an ad provider will work correctly if there is a version mismatch.
 
 ## Initialising
-An instance can be retrieved by calling `DDNASmartAds.instance()`, and registering for ads can be done through the `registerForAds(Activity)` method. The analytics SDK should be initialised and started before registering for ads.
+The SDK needs to be initialised in an `Application` subclass:
 ```java
-@Override
-public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+public class MyApplication extends Application {
     
-    DDNA.instance().startSdk();
-    DDNASmartAds.instance().registerForAds(this);
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        
+        // initialise the Analytics SDK
+        DDNA.initialise(...);
+        
+        // initialise the SmartAds SDK after Analytics
+        DDNASmartAds.initialise(new DDNASmartAds.Configuration(this));
+    }
 }
 ```
 
-SmartAds should be notified of when your `Activity` is resumed, paused, and destroyed by overriding the lifecycle methods and calling the appropriate methods on `DDNASmartAds`.
-```java
-@Override
-public void onResume() {
-    super.onResume();
-    
-    DDNASmartAds.instance().onResume();
-}
-
-@Override
-public void onPause() {
-    super.onPause();
-    
-    DDNASmartAds.instance().onPause();
-}
-
-@Override
-public void onDestroy() {
-    DDNASmartAds.instance().onDestroy();
-    DDNA.instance().stopSdk();
-    
-    super.onDestroy();
-}
+The class needs to be registered in the manifest file:
+```xml
+<application
+    android:name=".MyApplication"
+    ...>
+</application>
 ```
+
+After the `initialise()` call the SDK will be available throughout the entire lifecycle of the application by calling `DDNASmartAds.instance()`. The SDK will automatically register for ads and forward lifecycle callbacks after the Analytics SDK has been started.
 
 Listening to the registration status for interstitial and rewarded ads can be done by using the `setAdRegistrationListener(AdRegistrationListener)` method.
 ```java
@@ -177,6 +168,7 @@ Can be found [here](CHANGELOG.md).
 * [Version 1.1](docs/migrations/1.1.md)
 * [Version 1.2](docs/migrations/1.2.md)
 * [Version 1.7](docs/migrations/1.7.md)
+* [Version 1.8](docs/migrations/1.8.md)
 
 ## License
 The sources are available under the Apache 2.0 license.
