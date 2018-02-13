@@ -85,7 +85,8 @@ subprojects {
             versionName VERSION_NAME
             
             if (isProvider) {
-                buildConfigField('String', logTagName, "\"$logTagValue $PROVIDER_NAME\"")
+                def logTagValue = "$logTagValue $PROVIDER_NAME".take(23)
+                buildConfigField('String', logTagName, "\"$logTagValue\"")
                 
                 buildConfigField('String', 'PROVIDER_NAME', "\"${PROVIDER_NAME.toUpperCase()}\"")
                 buildConfigField('String', 'PROVIDER_VERSION', "\"$PROVIDER_VERSION\"")
