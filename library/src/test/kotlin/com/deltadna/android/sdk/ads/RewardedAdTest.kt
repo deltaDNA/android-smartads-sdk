@@ -16,6 +16,7 @@
 
 package com.deltadna.android.sdk.ads
 
+import com.deltadna.android.sdk.DDNA
 import com.deltadna.android.sdk.Engagement
 import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener
 import com.github.salomonbrys.kotson.jsonObject
@@ -26,15 +27,20 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 
-@RunWith(MockitoJUnitRunner::class)
+@RunWith(RobolectricTestRunner::class)
 class RewardedAdTest {
+    
+    private val app = RuntimeEnvironment.application
     
     private val ads = mock<Ads>()
     
     @Before
     fun before() {
+        DDNA.initialise(DDNA.Configuration(app, "envKey", "collUrl", "engUrl"))
+        DDNASmartAds.initialise(DDNASmartAds.Configuration(app))
         DDNASmartAds.instance().inject(ads)
     }
     
