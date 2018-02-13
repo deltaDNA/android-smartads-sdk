@@ -43,8 +43,8 @@ limitations under the License.
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/register_for_ads"
-            android:onClick="onRegisterForAds"/>
+            android:text="@string/new_session"
+            android:onClick="onNewSession"/>
         
         <Button
             android:id="@+id/show_interstitial_ad"

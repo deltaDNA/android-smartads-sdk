@@ -47,32 +47,16 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
         
         setContentView(R.layout.activity_example);
         
-        DDNA.instance().startSdk();
-        
         DDNASmartAds.instance().setAdRegistrationListener(this);
-        DDNASmartAds.instance().registerForAds(this);
+        
+        DDNA.instance().startSdk();
         
         ((TextView) findViewById(R.id.user_id)).setText(getString(
                 R.string.user_id, DDNA.instance().getUserId()));
     }
     
     @Override
-    protected void onPause() {
-        DDNASmartAds.instance().onPause();
-        
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        
-        DDNASmartAds.instance().onResume();
-    }
-    
-    @Override
     protected void onDestroy() {
-        DDNASmartAds.instance().onDestroy();
         DDNA.instance().stopSdk();
         
         super.onDestroy();
@@ -114,8 +98,8 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
     
     // view callbacks
     
-    public void onRegisterForAds(View view) {
-        DDNASmartAds.instance().registerForAds(this);
+    public void onNewSession(View view) {
+        DDNA.instance().newSession();
     }
     
     public void onShowInterstitialAd(View view) {

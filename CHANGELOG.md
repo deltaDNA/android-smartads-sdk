@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.8.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.8.0) (YYYY-MM-DD)
+Added automatic registration for ads.  
+Added automatic lifecycle callback forwarding.  
+
 ## [1.7.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.7.0) (2018-01-24)
 Added MachineZone ads.  
 Added debug diagnostics library.  

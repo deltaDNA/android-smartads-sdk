@@ -17,11 +17,13 @@
 package com.deltadna.android.sdk.ads;
 
 import android.app.Activity;
+import android.app.Application;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.deltadna.android.sdk.ads.core.utils.Preconditions;
+import com.deltadna.android.sdk.ads.exceptions.NotInitialisedException;
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Singleton class for accessing the deltaDNA SmartAds SDK.
@@ -40,21 +42,44 @@ public final class DDNASmartAds {
     
     private static DDNASmartAds instance = null;
     
-    @Nullable
-    private Ads ads;
-    
-    private WeakReference<AdRegistrationListener> registrationListener =
-            new WeakReference<>(null);
+    private final Ads ads;
     
     /**
-     * Returns the {@link DDNASmartAds} singleton instance, initialising it if
-     * called the first time.
+     * Initialises the {@link DDNASmartAds} singleton instance.
+     *
+     * @param configuration the configuration
      *
      * @return singleton instance
      */
+    public static synchronized DDNASmartAds initialise(
+            Configuration configuration) {
+        
+        Preconditions.checkArg(
+                configuration != null,
+                "configuration cannot be null");
+        
+        if (instance == null) {
+            instance = new DDNASmartAds(
+                    configuration.application,
+                    configuration.activity);
+        } else {
+            Log.w(BuildConfig.LOG_TAG, "SDK has already been initialised");
+        }
+        
+        return instance;
+    }
+    
+    /**
+     * Returns the {@link DDNASmartAds} singleton instance.
+     *
+     * @return singleton instance
+     *
+     * @throws  NotInitialisedException if {@link #initialise(Configuration)}
+     *          has not been called
+     */
     public static synchronized DDNASmartAds instance() {
         if (instance == null) {
-            instance = new DDNASmartAds();
+            throw new NotInitialisedException();
         }
         
         return instance;
@@ -64,15 +89,11 @@ public final class DDNASmartAds {
      * Registers for ads.
      *
      * @param activity the activity to register with ads
+     *
+     * @deprecated as of version 1.8, replaced by automatic registration
      */
-    public void registerForAds(Activity activity) {
-        if (ads == null) {
-            ads = new Ads(activity);
-        }
-        
-        ads.setAdRegistrationListener(registrationListener.get());
-        ads.registerForAds();
-    }
+    @Deprecated
+    public void registerForAds(Activity activity) {}
     
     /**
      * Sets a listener for ad registration status callbacks.
@@ -86,36 +107,72 @@ public final class DDNASmartAds {
     public void setAdRegistrationListener(
             @Nullable AdRegistrationListener listener) {
         
-        registrationListener = new WeakReference<>(listener);
-        
-        if (ads != null) {
-            ads.setAdRegistrationListener(listener);
-        }
+        ads.setAdRegistrationListener(listener);
     }
     
-    public void onPause() {
-        if (ads != null) {
-            ads.onPause();
-        }
-    }
+    /**
+     * @deprecated as of version 1.8, replaced by automatic lifecycle callbacks
+     */
+    @Deprecated
+    public void onPause() {}
     
-    public void onResume() {
-        if (ads != null) {
-            ads.onResume();
-        }
-    }
+    /**
+     * @deprecated as of version 1.8, replaced by automatic lifecycle callbacks
+     */
+    @Deprecated
+    public void onResume() {}
     
-    public void onDestroy() {
-        if (ads != null) {
-            ads.onDestroy();
-            ads = null;
-        }
-    }
+    /**
+     * @deprecated as of version 1.8, replaced by automatic lifecycle callbacks
+     */
+    @Deprecated
+    public void onDestroy() {}
     
-    @Nullable
     Ads getAds() {
         return ads;
     }
     
-    private DDNASmartAds() {}
+    private DDNASmartAds(
+            Application application,
+            @Nullable Class<? extends Activity> activity) {
+        
+        ads = new Ads(application, activity);
+    }
+    
+    /**
+     * Provides a configuration when initialising the SDK through
+     * {@link #initialise(Configuration)} inside of an {@link Application}
+     * class.
+     */
+    public static final class Configuration {
+        
+        private final Application application;
+        
+        @Nullable
+        private Class<? extends Activity> activity;
+        
+        public Configuration(Application application) {
+            Preconditions.checkArg(
+                    application != null,
+                    "application cannot be null");
+            
+            this.application = application;
+        }
+        
+        /**
+         * Sets the {@link Activity} class which is used as the main entry and
+         * exit point for the application.
+         * <p>
+         * This method should be used when the SDK fails to register for ads
+         * correctly.
+         *
+         * @param cls the activity class
+         * 
+         * @return this {@link Configuration} instance
+         */
+        public Configuration activity(@Nullable Class<? extends Activity> cls) {
+            activity = cls;
+            return this;
+        }
+    }
 }

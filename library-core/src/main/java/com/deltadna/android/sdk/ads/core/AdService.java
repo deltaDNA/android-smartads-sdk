@@ -24,7 +24,7 @@ import org.json.JSONObject;
 public interface AdService {
     
     void registerForAds(String decisionPoint);
-    void onSessionUpdated();
+    void onNewSession();
     
     boolean isInterstitialAdAllowed(
             @Nullable String decisionPoint,

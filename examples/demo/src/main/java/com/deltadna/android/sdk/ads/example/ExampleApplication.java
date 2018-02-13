@@ -19,6 +19,7 @@ package com.deltadna.android.sdk.ads.example;
 import android.support.multidex.MultiDexApplication;
 
 import com.deltadna.android.sdk.DDNA;
+import com.deltadna.android.sdk.ads.DDNASmartAds;
 
 public class ExampleApplication extends MultiDexApplication {
     
@@ -32,5 +33,6 @@ public class ExampleApplication extends MultiDexApplication {
                 "http://collect3347ndrds.deltadna.net/collect/api",
                 "http://engage3347ndrds.deltadna.net")
                 .clientVersion(BuildConfig.VERSION_NAME));
+        DDNASmartAds.initialise(new DDNASmartAds.Configuration(this));
     }
 }
