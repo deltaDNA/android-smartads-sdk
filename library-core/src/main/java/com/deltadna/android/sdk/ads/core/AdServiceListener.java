@@ -35,7 +35,9 @@ public interface AdServiceListener {
 
     void onInterstitialAdClosed();
 
-    void onRewardedAdOpened();
+    void onRewardedAdLoaded();
+
+    void onRewardedAdOpened(String decisionPoint);
 
     void onRewardedAdFailedToOpen(String reason);
 

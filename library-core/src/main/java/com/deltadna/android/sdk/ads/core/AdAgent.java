@@ -90,7 +90,7 @@ class AdAgent implements MediationListener {
     private long lastRequestEnd;
     
     @Nullable
-    private String adPoint;
+    private String decisionPoint;
     
     AdAgent(Set<AdAgentListener> listeners,
             Waterfall waterfall,
@@ -133,14 +133,15 @@ class AdAgent implements MediationListener {
         requestAd();
     }
     
-    boolean isAdLoaded() {
+    boolean hasLoadedAd() {
         return state == State.LOADED;
     }
     
     @UiThread
-    void showAd(String adPoint) {
-        this.adPoint = adPoint;
-        if (isAdLoaded()) {
+    void showAd(@Nullable String decisionPoint) {
+        this.decisionPoint = decisionPoint;
+        
+        if (hasLoadedAd()) {
             currentAdapter.showAd();
         } else {
             notifyListeners(new Action() {
@@ -168,13 +169,13 @@ class AdAgent implements MediationListener {
         return currentAdapter;
     }
 
-    void setAdPoint(@Nullable String adPoint) {
-        this.adPoint = adPoint;
+    void setDecisionPoint(@Nullable String decisionPoint) {
+        this.decisionPoint = decisionPoint;
     }
     
     @Nullable
-    String getAdPoint() {
-        return adPoint;
+    String getDecisionPoint() {
+        return decisionPoint;
     }
     
     @UiThread
@@ -350,6 +351,9 @@ class AdAgent implements MediationListener {
         if (adapter.equals(currentAdapter)) {
             if (state == State.SHOWING) {
                 Log.d(TAG, "Ad closed for " + adapter);
+                
+                lastShownTime = System.currentTimeMillis();
+                
                 notifyListeners(new Action() {
                     @Override
                     public void perform(AdAgentListener listener) {
@@ -357,7 +361,6 @@ class AdAgent implements MediationListener {
                     }
                 });
                 
-                lastShownTime = System.currentTimeMillis();
                 state = State.READY;
                 
                 changeToNextAdapter(true);

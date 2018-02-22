@@ -18,19 +18,26 @@ package com.deltadna.android.sdk.ads.example;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.deltadna.android.sdk.DDNA;
-import com.deltadna.android.sdk.Engagement;
-import com.deltadna.android.sdk.ImageMessage;
+import com.deltadna.android.sdk.ads.Ad;
+import com.deltadna.android.sdk.EngageFactory;
 import com.deltadna.android.sdk.ads.DDNASmartAds;
 import com.deltadna.android.sdk.ads.InterstitialAd;
 import com.deltadna.android.sdk.ads.RewardedAd;
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
+import com.deltadna.android.sdk.ads.listeners.InterstitialAdsListener;
 import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener;
-import com.deltadna.android.sdk.listeners.EngageListener;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class ExampleActivity extends Activity implements AdRegistrationListener {
     
@@ -38,6 +45,39 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
             BuildConfig.LOG_TAG
             + ' '
             + ExampleActivity.class.getSimpleName();
+    private static final short REFRESH_PERIOD = 500;
+    
+    private final InterstitialListener interstitialListener =
+            new InterstitialListener();
+    private final RewardedListener rewardedListener =
+            new RewardedListener();
+    
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private final Runnable refreshStats = new Runnable() {
+        @Override
+        public void run() {
+            updateStats(interstitialAd, interstitialAdStats);
+            updateStats(rewardedAd1, rewardedAd1Stats);
+            updateStats(rewardedAd2, rewardedAd2Stats);
+            
+            handler.postDelayed(this, REFRESH_PERIOD);
+        }
+    };
+    
+    private TextView interstitialAdMessage;
+    private TextView interstitialAdStats;
+    private TextView rewardedAd1Message;
+    private TextView rewardedAd1Stats;
+    private TextView rewardedAd2Message;
+    private TextView rewardedAd2Stats;
+    
+    private Button interstitialAdButton;
+    private Button rewardedAd1Button;
+    private Button rewardedAd2Button;
+    
+    private InterstitialAd interstitialAd;
+    private RewardedAd rewardedAd1;
+    private RewardedAd rewardedAd2;
     
     // lifecycle methods
     
@@ -47,168 +87,256 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
         
         setContentView(R.layout.activity_example);
         
+        interstitialAdMessage = findViewById(R.id.interstitial_ad_message);
+        interstitialAdStats = findViewById(R.id.interstitial_ad_stats);
+        rewardedAd1Message = findViewById(R.id.rewarded_ad1_message);
+        rewardedAd1Stats = findViewById(R.id.rewarded_ad1_stats);
+        rewardedAd2Message = findViewById(R.id.rewarded_ad2_message);
+        rewardedAd2Stats = findViewById(R.id.rewarded_ad2_stats);
+        
+        interstitialAdButton = findViewById(R.id.interstitial_ad);
+        rewardedAd1Button = findViewById(R.id.rewarded_ad1);
+        rewardedAd2Button = findViewById(R.id.rewarded_ad2);
+        
         DDNASmartAds.instance().setAdRegistrationListener(this);
         
         DDNA.instance().startSdk();
         
         ((TextView) findViewById(R.id.user_id)).setText(getString(
                 R.string.user_id, DDNA.instance().getUserId()));
+        handler.postDelayed(refreshStats, REFRESH_PERIOD);
     }
     
     @Override
     protected void onDestroy() {
+        handler.removeCallbacks(refreshStats);
         DDNA.instance().stopSdk();
         
         super.onDestroy();
+    }
+    
+    // view callbacks
+    
+    public void interstitialAd(View view) {
+        /*
+         * Don't worry about checking if an ad is ready. Trying to show an ad
+         * when you want will give a report of your fill rate.
+         */
+        if (interstitialAd != null) interstitialAd.show();
+    }
+    
+    public void rewardedAd1(View view) {
+        if (rewardedAd1 != null && rewardedAd1.isReady()) {
+            rewardedAd1.show();
+        }
+    }
+    
+    public void rewardedAd2(View view) {
+        if (rewardedAd2 != null && rewardedAd2.isReady()) {
+            rewardedAd2.show();
+        }
+    }
+    
+    public void onNewSession(View view) {
+        interstitialAdButton.setEnabled(false);
+        interstitialAdMessage.setText("");
+        interstitialAdStats.setText("");
+        rewardedAd1Button.setEnabled(false);
+        rewardedAd1Message.setText("");
+        rewardedAd1Stats.setText("");
+        rewardedAd2Button.setEnabled(false);
+        rewardedAd2Message.setText("");
+        rewardedAd2Stats.setText("");
+        
+        DDNA.instance().newSession();
+    }
+    
+    private void updateStats(Ad action, TextView view) {
+        if (action == null) return;
+        
+        final Date lastShown = action.getLastShown();
+        final String lastShownText = (lastShown == null)
+                ? "N/A"
+                : DateFormat.getTimeFormat(this).format(lastShown);
+        final int adShowWaitSecs = (lastShown == null)
+                ? 0
+                : (int) TimeUnit.MILLISECONDS.toSeconds(lastShown.getTime()
+                - new Date().getTime())
+                + action.getAdShowWaitSecs();
+        final String secsText = (adShowWaitSecs == 0)
+                ? ""
+                : " (" + Math.max(0, adShowWaitSecs) + " secs)";
+        
+        view.setText(getString(
+                R.string.stats,
+                action.getSessionCount(),
+                action.getSessionLimit(),
+                action.getDailyCount(),
+                action.getDailyLimit(),
+                lastShownText,
+                secsText));
     }
     
     // ad registration callbacks
     
     @Override
     public void onRegisteredForInterstitial() {
-        Log.d(TAG, "Registered for interstitial ads");
+        Log.i(TAG, "Registered for interstitial ads");
         
-        findViewById(R.id.show_interstitial_ad).setEnabled(true);
-        findViewById(R.id.show_engage_interstitial_ad).setEnabled(true);
+        DDNASmartAds.instance().getEngageFactory().requestInterstitialAd(
+                "interstitialAd",
+                new EngageFactory.Callback<InterstitialAd>() {
+                    @Override
+                    public void onCompleted(InterstitialAd action) {
+                        interstitialAd = action.setListener(interstitialListener);
+                        
+                        interstitialAdButton.setEnabled(true);
+                    }
+                });
     }
     
     @Override
     public void onFailedToRegisterForInterstitial(String reason) {
-        Log.d(TAG, "Failed to register for interstitial ads");
+        Log.i(TAG, "Failed to register for interstitial ads");
         
-        findViewById(R.id.show_interstitial_ad).setEnabled(false);
-        findViewById(R.id.show_engage_interstitial_ad).setEnabled(false);
+        interstitialAdMessage.setText(R.string.failed_to_register_interstitial);
+        interstitialAdButton.setEnabled(false);
+        
+        interstitialAd = null;
     }
     
     @Override
     public void onRegisteredForRewarded() {
-        Log.d(TAG, "Registered for rewarded ads");
+        Log.i(TAG, "Registered for rewarded ads");
         
-        findViewById(R.id.show_rewarded_ad).setEnabled(true);
-        findViewById(R.id.show_engage_rewarded_ad).setEnabled(true);
+        DDNASmartAds.instance().getEngageFactory().requestRewardedAd(
+                "rewardedAd1",
+                new EngageFactory.Callback<RewardedAd>() {
+                    @Override
+                    public void onCompleted(RewardedAd action) {
+                        rewardedAd1 = action.setListener(rewardedListener);
+                        
+                        rewardedAd1Button.setEnabled(true);
+                    }
+                });
+        DDNASmartAds.instance().getEngageFactory().requestRewardedAd(
+                "rewardedAd2",
+                new EngageFactory.Callback<RewardedAd>() {
+                    @Override
+                    public void onCompleted(RewardedAd action) {
+                        rewardedAd2 = action.setListener(rewardedListener);
+                        
+                        rewardedAd2Button.setEnabled(true);
+                    }
+                });
     }
     
     @Override
     public void onFailedToRegisterForRewarded(String reason) {
         Log.d(TAG, "Failed to register for rewarded ads");
         
-        findViewById(R.id.show_rewarded_ad).setEnabled(false);
-        findViewById(R.id.show_engage_rewarded_ad).setEnabled(false);
+        rewardedAd1Message.setText(R.string.failed_to_register_rewarded);
+        rewardedAd2Message.setText(R.string.failed_to_register_rewarded);
+        rewardedAd1Button.setEnabled(false);
+        rewardedAd2Button.setEnabled(false);
+        
+        rewardedAd1 = null;
+        rewardedAd2 = null;
     }
     
-    // view callbacks
-    
-    public void onNewSession(View view) {
-        DDNA.instance().newSession();
-    }
-    
-    public void onShowInterstitialAd(View view) {
-        InterstitialAd ad = InterstitialAd.create();
-        if (ad != null) {
-            ad.show();
-        } else {
-            Log.w(TAG, "Interstitial ad not created");
+    private final class InterstitialListener implements InterstitialAdsListener {
+        
+        @Override
+        public void onOpened(InterstitialAd ad) {
+            Log.i(BuildConfig.LOG_TAG, "On opened " + ad);
+            interstitialAdMessage.setText(R.string.fulfilled);
+        }
+        
+        @Override
+        public void onFailedToOpen(InterstitialAd ad, String reason) {
+            Log.i(  BuildConfig.LOG_TAG,
+                    "On failed to open " + ad + " due to " + reason);
+            interstitialAdMessage.setText(getString(R.string.failed_to_open, reason));
+        }
+        
+        @Override
+        public void onClosed(InterstitialAd ad) {
+            Log.i(BuildConfig.LOG_TAG, "On closed " + ad);
         }
     }
     
-    public void onShowEngageInterstitialAd(View view) {
-        DDNA.instance().requestEngagement(
-                new Engagement("testAdPoint"),
-                new EngageListener<Engagement>() {
-                    @Override
-                    public void onCompleted(Engagement engagement) {
-                        InterstitialAd ad = InterstitialAd.create(engagement);
-                        if (ad != null) {
-                            ad.show();
-                        } else {
-                            Log.d(TAG, "Engage not setup to show ad");
-                        }
-                    }
-                    
-                    @Override
-                    public void onError(Throwable t) {
-                        Log.d(TAG, "Failed to engage", t);
-                    }
-                });
-    }
-    
-    public void onShowRewardedAd(View view) {
-        RewardedAd ad = RewardedAd.create(new RewardedAdsListener() {
-            @Override
-            public void onOpened() {
-                Log.d(TAG, "Rewarded ad opened");
-            }
+    private final class RewardedListener implements RewardedAdsListener {
+        
+        @Override
+        public void onLoaded(RewardedAd ad) {
+            Log.i(BuildConfig.LOG_TAG, "On loaded " + ad);
             
-            @Override
-            public void onFailedToOpen(String reason) {
-                Log.d(TAG, "Rewarded ad failed to open: " + reason);
+            if (ad == rewardedAd1) {
+                rewardedAd1Button.setEnabled(true);
+                rewardedAd1Message.setText(R.string.ready);
+            } else if (ad == rewardedAd2) {
+                rewardedAd2Button.setEnabled(true);
+                rewardedAd2Message.setText(R.string.ready);
             }
-            
-            @Override
-            public void onClosed(boolean completed) {
-                Log.d(TAG, "Rewarded ad closed");
-            }
-        });
-        if (ad != null) {
-            ad.show();
-        } else {
-            Log.w(TAG, "Rewarded ad not created");
         }
-    }
-    
-    public void onShowEngageRewardedAd(View view) {
-        DDNA.instance().requestEngagement(
-                new Engagement("testAdPoint"),
-                new EngageListener<Engagement>() {
-                    @Override
-                    public void onCompleted(Engagement engagement) {
-                        RewardedAd ad = RewardedAd.create(engagement);
-                        if (ad != null) {
-                            ad.show();
-                        } else {
-                            Log.d(TAG, "Engage not setup to show ad");
-                        }
-                    }
-                    
-                    @Override
-                    public void onError(Throwable t) {
-                        Log.d(TAG, "Failed to engage", t);
-                    }
-                });
-    }
-    
-    public void onEngageRewardOrImage(View view) {
-        DDNA.instance().requestEngagement(
-                new Engagement("rewardOrImage"),
-                new EngageListener<Engagement>() {
-                    @Override
-                    public void onCompleted(Engagement engagement) {
-                        RewardedAd reward = RewardedAd.create(engagement);
-                        ImageMessage image = ImageMessage.create(engagement);
-                        
-                        if (image != null) {
-                            image.prepare(new ImageMessage.PrepareListener() {
-                                @Override
-                                public void onPrepared(ImageMessage src) {
-                                    src.show(ExampleActivity.this, 1);
-                                }
-                                
-                                @Override
-                                public void onError(Throwable cause) {
-                                    Log.d(  TAG,
-                                            "Failed to prepare image",
-                                            cause);
-                                }
-                            });
-                        } else if (reward != null) {
-                            reward.show();
-                        }
-                    }
-                    
-                    @Override
-                    public void onError(Throwable t) {
-                        Log.d(TAG, "Failed to engage", t);
-                    }
-                });
+        
+        @Override
+        public void onExpired(RewardedAd ad) {
+            Log.i(BuildConfig.LOG_TAG, "On expired " + ad);
+            
+            if (ad == rewardedAd1) {
+                rewardedAd1Button.setEnabled(false);
+                rewardedAd1Message.setText(R.string.expired);
+            } else if (ad == rewardedAd2) {
+                rewardedAd2Button.setEnabled(false);
+                rewardedAd2Message.setText(R.string.expired);
+            }
+        }
+        
+        @Override
+        public void onOpened(RewardedAd ad) {
+            Log.i(BuildConfig.LOG_TAG, "On opened " + ad);
+            
+            if (ad == rewardedAd1) {
+                rewardedAd1Button.setEnabled(false);
+                rewardedAd1Message.setText(R.string.fulfilled);
+            } else if (ad == rewardedAd2) {
+                rewardedAd2Button.setEnabled(false);
+                rewardedAd2Message.setText(R.string.fulfilled);
+            }
+        }
+        
+        @Override
+        public void onFailedToOpen(RewardedAd ad, String reason) {
+            Log.i(  BuildConfig.LOG_TAG,
+                    "On failed to open " + ad + " due to " + reason);
+            
+            if (ad == rewardedAd1) {
+                rewardedAd1Button.setEnabled(false);
+                rewardedAd1Message.setText(getString(R.string.failed_to_open, reason));
+            } else if (ad == rewardedAd2) {
+                rewardedAd2Button.setEnabled(false);
+                rewardedAd2Message.setText(getString(R.string.failed_to_open, reason));
+            }
+        }
+        
+        @Override
+        public void onClosed(RewardedAd ad, boolean completed) {
+            Log.i(BuildConfig.LOG_TAG, "On closed " + ad + " with " + completed);
+            
+            final String message = completed
+                    ? getString(
+                            R.string.watched,
+                            ad.getRewardAmount(),
+                            ad.getRewardType())
+                    : getString(R.string.skipped);
+            if (ad == rewardedAd1) {
+                rewardedAd1Button.setEnabled(false);
+                rewardedAd1Message.setText(message);
+            } else if (ad == rewardedAd2) {
+                rewardedAd2Button.setEnabled(false);
+                rewardedAd2Message.setText(message);
+            }
+        }
     }
 }

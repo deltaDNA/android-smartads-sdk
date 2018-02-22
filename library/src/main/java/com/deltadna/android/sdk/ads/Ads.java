@@ -31,8 +31,6 @@ import com.deltadna.android.sdk.ads.core.AdServiceWrapper;
 import com.deltadna.android.sdk.ads.core.EngagementListener;
 import com.deltadna.android.sdk.ads.exceptions.EngagementFailureException;
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
-import com.deltadna.android.sdk.ads.listeners.InterstitialAdsListener;
-import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener;
 import com.deltadna.android.sdk.listeners.EngageListener;
 import com.deltadna.android.sdk.listeners.EventListener;
 
@@ -40,6 +38,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.util.Date;
+import java.util.WeakHashMap;
 
 class Ads implements
         AdServiceListener,
@@ -59,6 +59,7 @@ class Ads implements
         }
     };
     
+    private final WeakHashMap<RewardedAd, Void> rewardedAds = new WeakHashMap<>();
     private final ActivityCatcher catcher;
     
     @Nullable
@@ -66,12 +67,11 @@ class Ads implements
     
     private WeakReference<AdRegistrationListener> registrationListener =
             new WeakReference<>(null);
-    private WeakReference<InterstitialAdsListener> interstitialListener =
-            new WeakReference<>(null);
-    private WeakReference<RewardedAdsListener> rewardedListener =
-            new WeakReference<>(null);
     
-    Ads(Application application, @Nullable Class<? extends Activity> activity) {
+    private WeakReference<InterstitialAd> interstitialAd = new WeakReference<>(null);
+    private WeakReference<RewardedAd> rewardedAd = new WeakReference<>(null);
+    
+    Ads(Application application, @Nullable Class<? extends Activity> activity)  {
         if (activity != null) {
             catcher = new ConcreteActivityCatcher(this, activity);
         } else {
@@ -88,75 +88,152 @@ class Ads implements
         registrationListener = new WeakReference<>(listener);
     }
     
-    void setInterstitialAdsListener(
-            @Nullable InterstitialAdsListener listener) {
-        
-        interstitialListener = new WeakReference<>(listener);
+    void setInterstitialAd(@Nullable InterstitialAd ad) {
+        interstitialAd = new WeakReference<>(ad);
     }
     
-    void setRewardedAdsListener(
-            @Nullable RewardedAdsListener listener) {
-        
-        rewardedListener = new WeakReference<>(listener);
+    void setRewardedAd(@Nullable RewardedAd ad) {
+        rewardedAd = new WeakReference<>(ad);
     }
     
-    boolean isInterstitialAdAllowed(@Nullable Engagement engagement) {
+    void registerRewardedAd(RewardedAd ad) {
+        rewardedAds.put(ad, null);
+    }
+    
+    boolean isInterstitialAdAllowed(
+            @Nullable Engagement engagement,
+            boolean checkTime) {
+        
         if (service == null) {
             Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
             return false;
+        } else {
+            return service.isInterstitialAdAllowed(
+                    (engagement == null)
+                            ? null
+                            : engagement.getDecisionPoint(),
+                    (engagement == null)
+                            ? null
+                            : (engagement.getJson() == null)
+                            ? null
+                            : engagement.getJson().optJSONObject("parameters"),
+                    checkTime);
         }
-        
-        return service.isInterstitialAdAllowed(
-                (engagement == null) ? null : engagement.getDecisionPoint(),
-                (engagement == null || engagement.getJson() == null)
-                        ? null
-                        : engagement.getJson().optJSONObject("parameters"));
     }
     
-    boolean isRewardedAdAllowed(@Nullable Engagement engagement) {
+    boolean isRewardedAdAllowed(
+            @Nullable Engagement engagement,
+            boolean checkTime) {
+        
         if (service == null) {
             Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
             return false;
+        } else {
+            return service.isRewardedAdAllowed(
+                    (engagement == null)
+                            ? null
+                            : engagement.getDecisionPoint(),
+                    (engagement == null)
+                            ? null
+                            : (engagement.getJson() == null)
+                            ? null
+                            : engagement.getJson().optJSONObject("parameters"),
+                    checkTime);
         }
-        
-        return service.isRewardedAdAllowed(
-                (engagement == null) ? null : engagement.getDecisionPoint(),
-                (engagement == null || engagement.getJson() == null)
-                        ? null
-                        : engagement.getJson().optJSONObject("parameters"));
     }
     
-    boolean isInterstitialAdAvailable() {
+    int timeUntilRewardedAdAllowed(@Nullable Engagement engagement) {
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+            return 0;
+        } else {
+            return service.timeUntilRewardedAdAllowed(
+                    (engagement == null)
+                            ? null
+                            : engagement.getDecisionPoint(),
+                    (engagement == null)
+                            ? null
+                            : (engagement.getJson() == null)
+                            ? null
+                            : engagement.getJson().optJSONObject("parameters"));
+        }
+    }
+    
+    boolean hasLoadedInterstitialAd() {
         if (service == null) {
             Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
             return false;
+        } else {
+            return service.hasLoadedInterstitialAd();
         }
-        
-        return service.isInterstitialAdAvailable();
     }
     
-    boolean isRewardedAdAvailable() {
+    boolean hasLoadedRewardedAd() {
         if (service == null) {
             Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
             return false;
+        } else {
+            return service.hasLoadedRewardedAd();
         }
-        
-        return service.isRewardedAdAvailable();
     }
     
-    void showInterstitialAd(@Nullable String adPoint) {
+    void showInterstitialAd(@Nullable Engagement engagement) {
         if (service == null) {
             Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
         } else {
-            service.showInterstitialAd(adPoint);
+            service.showInterstitialAd(
+                    (engagement == null)
+                            ? null
+                            : engagement.getDecisionPoint(),
+                    (engagement == null)
+                            ? null
+                            : (engagement.getJson() == null)
+                                    ? null
+                                    : engagement.getJson().optJSONObject("parameters"));
         }
     }
     
-    void showRewardedAd(@Nullable String adPoint) {
+    void showRewardedAd(@Nullable Engagement engagement) {
         if (service == null) {
             Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
         } else {
-            service.showRewardedAd(adPoint);
+            service.showRewardedAd(
+                    (engagement == null)
+                            ? null
+                            : engagement.getDecisionPoint(),
+                    (engagement == null)
+                            ? null
+                            : (engagement.getJson() == null)
+                            ? null
+                            : engagement.getJson().optJSONObject("parameters"));
+        }
+    }
+    
+    @Nullable
+    Date getLastShown(String decisionPoint) {
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+            return null;
+        } else {
+            return service.getLastShown(decisionPoint);
+        }
+    }
+    
+    int getSessionCount(String decisionPoint) {
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+            return 0;
+        } else {
+            return service.getSessionCount(decisionPoint);
+        }
+    } 
+    
+    int getDailyCount(String decisionPoint) {
+        if (service == null) {
+            Log.w(BuildConfig.LOG_TAG, "Service has not been initialised");
+            return 0;
+        } else {
+            return service.getDailyCount(decisionPoint);
         }
     }
     
@@ -202,62 +279,82 @@ class Ads implements
     
     @Override
     public void onInterstitialAdOpened() {
-        on(interstitialListener, new Action<InterstitialAdsListener>() {
+        on(interstitialAd, new Action<InterstitialAd>() {
             @Override
-            public void perform(InterstitialAdsListener item) {
-                item.onOpened();
+            public void perform(InterstitialAd item) {
+                if (item.listener != null) item.listener.onOpened(item);
             }
         });
     }
     
     @Override
     public void onInterstitialAdFailedToOpen(final String reason) {
-        on(interstitialListener, new Action<InterstitialAdsListener>() {
+        on(interstitialAd, new Action<InterstitialAd>() {
             @Override
-            public void perform(InterstitialAdsListener item) {
-                item.onFailedToOpen(reason);
+            public void perform(InterstitialAd item) {
+                if (item.listener != null)
+                    item.listener.onFailedToOpen(item, reason);
             }
         });
+        
+        interstitialAd.clear();
     }
     
     @Override
     public void onInterstitialAdClosed() {
-        on(interstitialListener, new Action<InterstitialAdsListener>() {
+        on(interstitialAd, new Action<InterstitialAd>() {
             @Override
-            public void perform(InterstitialAdsListener item) {
-                item.onClosed();
+            public void perform(InterstitialAd item) {
+                if (item.listener != null) item.listener.onClosed(item);
             }
         });
+        
+        interstitialAd.clear();
     }
     
     @Override
-    public void onRewardedAdOpened() {
-        on(rewardedListener, new Action<RewardedAdsListener>() {
+    public void onRewardedAdLoaded() {
+        for (final RewardedAd ad : rewardedAds.keySet()) {
+            ad.onLoaded();
+        }
+    }
+    
+    @Override
+    public void onRewardedAdOpened(String decisionPoint) {
+        on(rewardedAd, new Action<RewardedAd>() {
             @Override
-            public void perform(RewardedAdsListener item) {
-                item.onOpened();
+            public void perform(RewardedAd item) {
+                if (item.listener != null) item.listener.onOpened(item);
             }
         });
+        
+        for (final RewardedAd ad : rewardedAds.keySet()) {
+            ad.onOpened(decisionPoint);
+        }
     }
     
     @Override
     public void onRewardedAdFailedToOpen(final String reason) {
-        on(rewardedListener, new Action<RewardedAdsListener>() {
+        on(rewardedAd, new Action<RewardedAd>() {
             @Override
-            public void perform(RewardedAdsListener item) {
-                item.onFailedToOpen(reason);
+            public void perform(RewardedAd item) {
+                if (item.listener != null) item.listener.onFailedToOpen(item, reason);
             }
         });
+        
+        rewardedAd.clear();
     }
     
     @Override
     public void onRewardedAdClosed(final boolean completed) {
-        on(rewardedListener, new Action<RewardedAdsListener>() {
+        on(rewardedAd, new Action<RewardedAd>() {
             @Override
-            public void perform(RewardedAdsListener item) {
-                item.onClosed(completed);
+            public void perform(RewardedAd item) {
+                if (item.listener != null) item.listener.onClosed(item, completed);
             }
         });
+        
+        rewardedAd.clear();
     }
     
     @Override

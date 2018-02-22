@@ -16,7 +16,10 @@
 
 package com.deltadna.android.sdk.ads;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.deltadna.android.sdk.Engagement;
 import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener;
@@ -27,56 +30,120 @@ import org.json.JSONObject;
  * Class for creating and showing a rewarded ad.
  * <p>
  * The ad can be created through one of the static {@code create} helpers,
- * from an {@link Engagement} as well as without one.
+ * from an {@link Engagement}.
  * <p>
  * The ad can be shown through {@link #show()}.
- * <p>
- * {@link DDNASmartAds} must be registered for ads beforehand.
  */
-public final class RewardedAd {
+public final class RewardedAd extends Ad {
     
-    /**
-     * Parameters from the Engage response if the ad was created from a
-     * successful {@link Engagement}, else {@code null}.
-     */
-    @Nullable
-    public final JSONObject params;
-    @Nullable
-    private final RewardedAdsListener listener;
+    private final Handler handler = new Handler(Looper.getMainLooper());
     
-    private final DDNASmartAds smartAds = DDNASmartAds.instance();
+    @Nullable
+    RewardedAdsListener listener;
+    
+    private boolean waitingToLoad;
     
     private RewardedAd(
-            @Nullable JSONObject params,
+            @Nullable Engagement engagement,
             @Nullable RewardedAdsListener listener) {
         
-        this.params = params;
+        super(engagement);
+        
         this.listener = listener;
+        
+        DDNASmartAds.instance().getAds().registerRewardedAd(this);
     }
     
-    /**
-     * Gets whether an ad is available to be shown.
-     *
-     * @return {@code true} when an ad is available, else {@code false}
-     */
+    void onLoaded() {
+        final Ads ads = DDNASmartAds.instance().getAds();
+        
+        if (ads.isRewardedAdAllowed(engagement, true)) {
+            waitingToLoad = false;
+            
+            if (listener != null) listener.onLoaded(this);
+        } else if (!waitingToLoad) {
+            waitingToLoad = true;
+            
+            handler.postDelayed(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            if (waitingToLoad) {
+                                waitingToLoad = false;
+                                
+                                if (    ads.hasLoadedRewardedAd()
+                                        && listener != null) {
+                                    listener.onLoaded(RewardedAd.this);
+                                }
+                            }
+                        }
+                    },
+                    ads.timeUntilRewardedAdAllowed(engagement) * 1000L);
+        }
+    }
+    
+    void onOpened(String decisionPoint) {
+        if (    engagement != null
+                && !engagement.getDecisionPoint().equals(decisionPoint)
+                && !waitingToLoad
+                && listener != null) {
+            listener.onExpired(this);
+        }
+    }
+    
+    public RewardedAd setListener(@Nullable RewardedAdsListener listener) {
+        this.listener = listener;
+        return this;
+    }
+    
+    @Override
     public boolean isReady() {
-        return (smartAds.getAds() != null
-                && smartAds.getAds().isRewardedAdAvailable());
+        final Ads ads = DDNASmartAds.instance().getAds();
+        
+        if (engagement == null) {
+            return ads.hasLoadedRewardedAd();
+        } else {
+            return (ads.isRewardedAdAllowed(engagement, true)
+                    && ads.hasLoadedRewardedAd());
+        }
     }
     
-    /**
-     * Shows an ad, if one is available.
-     *
-     * @return this instance
-     */
+    @Override
     public RewardedAd show() {
-        final Ads ads = smartAds.getAds();
-        if (ads != null) {
-            ads.setRewardedAdsListener(listener);
+        final Ads ads = DDNASmartAds.instance().getAds();
+        
+        // this is the instance that will receive callbacks
+        ads.setRewardedAd(this);
+        
+        if (engagement == null) {
+            Log.w(BuildConfig.LOG_TAG, "Prefer showing ads with Engagements");
             ads.showRewardedAd(null);
+        } else {
+            ads.showRewardedAd(engagement);
         }
         
         return this;
+    }
+    
+    /**
+     * Gets the type of the reward returned by this ad.
+     *
+     * @return the type of the reward, or {@code null} if no reward was given
+     */
+    @Nullable
+    public String getRewardType() {
+        final JSONObject params = getParameters();
+        return (params != null) ? params.optString("ddnaAdRewardType", null) : null;
+    }
+    
+    /**
+     * Gets the amount of reward returned by this ad.
+     *
+     * @return the amount of reward
+     */
+    public int getRewardAmount() {
+        final JSONObject params = getParameters();
+        return (params != null) ? params.optInt("ddnaAdRewardAmount", 0) : 0;
     }
     
     /**
@@ -148,14 +215,21 @@ public final class RewardedAd {
             @Nullable RewardedAdsListener listener) {
         
         final Ads ads = DDNASmartAds.instance().getAds();
-        if (ads == null || !ads.isRewardedAdAllowed(engagement))  {
+        if (ads == null || !ads.isRewardedAdAllowed(engagement, false))  {
             return null;
         } else {
-            return new RewardedAd(
-                    (engagement == null || engagement.getJson() == null)
-                            ? null
-                            : engagement.getJson().optJSONObject("parameters"),
-                    listener);
+            return new RewardedAd(engagement, listener);
+        }
+    }
+    
+    static RewardedAd createUnchecked(
+            @Nullable Engagement engagement,
+            @Nullable RewardedAdsListener listener) {
+        
+        if (engagement != null && engagement.getJson() == null) {
+            return new RewardedAd(null, listener);
+        } else {
+            return new RewardedAd(engagement, listener);
         }
     }
 }

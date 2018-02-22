@@ -16,28 +16,48 @@
 
 package com.deltadna.android.sdk.ads.listeners;
 
+import com.deltadna.android.sdk.ads.RewardedAd;
+
 /**
  * Listener for events within the rewarded ads lifecycle.
  */
 public interface RewardedAdsListener {
     
     /**
-     * Called when a rewarded ad has been opened.
+     * Called when a rewarded ad has been loaded and is ready to show.
+     *
+     * @param ad    the rewarded ad
      */
-    void onOpened();
+    void onLoaded(RewardedAd ad);
+    
+    /**
+     * Called when a rewarded ad is no longer available to show.
+     *
+     * @param ad    the rewarded ad
+     */
+    void onExpired(RewardedAd ad);
+    
+    /**
+     * Called when a rewarded ad has been opened.
+     *
+     * @param ad    the rewarded ad
+     */
+    void onOpened(RewardedAd ad);
     
     /**
      * Called when a rewarded ad has failed to open.
      *
-     * @param reason the reason for the failure
+     * @param ad        the rewarded ad
+     * @param reason    the reason for the failure
      */
-    void onFailedToOpen(String reason);
+    void onFailedToOpen(RewardedAd ad, String reason);
     
     /**
      * Called when a rewarded as has closed.
      *
+     * @param ad        the rewarded ad
      * @param completed whether the full ad was watched, and whether the reward
      *                  should be given
      */
-    void onClosed(boolean completed);
+    void onClosed(RewardedAd ad, boolean completed);
 }

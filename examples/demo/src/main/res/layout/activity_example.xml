@@ -23,6 +23,7 @@ limitations under the License.
     android:paddingRight="16dp"
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
+    android:gravity="center_horizontal"
     android:orientation="vertical">
     
     <TextView
@@ -30,58 +31,74 @@ limitations under the License.
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_gravity="center_horizontal"
         android:text="@string/user_id"/>
     
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
-        
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/new_session"
-            android:onClick="onNewSession"/>
-        
-        <Button
-            android:id="@+id/show_interstitial_ad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/show_interstitial_ad"
-            android:enabled="false"
-            android:onClick="onShowInterstitialAd"/>
-        
-        <Button
-            android:id="@+id/show_rewarded_ad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/show_rewarded_ad"
-            android:enabled="false"
-            android:onClick="onShowRewardedAd"/>
-        
-        <Button
-            android:id="@+id/show_engage_interstitial_ad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/engage_interstitial_ad"
-            android:enabled="false"
-            android:onClick="onShowEngageInterstitialAd"/>
-        
-        <Button
-            android:id="@+id/show_engage_rewarded_ad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/engage_rewarded_ad"
-            android:enabled="false"
-            android:onClick="onShowEngageRewardedAd"/>
-        
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/engage_reward_or_image"
-            android:onClick="onEngageRewardOrImage"/>
-    </LinearLayout>
+    <Button
+        android:id="@+id/interstitial_ad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_interstitial_ad"
+        android:enabled="false"
+        android:onClick="interstitialAd"/>
+    
+    <TextView
+        android:id="@+id/interstitial_ad_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+    
+    <TextView
+        android:id="@+id/interstitial_ad_stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center_horizontal"/>
+    
+    <Button
+        android:id="@+id/rewarded_ad1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_rewarded_ad1"
+        android:enabled="false"
+        android:onClick="rewardedAd1"/>
+    
+    <TextView
+        android:id="@+id/rewarded_ad1_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+    
+    <TextView
+        android:id="@+id/rewarded_ad1_stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center_horizontal"/>
+    
+    <Button
+        android:id="@+id/rewarded_ad2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_rewarded_ad2"
+        android:enabled="false"
+        android:onClick="rewardedAd2"/>
+    
+    <TextView
+        android:id="@+id/rewarded_ad2_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+    
+    <TextView
+        android:id="@+id/rewarded_ad2_stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center_horizontal"/>
+    
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/new_session"
+        android:onClick="onNewSession"/>
 </LinearLayout>

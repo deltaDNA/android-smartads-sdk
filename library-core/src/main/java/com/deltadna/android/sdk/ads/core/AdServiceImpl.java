@@ -18,6 +18,7 @@ package com.deltadna.android.sdk.ads.core;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -41,39 +42,41 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 final class AdServiceImpl implements AdService {
-    
-    public static final String AD_TYPE_UNKNOWN = "UNKNOWN";
-    public static final String AD_TYPE_INTERSTITIAL = "INTERSTITIAL";
-    public static final String AD_TYPE_REWARDED = "REWARDED";
     
     private static final int TIME_ONE_SECOND = 60 * 1000;
     private static final String VERSION = "SmartAds v" + BuildConfig.VERSION_NAME;
-    private static final String AD_SHOW_POINT = "adShowPoint";
+    
+    private static final boolean DEFAULT_AD_SHOW_POINT = true;
+    private static final boolean DEFAULT_AD_DEBUG_MODE = true;
+    private static final int DEFAULT_AD_MINIMUM_INTERVAL = 0;
+    private static final int DEFAULT_AD_MAX_PER_SESSION = -1;
     
     private final Handler handler = new Handler(Looper.getMainLooper());
     
     private final ExceptionHandler exceptionHandler;
     private final Activity activity;
     private final AdServiceListener listener;
-
+    
+    private final AdMetrics metrics;
     private final LocalBroadcastManager broadcasts;
     private final Set<AdAgentListener> adAgentListeners;
     
     private String decisionPoint;
     
-    private JSONObject adConfiguration;
-    
     private AdAgent interstitialAgent;
     private AdAgent rewardedAgent;
     
-    private int adMinimumInterval;
-    private int adMaxPerSession;
+    private boolean adDebugMode = DEFAULT_AD_DEBUG_MODE;
     
-    private boolean adDebugMode = true;
+    private int adMinimumInterval = DEFAULT_AD_MINIMUM_INTERVAL;
+    private int adMaxPerSession = DEFAULT_AD_MAX_PER_SESSION;
     
     AdServiceImpl(
             Activity activity,
@@ -109,6 +112,9 @@ final class AdServiceImpl implements AdService {
         this.activity = activity;
         this.listener = MainThread.redirect(listener, AdServiceListener.class);
         
+        metrics = new AdMetrics(activity.getSharedPreferences(
+                Preferences.METRICS.preferencesName(),
+                Context.MODE_PRIVATE));
         broadcasts = LocalBroadcastManager.getInstance(activity.getApplicationContext());
         adAgentListeners = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                 new AgentListener(),
@@ -142,59 +148,94 @@ final class AdServiceImpl implements AdService {
     
     @Override
     public void onNewSession() {
+        metrics.newSession(new Date());
         broadcasts.sendBroadcast(new Intent(Actions.SESSION_UPDATED));
     }
     
     @Override
     public boolean isInterstitialAdAllowed(
             @Nullable String decisionPoint,
-            @Nullable JSONObject engagementParameters) {
+            @Nullable JSONObject parameters,
+            boolean checkTime) {
         
         return isAdAllowed(
                 interstitialAgent,
                 decisionPoint,
-                engagementParameters);
+                parameters,
+                checkTime);
     }
     
     @Override
     public boolean isRewardedAdAllowed(
             @Nullable String decisionPoint,
-            @Nullable JSONObject engagementParameters) {
+            @Nullable JSONObject parameters,
+            boolean checkTime) {
         
         return isAdAllowed(
                 rewardedAgent,
                 decisionPoint,
-                engagementParameters);
+                parameters,
+                checkTime);
     }
     
     @Override
-    public boolean isInterstitialAdAvailable() {
-        return interstitialAgent != null && interstitialAgent.isAdLoaded();
+    public int timeUntilRewardedAdAllowed(
+            @Nullable String decisionPoint,
+            @Nullable JSONObject parameters) {
+        
+        return timeUntilAdAllowed(
+                rewardedAgent,
+                decisionPoint,
+                parameters);
     }
     
     @Override
-    public boolean isRewardedAdAvailable() {
-        return rewardedAgent != null && rewardedAgent.isAdLoaded();
+    public boolean hasLoadedInterstitialAd() {
+        return interstitialAgent != null && interstitialAgent.hasLoadedAd();
     }
     
     @Override
-    public void showInterstitialAd(@Nullable String adPoint) {
+    public boolean hasLoadedRewardedAd() {
+        return rewardedAgent != null && rewardedAgent.hasLoadedAd();
+    }
+    
+    @Override
+    public void showInterstitialAd(
+            @Nullable String decisionPoint,
+            @Nullable JSONObject parameters) {
+        
         if (interstitialAgent != null) {
-            showAd(interstitialAgent, adPoint);
+            showAd(interstitialAgent, decisionPoint, parameters);
         } else {
-            listener.onInterstitialAdFailedToOpen(
-                    "Interstitial agent is not initialised");
+            listener.onInterstitialAdFailedToOpen("Not registered");
         }
     }
     
     @Override
-    public void showRewardedAd(@Nullable String adPoint) {
+    public void showRewardedAd(
+            @Nullable String decisionPoint,
+            @Nullable JSONObject parameters) {
+        
         if (rewardedAgent != null) {
-            showAd(rewardedAgent, adPoint);
+            showAd(rewardedAgent, decisionPoint, parameters);
         } else {
-            listener.onRewardedAdFailedToOpen(
-                    "Rewarded agent is not initialised");
+            listener.onRewardedAdFailedToOpen("Not registered");
         }
+    }
+    
+    @Override
+    public Date getLastShown(String decisionPoint) {
+        return metrics.lastShown(decisionPoint);
+    }
+    
+    @Override
+    public int getSessionCount(String decisionPoint) {
+        return metrics.sessionCount(decisionPoint);
+    }
+    
+    @Override
+    public int getDailyCount(String decisionPoint) {
+        return metrics.dailyCount(decisionPoint);
     }
     
     @Override
@@ -247,171 +288,151 @@ final class AdServiceImpl implements AdService {
     private boolean isAdAllowed(
             @Nullable AdAgent agent,
             @Nullable String decisionPoint,
-            @Nullable JSONObject engagementParameters) {
+            @Nullable JSONObject parameters,
+            boolean checkTime) {
         
         if (agent == null) {
+            Log.d(BuildConfig.LOG_TAG, "Ads disabled for this session");
             return false;
         }
         
-        agent.setAdPoint(!TextUtils.isEmpty(decisionPoint)
-                ? decisionPoint
-                : null);
-        
-        if (!adConfiguration.optBoolean("adShowPoint", true)) {
-            Log.w(  BuildConfig.LOG_TAG,
-                    "Ad points not supported by configuration");
-            postAdShowEvent(
-                    agent,
-                    agent.getCurrentAdapter(),
-                    AdShowResult.AD_SHOW_POINT);
+        // null decision point + null parameters == no engagement -> ok
+        if (!TextUtils.isEmpty(decisionPoint) && parameters == null) {
+            Log.d(  BuildConfig.LOG_TAG,
+                    "Ad cannot be shown with an invalid Engagement");
             return false;
+        } else if (TextUtils.isEmpty(decisionPoint) && parameters == null) {
+            Log.w(BuildConfig.LOG_TAG, "Using an empty Engagement is deprecated");
+            return true;
         }
         
-        if (    engagementParameters != null
-                && !engagementParameters.optBoolean(AD_SHOW_POINT, true)) {
-            
-            Log.w(  BuildConfig.LOG_TAG,
-                    "Engage prevented ad from opening at " + decisionPoint);
-            postAdShowEvent(
-                    agent,
-                    agent.getCurrentAdapter(),
-                    AdShowResult.AD_SHOW_POINT);
-            return false;
-        }
-        
-        if (    adMinimumInterval != -1 &&
-                System.currentTimeMillis() - agent.lastShownTime
-                <= adMinimumInterval * 1000) {
-            
-            Log.w(BuildConfig.LOG_TAG, "Not showing ad before minimum interval");
-            postAdShowEvent(
-                    agent,
-                    agent.getCurrentAdapter(),
-                    AdShowResult.MIN_TIME_NOT_ELAPSED);
-            return false;
-        }
-        
-        if (adMaxPerSession != -1 && agent.shownCount >= adMaxPerSession) {
-            Log.w(  BuildConfig.LOG_TAG,
-                    "Number of ads shown this session exceeded the maximum");
-            postAdShowEvent(
-                    agent,
-                    agent.getCurrentAdapter(),
-                    AdShowResult.SESSION_LIMIT_REACHED);
-            return false;
-        }
-        
-        if (!agent.isAdLoaded()) {
-            Log.w(BuildConfig.LOG_TAG, "No ad available");
-            postAdShowEvent(
-                    agent,
-                    agent.getCurrentAdapter(),
-                    AdShowResult.NO_AD_AVAILABLE);
-            return false;
-        }
-        
-        Log.d(BuildConfig.LOG_TAG, "Ad fulfilled");
-        postAdShowEvent(
+        final AdShowResult result = getResult(
                 agent,
-                agent.getCurrentAdapter(),
-                AdShowResult.FULFILLED);
-        return true;
+                decisionPoint,
+                parameters);
+        
+        final boolean allowed;
+        switch (result) {
+            case MIN_TIME_NOT_ELAPSED:
+            case MIN_TIME_DECISION_POINT_NOT_ELAPSED:
+            case NO_AD_AVAILABLE:
+                allowed = !checkTime;
+                break;
+                
+            case FULFILLED:
+                allowed = true;
+                break;
+                
+            default:
+                allowed = false;
+        }
+        
+        return allowed;
     }
     
-    private void showAd(final AdAgent agent, @Nullable final String adPoint) {
-        if (!adConfiguration.optBoolean("adShowPoint", true)) {
-            Log.w(  BuildConfig.LOG_TAG,
-                    "Ad points not supported by configuration");
-            if (agent.equals(interstitialAgent)) {
-                listener.onInterstitialAdFailedToOpen(
-                        "Ad points not supported by configuration");
-            } else if (agent.equals(rewardedAgent)) {
-                listener.onRewardedAdFailedToOpen(
-                        "Ad points not supported by configuration");
-            }
-            return;
+    private int timeUntilAdAllowed(
+            AdAgent agent,
+            @Nullable String decisionPoint,
+            @Nullable JSONObject parameters) {
+        
+        if (TextUtils.isEmpty(decisionPoint) || parameters == null) {
+            return 0;
         }
         
-        if (    adMinimumInterval != -1 &&
-                System.currentTimeMillis() - agent.lastShownTime
-                <= adMinimumInterval * 1000) {
-            
-            Log.w(BuildConfig.LOG_TAG, "Not showing ad before minimum interval");
-            if (agent.equals(interstitialAgent)) {
-                listener.onInterstitialAdFailedToOpen("Too soon");
-            } else if (agent.equals(rewardedAgent)) {
-                listener.onRewardedAdFailedToOpen("Too soon");
-            }
-            return;
-        }
+        final Date now = new Date();
+        final int wait = parameters.optInt("ddnaAdShowWaitSecs", 0);
         
-        if (adMaxPerSession != -1 && agent.shownCount >= adMaxPerSession) {
-            Log.w(  BuildConfig.LOG_TAG,
-                    "Number of ads shown this session exceeded the maximum");
-            if (agent.equals(interstitialAgent)) {
-                listener.onInterstitialAdFailedToOpen("Session limit reached");
-            } else if (agent.equals(rewardedAgent)) {
-                listener.onRewardedAdFailedToOpen("Session limit reached");
+        if (adMinimumInterval >= wait) {
+            final int lastShown = (int) MILLISECONDS.toSeconds(
+                    now.getTime() - agent.lastShownTime);
+            if (lastShown < adMinimumInterval) {
+                return (adMinimumInterval - lastShown);
             }
-            return;
-        }
-        
-        if (!agent.isAdLoaded()) {
-            Log.w(BuildConfig.LOG_TAG, "No ad loaded by agent");
-            if (agent.equals(interstitialAgent)) {
-                listener.onInterstitialAdFailedToOpen("Not ready");
-            } else if (agent.equals(rewardedAgent)) {
-                listener.onRewardedAdFailedToOpen("Not ready");
-            }
-            return;
-        }
-        
-        if (!TextUtils.isEmpty(adPoint)) {
-            final EngagementListener requestListener = new EngagementListener() {
-                @Override
-                public void onSuccess(JSONObject result) {
-                    if (isAdAllowed(
-                            agent,
-                            adPoint,
-                            result.optJSONObject("parameters"))) {
-                        
-                        showAd(agent, null);
-                    } else if (agent == interstitialAgent) {
-                        listener.onInterstitialAdFailedToOpen("Not allowed");
-                    } else if (agent == rewardedAgent) {
-                        listener.onRewardedAdFailedToOpen("Not allowed");
-                    }
-                }
-                
-                @Override
-                public void onFailure(Throwable t) {
-                    Log.w(  BuildConfig.LOG_TAG,
-                            "Engage request failed, showing ad anyway",
-                            t);
-                    
-                    if (isAdAllowed(agent, adPoint, null)) {
-                        showAd(agent, null);
-                    } else if (agent.equals(interstitialAgent)) {
-                        listener.onInterstitialAdFailedToOpen("Not allowed");
-                    } else if (agent.equals(rewardedAgent)) {
-                        listener.onRewardedAdFailedToOpen("Not allowed");
-                    }
-                }
-            };
-            
-            listener.onRequestEngagement(
-                    adPoint,
-                    EngagementFlavour.ADVERTISING.toString(),
-                    null,
-                    requestListener);
         } else {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    agent.showAd(null);
+            final Date lastShownDate = metrics.lastShown(decisionPoint);
+            if (lastShownDate != null) {
+                final int lastShown = (int) MILLISECONDS.toSeconds(
+                        now.getTime() - lastShownDate.getTime());
+                if (lastShown < wait) {
+                    return (wait - lastShown);
                 }
-            });
+            }
         }
+        
+        return 0;
+    }
+    
+    private void showAd(
+            final AdAgent agent,
+            @Nullable final String decisionPoint,
+            @Nullable JSONObject parameters) {
+        
+        if (!TextUtils.isEmpty(decisionPoint) && parameters == null) {
+            didFailToOpenAd(agent, "Invalid Engagement");
+            return;
+        } else if (TextUtils.isEmpty(decisionPoint) && parameters == null) {
+            Log.w(BuildConfig.LOG_TAG, "Prefer showing ads with Engagements");
+        }
+        
+        agent.setDecisionPoint(decisionPoint);
+        
+        final AdShowResult result = getResult(
+                agent,
+                decisionPoint,
+                parameters);
+        switch (result) {
+            case AD_SHOW_POINT:
+                postAdShowEvent(agent, decisionPoint, result);
+                didFailToOpenAd(agent, result.getStatus());
+                return;
+            
+            case MIN_TIME_NOT_ELAPSED:
+                postAdShowEvent(agent, decisionPoint, result);
+                didFailToOpenAd(
+                        agent,
+                        "Minimum environment time between ads not elapsed");
+                return;
+            
+            case MIN_TIME_DECISION_POINT_NOT_ELAPSED:
+                postAdShowEvent(agent, decisionPoint, result);
+                didFailToOpenAd(
+                        agent,
+                        "Minimum decision point time between ads not elapsed");
+                return;
+            
+            case SESSION_LIMIT_REACHED:
+                postAdShowEvent(agent, decisionPoint, result);
+                didFailToOpenAd(
+                        agent,
+                        "Session limit for environment reached");
+                return;
+            
+            case SESSION_DECISION_POINT_LIMIT_REACHED:
+                postAdShowEvent(agent, decisionPoint, result);
+                didFailToOpenAd(
+                        agent,
+                        "Session limit for decision point reached");
+                return;
+            
+            case DAILY_DECISION_POINT_LIMIT_REACHED:
+                postAdShowEvent(agent, decisionPoint, result);
+                didFailToOpenAd(agent, "Daily limit for decision point reached");
+                return;
+        }
+        
+        if (!agent.hasLoadedAd()) {
+            postAdShowEvent(agent, decisionPoint, AdShowResult.NO_AD_AVAILABLE);
+            didFailToOpenAd(agent, "Ad not loaded");
+            return;
+        }
+        
+        postAdShowEvent(agent, decisionPoint, AdShowResult.FULFILLED);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                agent.showAd(decisionPoint);
+            }
+        });
     }
     
     private void requestAdConfiguration() {
@@ -422,44 +443,94 @@ final class AdServiceImpl implements AdService {
                 new ConfigurationListener());
     }
     
-    private void postAdShowEvent(AdAgent adAgent, MediationAdapter mediationAdapter, AdShowResult adShowResult) {
-        String adType = AD_TYPE_UNKNOWN;
-        if (adAgent != null && adAgent.equals(interstitialAgent)) {
-            adType = AD_TYPE_INTERSTITIAL;
-        } else if(adAgent != null && adAgent.equals(rewardedAgent)) {
-            adType = AD_TYPE_REWARDED;
+    private AdShowResult getResult(
+            AdAgent agent,
+            @Nullable String decisionPoint,
+            @Nullable JSONObject parameters) {
+        
+        if (    parameters != null
+                && parameters.has("adShowPoint")
+                && !parameters.optBoolean("adShowPoint", DEFAULT_AD_SHOW_POINT)) {
+            return AdShowResult.AD_SHOW_POINT;
         }
         
-        JSONObject eventParams = new JSONObject();
+        if (adMaxPerSession != -1 && agent.shownCount >= adMaxPerSession) {
+            return AdShowResult.SESSION_LIMIT_REACHED;
+        }
+        
+        if (    !TextUtils.isEmpty(decisionPoint)
+                && parameters != null
+                && parameters.has("ddnaAdSessionCount")) {
+            final int value = parameters.optInt("ddnaAdSessionCount");
+            if (metrics.sessionCount(decisionPoint) >= value) {
+                return AdShowResult.SESSION_DECISION_POINT_LIMIT_REACHED;
+            }
+        }
+        
+        if (    !TextUtils.isEmpty(decisionPoint)
+                && parameters != null
+                && parameters.has("ddnaAdDailyCount")) {
+            final int value = parameters.optInt("ddnaAdDailyCount");
+            if (metrics.dailyCount(decisionPoint) >= value) {
+                return AdShowResult.DAILY_DECISION_POINT_LIMIT_REACHED;
+            }
+        }
+        
+        final Date now = new Date();
+        if (    MILLISECONDS.toSeconds(now.getTime() - agent.lastShownTime)
+                < adMinimumInterval) {
+            return AdShowResult.MIN_TIME_NOT_ELAPSED;
+        }
+        
+        if (    !TextUtils.isEmpty(decisionPoint)
+                && parameters != null
+                && parameters.has("ddnaAdShowWaitSecs")) {
+            final int wait = parameters.optInt("ddnaAdShowWaitSecs");
+            final Date lastShown = metrics.lastShown(decisionPoint);
+            if (lastShown != null && MILLISECONDS.toSeconds(
+                    now.getTime() - lastShown.getTime()) < wait) {
+                return AdShowResult.MIN_TIME_DECISION_POINT_NOT_ELAPSED;
+            }
+        }
+        
+        if (!agent.hasLoadedAd()) {
+            return AdShowResult.NO_AD_AVAILABLE;
+        }
+        
+        return AdShowResult.FULFILLED;
+    }
+    
+    private void postAdShowEvent(
+            AdAgent agent,
+            String decisionPoint,
+            AdShowResult result) {
+        
+        final MediationAdapter provider = agent.getCurrentAdapter();
+        
+        final JSONObject params = new JSONObject();
         try {
-            eventParams.put("adProvider", mediationAdapter != null ? mediationAdapter.getProviderString() : "N/A");
-            eventParams.put("adProviderVersion", mediationAdapter != null ? mediationAdapter.getProviderVersionString() : "N/A");
-            eventParams.put("adType", adType);
-            eventParams.put("adStatus", adShowResult.getStatus());
-            eventParams.put("adSdkVersion", VERSION);
-            eventParams.put("adPoint", adAgent != null ? adAgent.getAdPoint() : null);
+            params.put("adType", getType(agent));
+            params.put("adPoint", decisionPoint);
+            params.put("adProvider", provider != null ? provider.getProviderString() : "N/A");
+            params.put("adProviderVersion", provider != null ? provider.getProviderVersionString() : "N/A");
+            params.put("adStatus", result.getStatus());
+            params.put("adSdkVersion", VERSION);
         } catch (JSONException e) {
-            Log.e(BuildConfig.LOG_TAG, e.getMessage());
+            Log.w(BuildConfig.LOG_TAG, "Failed to build adShow parameters", e);
+            return;
         }
         
-        Log.v(BuildConfig.LOG_TAG, "Posting adShow event: " + eventParams);
+        Log.v(BuildConfig.LOG_TAG, "Posting adShow event: " + params);
         
-        listener.onRecordEvent("adShow", eventParams.toString());
+        listener.onRecordEvent("adShow", params.toString());
     }
     
     private void postAdClosedEvent(AdAgent adAgent, MediationAdapter mediationAdapter, AdClosedResult adClosedResult) {
-        String adType = AD_TYPE_UNKNOWN;
-        if (adAgent != null && adAgent.equals(interstitialAgent)) {
-            adType = AD_TYPE_INTERSTITIAL;
-        } else if(adAgent != null && adAgent.equals(rewardedAgent)) {
-            adType = AD_TYPE_REWARDED;
-        }
-        
         JSONObject eventParams = new JSONObject();
         try {
             eventParams.put("adProvider", mediationAdapter != null ? mediationAdapter.getProviderString() : "N/A");
             eventParams.put("adProviderVersion", mediationAdapter != null ? mediationAdapter.getProviderVersionString() : "N/A");
-            eventParams.put("adType", adType);
+            eventParams.put("adType", getType(adAgent));
             eventParams.put("adClicked", adAgent != null && adAgent.adWasClicked());
             eventParams.put("adLeftApplication", adAgent != null && adAgent.adDidLeaveApplication());
             eventParams.put("adEcpm", mediationAdapter != null ? mediationAdapter.eCPM : 0);
@@ -483,18 +554,11 @@ final class AdServiceImpl implements AdService {
             return;
         }
         
-        String adType = AD_TYPE_UNKNOWN;
-        if (adAgent != null && adAgent.equals(interstitialAgent)) {
-            adType = AD_TYPE_INTERSTITIAL;
-        } else if(adAgent != null && adAgent.equals(rewardedAgent)) {
-            adType = AD_TYPE_REWARDED;
-        }
-        
         JSONObject eventParams = new JSONObject();
         try {
             eventParams.put("adProvider", mediationAdapter != null ? mediationAdapter.getProviderString() : "N/A");
             eventParams.put("adProviderVersion", mediationAdapter != null ? mediationAdapter.getProviderVersionString() : "N/A");
-            eventParams.put("adType", adType);
+            eventParams.put("adType", getType(adAgent));
             eventParams.put("adSdkVersion", VERSION);
             eventParams.put("adRequestTimeMs", requestDuration);
             eventParams.put("adWaterfallIndex", mediationAdapter != null ? mediationAdapter.getWaterfallIndex() : -1);
@@ -513,6 +577,24 @@ final class AdServiceImpl implements AdService {
         listener.onRecordEvent("adRequest", eventParams.toString());
     }
     
+    private void didFailToOpenAd(AdAgent agent, String reason) {
+        if (agent.equals(interstitialAgent)) {
+            listener.onInterstitialAdFailedToOpen(reason);
+        } else if (agent.equals(rewardedAgent)) {
+            listener.onRewardedAdFailedToOpen(reason);
+        }
+    }
+    
+    private String getType(@Nullable AdAgent agent) {
+        if (agent != null && agent.equals(interstitialAgent)) {
+            return "INTERSTITIAL";
+        } else if (agent != null && agent.equals(rewardedAgent)) {
+            return "REWARDED";
+        } else {
+            return "UNKNOWN";
+        }
+    }
+    
     private final class AgentListener implements AdAgentListener {
         
         @Override
@@ -526,7 +608,9 @@ final class AdServiceImpl implements AdService {
                 postAdRequestEventSuccess(agent, adapter, time);
             } else if (agent.equals(rewardedAgent)) {
                 Log.d(BuildConfig.LOG_TAG, "Rewarded ad loaded");
+                
                 postAdRequestEventSuccess(agent, adapter, time);
+                listener.onRewardedAdLoaded();
             }
         }
         
@@ -558,7 +642,7 @@ final class AdServiceImpl implements AdService {
                 listener.onInterstitialAdOpened();
             } else if (agent.equals(rewardedAgent)) {
                 Log.d(BuildConfig.LOG_TAG, "Rewarded ad opened");
-                listener.onRewardedAdOpened();
+                listener.onRewardedAdOpened(agent.getDecisionPoint());
             }
         }
         
@@ -589,6 +673,12 @@ final class AdServiceImpl implements AdService {
                 AdAgent agent,
                 MediationAdapter adapter,
                 boolean complete) {
+            
+            if (!TextUtils.isEmpty(agent.getDecisionPoint())) {
+                metrics.recordAdShown(
+                        agent.getDecisionPoint(),
+                        new Date(agent.lastShownTime));
+            }
             
             if (agent.equals(interstitialAgent)) {
                 Log.d(BuildConfig.LOG_TAG, "Interstitial ad closed");
@@ -623,7 +713,7 @@ final class AdServiceImpl implements AdService {
                 return;
             }
             
-            adConfiguration = result.optJSONObject("parameters");
+            final JSONObject adConfiguration = result.optJSONObject("parameters");
             
             if (!adConfiguration.optBoolean("adShowSession", false)) {
                 listener.onFailedToRegisterForInterstitialAds(
@@ -650,13 +740,16 @@ final class AdServiceImpl implements AdService {
                 return;
             }
             
-            adDebugMode = adConfiguration.optBoolean("adRecordAdRequests", true);
+            adDebugMode = adConfiguration.optBoolean(
+                    "adRecordAdRequests", DEFAULT_AD_DEBUG_MODE);
             
             final int adFloorPrice = adConfiguration.optInt("adFloorPrice");
             final int demoteOnCode = adConfiguration.optInt("adDemoteOnRequestCode");
             final int maxPerNetwork = adConfiguration.optInt("adMaxPerNetwork");
-            adMinimumInterval = adConfiguration.optInt("adMinimumInterval", -1);
-            adMaxPerSession = adConfiguration.optInt("adMaxPerSession", -1);
+            adMinimumInterval = adConfiguration.optInt(
+                    "adMinimumInterval", DEFAULT_AD_MINIMUM_INTERVAL);
+            adMaxPerSession = adConfiguration.optInt(
+                    "adMaxPerSession", DEFAULT_AD_MAX_PER_SESSION);
             
             final JSONArray interstitialProviders =
                     adConfiguration.optJSONArray("adProviders");

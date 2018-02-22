@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 deltaDNA Ltd. All rights reserved.
+ * Copyright (c) 2018 deltaDNA Ltd. All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-android {
-    lintOptions {
-        // workaround for aar build, which reports missing stax dependency.
-        disable 'InvalidPackage'
-    }
-}
+package com.deltadna.android.sdk.ads.core
 
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
+import com.google.common.truth.Truth.*
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import com.deltadna.android.sdk.ads.core.Preferences.*
 
-dependencies {
-    api project(':library-core')
+@RunWith(JUnit4::class)
+class PreferencesTest {
     
-    api 'com.deltadna.android:deltadna-sdk:4.7.0-SNAPSHOT'
-    implementation "com.android.support:support-v4:$supportVersion"
+    @Test
+    fun preferencesName() {
+        assertThat(METRICS.preferencesName())
+                .isEqualTo("com.deltadna.android.sdk.ads.metrics")
+    }
 }

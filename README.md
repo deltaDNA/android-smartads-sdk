@@ -111,7 +111,19 @@ if (ad != null) {
 ```
 Rewarded ads are created in a similar way, but through the `RewardedAd` class instead.
 
-Ads can also be created by performing an Engage request and creating an `InterstitialAd` or `RewardedAd` instance from the returned `Engagement`.
+Ads can be created off an Engage request by using the `EngageFactory` and using one of the `requestInterstitialAd` or `requestRewardedAd` methods. Unlike with the analytics `EngageFactory` the SmartAds instance will always return a non-null ad object in the `onCompleted` callback.
+```java
+DDNASmartAds.instance().getEngageFactory().requestInterstitialAd(
+        "myDecisionPoint",
+        new Callback<InterstitialAd>() {
+            @Override
+            public void onCompleted(InterstitialAd action) {
+                // do something with the ad action
+            }
+        });
+```
+
+Alternatively, if more control is needed, ads can also be created by performing an Engage request and creating an `InterstitialAd` or `RewardedAd` instance from the returned `Engagement`.
 ```java
 DDNA.instance().requestEngagement(
         new Engagement("myDecisionPoint"),
@@ -132,11 +144,10 @@ DDNA.instance().requestEngagement(
             public void onError(Throwable t) {
                 // act on error
             }
-        }
-);
+        });
 ```
 
-Both classes allow for a listener to be passed in at creation for listening to ad lifecycle events.
+Both ad classes allow for a listener to be passed in at creation and by calling `setListener` for listening to ad lifecycle events.
 
 ## Permissions
 The library includes all the required permissions in its manifest file which will get included by Android's manifest merger during the build process. The included permissions are the minimal required set for ensuring functionality of the ad providers, and all of them are non-dangerous permissions and thus don't require explicit granting of permissions on Android 6+ versions.

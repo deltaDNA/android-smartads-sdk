@@ -1,27 +1,40 @@
+/*
+ * Copyright (c) 2016 deltaDNA Ltd. All rights reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.deltadna.android.sdk.ads.core
 
 import android.app.Activity
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.deltadna.android.sdk.ads.bindings.AdClosedResult
+import com.deltadna.android.sdk.ads.bindings.AdRequestResult
 import com.deltadna.android.sdk.ads.core.network.DummyAdapter
 import com.github.salomonbrys.kotson.jsonArray
 import com.github.salomonbrys.kotson.jsonObject
-import com.github.salomonbrys.kotson.string
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockito_kotlin.*
-import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE)
 class AdServiceImplTest {
     
     private var activity = Robolectric.buildActivity(Activity::class.java).create()
@@ -57,184 +70,473 @@ class AdServiceImplTest {
     }
     
     @Test
-    fun configurationWithoutAds() {
-        listOf( Config(adShowSession = false),
-                Config( interstitial = emptyList(),
-                        rewarded = emptyList())).forEach {
-            withService(it) {
-                verify(listener).onFailedToRegisterForInterstitialAds(any())
-                verify(listener).onFailedToRegisterForRewardedAds(any())
-                
-                assertThat(isInterstitialAdAllowed(null, null)).isFalse()
-                assertThat(isRewardedAdAllowed(null, null)).isFalse()
-                
-                assertThat(isInterstitialAdAvailable).isFalse()
-                assertThat(isRewardedAdAvailable).isFalse()
-                
-                showInterstitialAd(null)
-                verify(listener).onInterstitialAdFailedToOpen(any())
-                showRewardedAd(null)
-                verify(listener).onRewardedAdFailedToOpen(any())
-                
-                reset(listener)
-            }
-        }
-    }
-    
-    @Test
-    fun isInterstitialAdAllowed() {
-        withService(Config(adShowSession = true)) {
-            assertThat(isInterstitialAdAllowed(null, null)).isTrue()
-            verify(listener).onRecordEvent(eq("adShow"), argThat {
-                with(toJson()) {
-                    has("adPoint").not() &&
-                    get("adStatus").string == AdShowResult.FULFILLED.status &&
-                    get("adType").string == "INTERSTITIAL"
-                }
-            })
+    fun disabled() {
+        withService(Config(adShowSession = false)) {
+            verify(listener).onFailedToRegisterForInterstitialAds(any())
+            verify(listener).onFailedToRegisterForRewardedAds(any())
             
-            assertThat(isRewardedAdAllowed(null, null)).isTrue()
-            verify(listener).onRecordEvent(eq("adShow"), argThat {
-                with(toJson()) {
-                    has("adPoint").not() &&
-                    get("adStatus").string == AdShowResult.FULFILLED.status &&
-                    get("adType").string == "REWARDED"
-                }
-            })
-        }
-    }
-    
-    @Test
-    fun isInterstitialAdAllowedWithDecisionPoint() {
-        withService(Config(adShowSession = true)) {
-            assertThat(isInterstitialAdAllowed("point", null)).isTrue()
-            assertThat(isRewardedAdAllowed("point", null)).isTrue()
+            assertThat(isInterstitialAdAllowed("point", params(), false)).isFalse()
+            assertThat(isRewardedAdAllowed("point", params(), false)).isFalse()
             
-            verify(listener, times(2)).onRecordEvent(eq("adShow"), argThat {
-                toJson().get("adPoint").string == "point"
-            })
-        }
-    }
-    
-    @Test
-    fun isInterstitialAdAllowedWithEmptyParameters() {
-        withService(Config(adShowSession = true)) {
-            assertThat(isInterstitialAdAllowed("point", JSONObject())).isTrue()
-            assertThat(isRewardedAdAllowed("point", JSONObject())).isTrue()
-        }
-    }
-    
-    @Test
-    fun isInterstitialAdNotAllowed() {
-        withService(Config(adShowSession = true)) {
-            assertThat(isInterstitialAdAllowed(
-                    "point",
-                    jsonObject("adShowPoint" to false).convert())).isFalse()
-            assertThat(isRewardedAdAllowed(
-                    "point",
-                    jsonObject("adShowPoint" to false).convert())).isFalse()
+            assertThat(hasLoadedInterstitialAd()).isFalse()
+            assertThat(hasLoadedRewardedAd()).isFalse()
             
-            verify(listener, times(2)).onRecordEvent(eq("adShow"), argThat {
-                with(toJson()) {
-                    get("adPoint").string == "point" &&
-                    get("adStatus").string == AdShowResult.AD_SHOW_POINT.status
-                }
-            })
+            showInterstitialAd("point", params())
+            verify(listener).onInterstitialAdFailedToOpen(eq("Not registered"))
+            
+            showRewardedAd("point", params())
+            verify(listener).onRewardedAdFailedToOpen(eq("Not registered"))
+            
+            verify(listener, never()).onRecordEvent(any(), any())
         }
     }
     
     @Test
-    fun showAd() {
-        withService(Config(adShowSession = true)) {
-            showInterstitialAd(null)
-            showRewardedAd(null)
+    fun noNetworks() {
+        withService(Config(interstitial = emptyList(), rewarded = emptyList())) {
+            verify(listener).onFailedToRegisterForInterstitialAds(any())
+            verify(listener).onFailedToRegisterForRewardedAds(any())
+            
+            assertThat(isInterstitialAdAllowed("point", params(), false)).isFalse()
+            assertThat(isRewardedAdAllowed("point", params(), false)).isFalse()
+            
+            assertThat(hasLoadedInterstitialAd()).isFalse()
+            assertThat(hasLoadedRewardedAd()).isFalse()
+            
+            showInterstitialAd("point", params())
+            verify(listener).onInterstitialAdFailedToOpen(eq("Not registered"))
+            
+            showRewardedAd("point", params())
+            verify(listener).onRewardedAdFailedToOpen(eq("Not registered"))
+            
+            verify(listener, never()).onRecordEvent(any(), any())
+        }
+    }
+    
+    @Test
+    fun disallowedByEngage() {
+        withService {
+            val params = params("adShowPoint" to false)
+            
+            assertThat(isInterstitialAdAllowed("point", params, false)).isFalse()
+            assertThat(isRewardedAdAllowed("point", params, false)).isFalse()
+            verify(listener, never()).onRecordEvent(eq("adShow"), any())
+            
+            showInterstitialAd("point", params)
+            
+            verify(listener).onRecordEvent(
+                    eq("adShow"),
+                    argThat {
+                        contains("\"adType\":\"INTERSTITIAL\"") &&
+                        contains("\"adPoint\":\"point\"") &&
+                        contains("\"adStatus\":\"${AdShowResult.AD_SHOW_POINT.status}\"")
+                    })
+            verify(listener).onInterstitialAdFailedToOpen(
+                    eq(AdShowResult.AD_SHOW_POINT.status))
+            
+            showRewardedAd("point", params)
+            
+            verify(listener).onRecordEvent(
+                    eq("adShow"),
+                    argThat {
+                        contains("\"adType\":\"REWARDED\"") &&
+                        contains("\"adPoint\":\"point\"") &&
+                        contains("\"adStatus\":\"${AdShowResult.AD_SHOW_POINT.status}\"")
+                    })
+            verify(listener).onRewardedAdFailedToOpen(
+                    eq(AdShowResult.AD_SHOW_POINT.status))
+        }
+    }
+    
+    @Test
+    fun allowedAndShownWithoutEngagement() {
+        withService {
+            assertThat(isInterstitialAdAllowed(null, null, false)).isTrue()
+            assertThat(isRewardedAdAllowed(null, null, false)).isTrue()
+            verify(listener, never()).onRecordEvent(eq("adShow"), any())
+            
+            showInterstitialAd(null, null)
             advance(DummyAdapter.DISMISS_AFTER)
             
+            verify(listener).onRecordEvent(eq("adShow"), argThat {
+                contains("\"adType\":\"INTERSTITIAL\"") &&
+                !contains("\"adPoint\"") &&
+                contains("\"adStatus\":\"${AdShowResult.FULFILLED.status}\"")
+            })
             inOrder(listener) {
                 verify(listener).onInterstitialAdOpened()
-                verify(listener).onRewardedAdOpened()
                 verify(listener).onInterstitialAdClosed()
-                verify(listener).onRewardedAdClosed(any())
             }
             
-            verify(listener, times(2)).onRecordEvent(eq("adClosed"), argThat {
-                toJson().get("adStatus").string == AdClosedResult.SUCCESS.status
+            showRewardedAd(null, null)
+            advance(DummyAdapter.DISMISS_AFTER)
+            
+            verify(listener).onRecordEvent(eq("adShow"), argThat {
+                contains("\"adType\":\"REWARDED\"") &&
+                !contains("\"adPoint\"") &&
+                contains("\"adStatus\":\"${AdShowResult.FULFILLED.status}\"")
             })
+            inOrder(listener) {
+                verify(listener).onRewardedAdOpened(isNull())
+                verify(listener).onRewardedAdClosed(any())
+            }
         }
     }
     
     @Test
-    fun showAdLegacy() {
-        withService(Config(adShowSession = true)) {
-            showInterstitialAd("point")
-            showRewardedAd("point")
+    fun allowedAndShownWithEngagement() {
+        withService {
+            assertThat(isInterstitialAdAllowed("point", params(), false)).isTrue()
+            assertThat(isRewardedAdAllowed("point", params(), false)).isTrue()
+            verify(listener, never()).onRecordEvent(eq("adShow"), any())
             
-            verify(listener, times(2)).onRequestEngagement(
-                    eq("point"),
-                    eq(EngagementFlavour.ADVERTISING.toString()),
-                    isNull(),
-                    any())
+            showInterstitialAd("point", params())
+            advance(DummyAdapter.DISMISS_AFTER)
+            
+            verify(listener).onRecordEvent(eq("adShow"), argThat {
+                contains("\"adType\":\"INTERSTITIAL\"") &&
+                contains("\"adPoint\":\"point\"") &&
+                contains("\"adStatus\":\"${AdShowResult.FULFILLED.status}\"")
+            })
+            inOrder(listener) {
+                verify(listener).onInterstitialAdOpened()
+                verify(listener).onInterstitialAdClosed()
+            }
+            
+            showRewardedAd("point", params())
+            advance(DummyAdapter.DISMISS_AFTER)
+            
+            verify(listener).onRecordEvent(eq("adShow"), argThat {
+                contains("\"adType\":\"REWARDED\"") &&
+                contains("\"adPoint\":\"point\"") &&
+                contains("\"adStatus\":\"${AdShowResult.FULFILLED.status}\"")
+            })
+            inOrder(listener) {
+                verify(listener).onRewardedAdOpened(eq("point"))
+                verify(listener).onRewardedAdClosed(any())
+            }
         }
     }
     
     @Test
-    fun adMinimumInterval() {
-        withService(Config(
-                adShowSession = true,
-                adMinimumInterval = DummyAdapter.DISMISS_AFTER / 1000 * 2,
-                adMaxPerSession = Int.MAX_VALUE)) {
+    fun minTimeNotElapsed() {
+        withService(Config(adMinimumInterval = DummyAdapter.DISMISS_AFTER / 1000 * 2)) {
             // success
-            assertThat(isInterstitialAdAllowed(null, null)).isTrue()
-            assertThat(isRewardedAdAllowed(null, null)).isTrue()
-            showInterstitialAd(null)
-            showRewardedAd(null)
-            
+            assertThat(isInterstitialAdAllowed("point", params(), true)).isTrue()
+            showInterstitialAd("point", params())
             // fail; too early
             advance(DummyAdapter.DISMISS_AFTER)
-            assertThat(isInterstitialAdAllowed(null, null)).isFalse()
-            assertThat(isRewardedAdAllowed(null, null)).isFalse()
-            showInterstitialAd(null)
-            showRewardedAd(null)
-            
+            assertThat(isInterstitialAdAllowed("point", params(), false)).isTrue()
+            assertThat(isInterstitialAdAllowed("point", params(), true)).isFalse()
+            showInterstitialAd("point", params())
             // success
             advance(DummyAdapter.DISMISS_AFTER)
-            assertThat(isInterstitialAdAllowed(null, null)).isTrue()
-            assertThat(isRewardedAdAllowed(null, null)).isTrue()
-            showInterstitialAd(null)
-            showRewardedAd(null)
+            assertThat(isInterstitialAdAllowed("point", params(), true)).isTrue()
+            showInterstitialAd("point", params())
             advance(DummyAdapter.DISMISS_AFTER)
             
             inOrder(listener) {
                 // success
+                verify(listener).onRecordEvent(eq("adShow"), argThat {
+                    contains("\"adType\":\"INTERSTITIAL\"") &&
+                    contains("\"adPoint\":\"point\"") &&
+                    contains("\"adStatus\":\"${AdShowResult.FULFILLED.status}\"")
+                })
                 verify(listener).onInterstitialAdOpened()
-                verify(listener).onRewardedAdOpened()
                 verify(listener).onInterstitialAdClosed()
+                
+                // fail; too early
+                verify(listener).onRecordEvent(eq("adShow"), argThat {
+                    contains("\"adType\":\"INTERSTITIAL\"") &&
+                    contains("\"adPoint\":\"point\"") &&
+                    contains("\"adStatus\":\"${AdShowResult.MIN_TIME_NOT_ELAPSED.status}\"")
+                })
+                verify(listener).onInterstitialAdFailedToOpen(
+                        eq("Minimum environment time between ads not elapsed"))
+                
+                // success
+                verify(listener).onRecordEvent(eq("adShow"), argThat {
+                    contains("\"adType\":\"INTERSTITIAL\"") &&
+                    contains("\"adPoint\":\"point\"") &&
+                    contains("\"adStatus\":\"${AdShowResult.FULFILLED.status}\"")
+                })
+                verify(listener).onInterstitialAdOpened()
+                verify(listener).onInterstitialAdClosed()
+            }
+            
+            // success
+            assertThat(isRewardedAdAllowed("point", params(), true)).isTrue()
+            showRewardedAd("point", params())
+            // fail; too early
+            advance(DummyAdapter.DISMISS_AFTER)
+            assertThat(isRewardedAdAllowed("point", params(), false)).isTrue()
+            assertThat(isRewardedAdAllowed("point", params(), true)).isFalse()
+            showRewardedAd("point", params())
+            // success
+            advance(DummyAdapter.DISMISS_AFTER)
+            assertThat(isRewardedAdAllowed("point", params(), true)).isTrue()
+            showRewardedAd("point", params())
+            advance(DummyAdapter.DISMISS_AFTER)
+            
+            inOrder(listener) {
+                // success
+                verify(listener).onRecordEvent(eq("adShow"), argThat {
+                    contains("\"adType\":\"REWARDED\"") &&
+                    contains("\"adPoint\":\"point\"") &&
+                    contains("\"adStatus\":\"${AdShowResult.FULFILLED.status}\"")
+                })
+                verify(listener).onRewardedAdOpened(eq("point"))
                 verify(listener).onRewardedAdClosed(any())
                 
                 // fail; too early
-                verify(listener).onInterstitialAdFailedToOpen(any())
-                verify(listener).onRewardedAdFailedToOpen(any())
+                verify(listener).onRecordEvent(eq("adShow"), argThat {
+                    contains("\"adType\":\"REWARDED\"") &&
+                    contains("\"adPoint\":\"point\"") &&
+                    contains("\"adStatus\":\"${AdShowResult.MIN_TIME_NOT_ELAPSED.status}\"")
+                })
+                verify(listener).onRewardedAdFailedToOpen(
+                        eq("Minimum environment time between ads not elapsed"))
                 
                 // success
-                verify(listener).onInterstitialAdOpened()
-                verify(listener).onRewardedAdOpened()
-                verify(listener).onInterstitialAdClosed()
+                verify(listener).onRecordEvent(eq("adShow"), argThat {
+                    contains("\"adType\":\"REWARDED\"") &&
+                    contains("\"adPoint\":\"point\"") &&
+                    contains("\"adStatus\":\"${AdShowResult.FULFILLED.status}\"")
+                })
+                verify(listener).onRewardedAdOpened(eq("point"))
                 verify(listener).onRewardedAdClosed(any())
             }
         }
     }
     
     @Test
-    fun adMaxPerSession() {
-        withService(Config(adShowSession = true, adMaxPerSession = 1)) {
-            showInterstitialAd(null)
-            showRewardedAd(null)
+    fun minTimeDecisionPointNotElapsed() {
+        withService {
+            val params = params("ddnaAdShowWaitSecs" to DummyAdapter.DISMISS_AFTER / 1000 * 2)
             
-            showInterstitialAd(null)
-            showRewardedAd(null)
+            // success
+            assertThat(isInterstitialAdAllowed("point1", params, true)).isTrue()
+            showInterstitialAd("point1", params)
+            // fail; too early
+            advance(DummyAdapter.DISMISS_AFTER)
+            assertThat(isInterstitialAdAllowed("point1", params, false)).isTrue()
+            assertThat(isInterstitialAdAllowed("point1", params, true)).isFalse()
+            showInterstitialAd("point1", params)
+            // success
+            advance(DummyAdapter.DISMISS_AFTER)
+            assertThat(isInterstitialAdAllowed("point1", params, true)).isTrue()
+            showInterstitialAd("point1", params)
+            advance(DummyAdapter.DISMISS_AFTER)
             
-            verify(listener).onInterstitialAdFailedToOpen(any())
-            verify(listener).onRewardedAdFailedToOpen(any())
+            inOrder(listener) {
+                // success
+                verify(listener).onRecordEvent(eq("adShow"), argThat {
+                    contains("\"adType\":\"INTERSTITIAL\"") &&
+                    contains("\"adPoint\":\"point1\"") &&
+                    contains("\"adStatus\":\"${AdShowResult.FULFILLED.status}\"")
+                })
+                verify(listener).onInterstitialAdOpened()
+                verify(listener).onInterstitialAdClosed()
+                
+                // fail; too early
+                verify(listener).onRecordEvent(eq("adShow"), argThat {
+                    contains("\"adType\":\"INTERSTITIAL\"") &&
+                    contains("\"adPoint\":\"point1\"") &&
+                    contains("\"adStatus\":\"${AdShowResult.MIN_TIME_DECISION_POINT_NOT_ELAPSED.status}\"")
+                })
+                verify(listener).onInterstitialAdFailedToOpen(
+                        eq("Minimum decision point time between ads not elapsed"))
+                
+                // success
+                verify(listener).onRecordEvent(eq("adShow"), argThat {
+                    contains("\"adType\":\"INTERSTITIAL\"") &&
+                    contains("\"adPoint\":\"point1\"") &&
+                    contains("\"adStatus\":\"${AdShowResult.FULFILLED.status}\"")
+                })
+                verify(listener).onInterstitialAdOpened()
+                verify(listener).onInterstitialAdClosed()
+            }
+            
+            // success
+            assertThat(isRewardedAdAllowed("point2", params, true)).isTrue()
+            showRewardedAd("point2", params)
+            // fail; too early
+            advance(DummyAdapter.DISMISS_AFTER)
+            assertThat(isRewardedAdAllowed("point2", params, false)).isTrue()
+            assertThat(isRewardedAdAllowed("point2", params, true)).isFalse()
+            showRewardedAd("point2", params)
+            // success
+            advance(DummyAdapter.DISMISS_AFTER)
+            assertThat(isRewardedAdAllowed("point2", params, true)).isTrue()
+            showRewardedAd("point2", params)
+            advance(DummyAdapter.DISMISS_AFTER)
+            
+            inOrder(listener) {
+                // success
+                verify(listener).onRecordEvent(eq("adShow"), argThat {
+                    contains("\"adType\":\"REWARDED\"") &&
+                    contains("\"adPoint\":\"point2\"") &&
+                    contains("\"adStatus\":\"${AdShowResult.FULFILLED.status}\"")
+                })
+                verify(listener).onRewardedAdOpened(eq("point2"))
+                verify(listener).onRewardedAdClosed(any())
+                
+                // fail; too early
+                verify(listener).onRecordEvent(eq("adShow"), argThat {
+                    contains("\"adType\":\"REWARDED\"") &&
+                    contains("\"adPoint\":\"point2\"") &&
+                    contains("\"adStatus\":\"${AdShowResult.MIN_TIME_DECISION_POINT_NOT_ELAPSED.status}\"")
+                })
+                verify(listener).onRewardedAdFailedToOpen(
+                        eq("Minimum decision point time between ads not elapsed"))
+                
+                // success
+                verify(listener).onRecordEvent(eq("adShow"), argThat {
+                    contains("\"adType\":\"REWARDED\"") &&
+                    contains("\"adPoint\":\"point2\"") &&
+                    contains("\"adStatus\":\"${AdShowResult.FULFILLED.status}\"")
+                })
+                verify(listener).onRewardedAdOpened(eq("point2"))
+                verify(listener).onRewardedAdClosed(any())
+            }
+        }
+    }
+    
+    @Test
+    fun sessionLimitReached() {
+        withService(Config(adMaxPerSession = 1)) {
+            showInterstitialAd("point", params())
+            advance(DummyAdapter.DISMISS_AFTER)
+            showInterstitialAd("point", params())
+            
+            verify(listener).onInterstitialAdOpened()
+            verify(listener).onInterstitialAdClosed()
+            verify(listener).onRecordEvent(eq("adShow"), argThat {
+                contains("\"adType\":\"INTERSTITIAL\"") &&
+                contains("\"adPoint\":\"point\"") &&
+                contains("\"adStatus\":\"${AdShowResult.SESSION_LIMIT_REACHED.status}\"")
+            })
+            verify(listener).onInterstitialAdFailedToOpen(
+                    eq("Session limit for environment reached"))
+            
+            showRewardedAd("point", params())
+            advance(DummyAdapter.DISMISS_AFTER)
+            showRewardedAd("point", params())
+            
+            verify(listener).onRewardedAdOpened(eq("point"))
+            verify(listener).onRewardedAdClosed(any())
+            verify(listener).onRecordEvent(eq("adShow"), argThat {
+                contains("\"adType\":\"REWARDED\"") &&
+                contains("\"adPoint\":\"point\"") &&
+                contains("\"adStatus\":\"${AdShowResult.SESSION_LIMIT_REACHED.status}\"")
+            })
+            verify(listener).onRewardedAdFailedToOpen(
+                    eq("Session limit for environment reached"))
+        }
+    }
+    
+    @Test
+    fun sessionDecisionPointLimitReached() {
+        withService {
+            val params = params("ddnaAdSessionCount" to 1)
+            
+            showInterstitialAd("point1", params)
+            advance(DummyAdapter.DISMISS_AFTER)
+            showInterstitialAd("point1", params)
+            
+            verify(listener).onInterstitialAdOpened()
+            verify(listener).onInterstitialAdClosed()
+            verify(listener).onRecordEvent(eq("adShow"), argThat {
+                contains("\"adType\":\"INTERSTITIAL\"") &&
+                contains("\"adPoint\":\"point1\"") &&
+                contains("\"adStatus\":\"${AdShowResult.SESSION_DECISION_POINT_LIMIT_REACHED.status}\"")
+            })
+            verify(listener).onInterstitialAdFailedToOpen(
+                    eq("Session limit for decision point reached"))
+            
+            showRewardedAd("point2", params)
+            advance(DummyAdapter.DISMISS_AFTER)
+            showRewardedAd("point2", params)
+            
+            verify(listener).onRewardedAdOpened(eq("point2"))
+            verify(listener).onRewardedAdClosed(any())
+            verify(listener).onRecordEvent(eq("adShow"), argThat {
+                contains("\"adType\":\"REWARDED\"") &&
+                contains("\"adPoint\":\"point2\"") &&
+                contains("\"adStatus\":\"${AdShowResult.SESSION_DECISION_POINT_LIMIT_REACHED.status}\"")
+            })
+            verify(listener).onRewardedAdFailedToOpen(
+                    eq("Session limit for decision point reached"))
+        }
+    }
+    
+    fun eventsRecorded() {
+        withService {
+            verify(listener).onRecordEvent(eq("adRequest"), argThat {
+                contains("\"adProvider\":\"Dummy\"") &&
+                contains("\"adType\":\"INTERSTITIAL\"") &&
+                contains("\"adStatus\":\"${AdRequestResult.Loaded}") &&
+                contains("\"adProviderVersion\":") &&
+                contains("\"adSdkVersion\":") &&
+                contains("\"adRequestTimeMs\":") &&
+                contains("\"adWaterfallIndex\":") &&
+                !contains("\"adProviderError\"")
+            })
+            verify(listener).onRecordEvent(eq("adRequest"), argThat {
+                contains("\"adProvider\":\"Dummy\"") &&
+                contains("\"adType\":\"REWARDED\"") &&
+                contains("\"adStatus\":\"${AdRequestResult.Loaded}") &&
+                contains("\"adProviderVersion\":") &&
+                contains("\"adSdkVersion\":") &&
+                contains("\"adRequestTimeMs\":") &&
+                contains("\"adWaterfallIndex\":") &&
+                !contains("\"adProviderError\"")
+            })
+            
+            uut.isInterstitialAdAllowed("point", params(), false)
+            uut.isRewardedAdAllowed("point", params(), false)
+            
+            verifyNoMoreInteractions(listener)
+            
+            uut.showInterstitialAd(null, null)
+            advance(DummyAdapter.DISMISS_AFTER)
+            
+            verify(listener).onRecordEvent(eq("adShow"), argThat {
+                contains("\"adProvider\":\"Dummy\"") &&
+                contains("\"adType\":\"INTERSTITIAL\"") &&
+                contains("\"adStatus\":\"${AdShowResult.FULFILLED}") &&
+                contains("\"adProviderVersion\":") &&
+                contains("\"adSdkVersion\":")
+            })
+            verify(listener).onRecordEvent(eq("adClosed"), argThat {
+                contains("\"adProvider\":\"Dummy\"") &&
+                contains("\"adType\":\"INTERSTITIAL\"") &&
+                contains("\"adStatus\":\"${AdClosedResult.SUCCESS}") &&
+                contains("\"adProviderVersion\":") &&
+                contains("\"adClicked\":") &&
+                contains("\"adLeftApplication\":") &&
+                contains("\"adEcpm\":")
+            })
+            
+            uut.showRewardedAd("point", params())
+            advance(DummyAdapter.DISMISS_AFTER)
+            
+            verify(listener).onRecordEvent(eq("adShow"), argThat {
+                contains("\"adProvider\":\"Dummy\"") &&
+                contains("\"adType\":\"REWARDED\"") &&
+                contains("\"adStatus\":\"${AdShowResult.FULFILLED}") &&
+                contains("\"adProviderVersion\":") &&
+                contains("\"adSdkVersion\":")
+            })
+            verify(listener).onRecordEvent(eq("adClosed"), argThat {
+                contains("\"adProvider\":\"Dummy\"") &&
+                contains("\"adType\":\"REWARDED\"") &&
+                contains("\"adStatus\":\"${AdClosedResult.SUCCESS}") &&
+                contains("\"adProviderVersion\":") &&
+                contains("\"adClicked\":") &&
+                contains("\"adLeftApplication\":") &&
+                contains("\"adEcpm\":")
+            })
         }
     }
     
@@ -283,13 +585,15 @@ class AdServiceImplTest {
         }
     }
     
+    private fun params(vararg values: Pair<String, *>) = jsonObject(*values).convert()
+    
     private data class Config(
             val decisionPoint: String = "",
-            val adShowSession: Boolean = false,
+            val adShowSession: Boolean = true,
             val adFloorPrice: Int = 0,
             val onDemoteRequestCode: Int = 0,
             val maxPerNetwork: Int = 0,
-            val adMinimumInterval: Int = -1,
+            val adMinimumInterval: Int = 0,
             val adMaxPerSession: Int = -1,
             val interstitial: List<AdProvider> = listOf(AdProvider.DUMMY),
             val rewarded: List<AdProvider> = listOf(AdProvider.DUMMY))

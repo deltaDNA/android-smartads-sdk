@@ -20,12 +20,19 @@ limitations under the License.
     
     <string name="new_session">New session</string>
     
-    <string name="engage_interstitial_ad">Engage interstitial ad</string>
-    <string name="engage_rewarded_ad">Engage rewarded ad</string>
-    <string name="engage_reward_or_image">Engage reward or image</string>
-    
     <string name="show_interstitial_ad">Show interstitial ad</string>
-    <string name="show_rewarded_ad">Show rewarded ad</string>
+    <string name="show_rewarded_ad1">Show rewarded ad 1</string>
+    <string name="show_rewarded_ad2">Show rewarded ad 2</string>
     
     <string name="user_id">User ID: %s</string>
+    <string name="stats">Session: %d (%d) | Today: %d (%d) | Time: %s%s</string>
+    
+    <string name="failed_to_register_interstitial">Failed to register for interstitial ads</string>
+    <string name="failed_to_register_rewarded">Failed to register for rewarded ads</string>
+    <string name="ready">Ready</string>
+    <string name="expired">Expired</string>
+    <string name="fulfilled">Fulfilled</string>
+    <string name="failed_to_open">Failed to open: %s</string>
+    <string name="watched">Watched, reward player %d %s</string>
+    <string name="skipped">Skipped, don\'t reward player</string>
 </resources>

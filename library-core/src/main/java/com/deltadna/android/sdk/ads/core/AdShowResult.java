@@ -20,13 +20,12 @@ public enum AdShowResult {
 
     FULFILLED("Fulfilled"),
     NO_AD_AVAILABLE("No ad was available"),
-    AD_SHOW_POINT("adShowPoint was false"),
+    AD_SHOW_POINT("Engage disallowed the ad"),
     SESSION_LIMIT_REACHED("Session limit reached"),
-    MIN_TIME_NOT_ELAPSED("adMinimumInterval not elapsed"),
-    NOT_READY("Not ready"),
-    AD_SHOW_ENGAGE_FAILED("Engage hit failed, showing ad anyway"),
-    INTERNAL_ERROR("Internal error"),
-    NOT_REGISTERED("Not registered");
+    SESSION_DECISION_POINT_LIMIT_REACHED("Session decision point limit reached"),
+    DAILY_DECISION_POINT_LIMIT_REACHED("Daily decision point limit reached"),
+    MIN_TIME_NOT_ELAPSED("Minimum time not elapsed"),
+    MIN_TIME_DECISION_POINT_NOT_ELAPSED("Minimum decision point time not elapsed");
 
     private String status;
 

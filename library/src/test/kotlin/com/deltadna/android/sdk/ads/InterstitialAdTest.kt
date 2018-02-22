@@ -18,8 +18,6 @@ package com.deltadna.android.sdk.ads
 
 import com.deltadna.android.sdk.DDNA
 import com.deltadna.android.sdk.Engagement
-import com.deltadna.android.sdk.ads.listeners.InterstitialAdsListener
-import com.github.salomonbrys.kotson.jsonObject
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockito_kotlin.*
 import org.json.JSONObject
@@ -35,10 +33,12 @@ class InterstitialAdTest {
     
     private val app = RuntimeEnvironment.application
     
-    private var ads = mock<Ads>()
+    private lateinit var ads: Ads
     
     @Before
     fun before() {
+        ads = mock()
+        
         DDNA.initialise(DDNA.Configuration(app, "envKey", "collUrl", "engUrl"))
         DDNASmartAds.initialise(DDNASmartAds.Configuration(app))
         DDNASmartAds.instance().inject(ads)
@@ -47,51 +47,37 @@ class InterstitialAdTest {
     @After
     fun after() {
         DDNASmartAds.instance().scrubAds()
-        reset(ads)
     }
     
     @Test
     fun createChecksIfAllowed() {
         with(KEngagement()) {
             InterstitialAd.create()
-            InterstitialAd.create(this)
+            verify(ads).isInterstitialAdAllowed(isNull(), eq(false))
             
-            verify(ads).isInterstitialAdAllowed(isNull())
-            verify(ads).isInterstitialAdAllowed(same(this))
+            InterstitialAd.create(this)
+            verify(ads).isInterstitialAdAllowed(same(this), eq(false))
         }
     }
     
     @Test
     fun createdWhenAllowed() {
-        whenever(ads.isInterstitialAdAllowed(anyOrNull())).then { true }
+        whenever(ads.isInterstitialAdAllowed(anyOrNull(), any())).then { true }
         
-        assertThat(InterstitialAd.create()!!.params).isNull()
-        
-        with(mock<Engagement<*>>()) {
-            whenever(this.getJson()).then { null }
-            
-            assertThat(InterstitialAd.create(this)!!.params).isNull()
-        }
+        var ad = InterstitialAd.create()!!
+        assertThat(ad).isNotNull()
+        assertThat(ad.engagement).isNull()
         
         with(mock<Engagement<*>>()) {
-            whenever(getJson()).then { JSONObject() }
-            
-            assertThat(InterstitialAd.create(this)!!.params).isNull()
-        }
-        
-        with(mock<Engagement<*>>()) {
-            whenever(getJson()).then {
-                jsonObject("parameters" to jsonObject()).convert()
-            }
-            
-            assertThat(InterstitialAd.create(this)!!.params!!.toString())
-                    .isEqualTo(JSONObject().toString())
+            ad = InterstitialAd.create(this)!!
+            assertThat(ad).isNotNull()
+            assertThat(ad.engagement).isSameAs(this)
         }
     }
     
     @Test
     fun notCreatedWhenDisallowed() {
-        whenever(ads.isInterstitialAdAllowed(anyOrNull())).then { false }
+        whenever(ads.isInterstitialAdAllowed(anyOrNull(), any())).then { false }
         
         assertThat(InterstitialAd.create()).isNull()
         assertThat(InterstitialAd.create(mock<Engagement<*>>())).isNull()
@@ -99,7 +85,7 @@ class InterstitialAdTest {
     
     @Test
     fun create() {
-        whenever(ads.isInterstitialAdAllowed(anyOrNull()))
+        whenever(ads.isInterstitialAdAllowed(anyOrNull(), any()))
                 .thenReturn(true, false, true, false)
         
         assertThat(InterstitialAd.create()).isNotNull()
@@ -109,23 +95,49 @@ class InterstitialAdTest {
     }
     
     @Test
+    fun createUnchecked() {
+        val ad = InterstitialAd.createUnchecked(
+                mock<Engagement<*>>().apply {
+                    whenever(getJson()).then { JSONObject() }
+                },
+                mock())
+        
+        assertThat(ad).isNotNull()
+        assertThat(ad.engagement).isNotNull()
+        verifyZeroInteractions(ads)
+    }
+    
+    @Test
+    fun createUncheckedWithInvalidEngagement() {
+        InterstitialAd.createUnchecked(
+                mock<Engagement<*>>().apply {
+                    whenever(getJson()).then { null }
+                },
+                mock()).apply {
+            assertThat(engagement).isNull()
+            assertThat(parameters.length()).isEqualTo(0)
+        }
+    }
+    
+    @Test
     fun isReady() {
-        whenever(ads.isInterstitialAdAllowed(anyOrNull())).then { true }
+        whenever(ads.isInterstitialAdAllowed(anyOrNull(), any())).then { true }
         
-        InterstitialAd.create()!!.isReady
+        InterstitialAd.create(mock<Engagement<*>>())!!.isReady
         
-        verify(ads).isInterstitialAdAvailable
+        verify(ads).hasLoadedInterstitialAd()
     }
     
     @Test
     fun show() {
-        whenever(ads.isInterstitialAdAllowed(anyOrNull())).then { true }
+        whenever(ads.isInterstitialAdAllowed(anyOrNull(), any())).then { true }
         
-        with(mock<InterstitialAdsListener>()) {
+        InterstitialAd.create()!!.show()
+        verify(ads).showInterstitialAd(isNull())
+        
+        with(mock<Engagement<*>>()) {
             InterstitialAd.create(this)!!.show()
-            
-            verify(ads).setInterstitialAdsListener(same(this))
-            verify(ads).showInterstitialAd(isNull())
+            verify(ads).showInterstitialAd(same(this))
         }
     }
 }

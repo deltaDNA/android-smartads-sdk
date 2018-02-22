@@ -20,6 +20,8 @@ import android.support.annotation.Nullable;
 
 import org.json.JSONObject;
 
+import java.util.Date;
+
 @UnityInterOp
 public interface AdService {
     
@@ -28,16 +30,30 @@ public interface AdService {
     
     boolean isInterstitialAdAllowed(
             @Nullable String decisionPoint,
-            @Nullable JSONObject engagementParameters);
+            @Nullable JSONObject parameters,
+            boolean checkTime);
     boolean isRewardedAdAllowed(
             @Nullable String decisionPoint,
-            @Nullable JSONObject engagementParameters);
+            @Nullable JSONObject parameters,
+            boolean checkTime);
+    int timeUntilRewardedAdAllowed(
+            @Nullable String decisionPoint,
+            @Nullable JSONObject parameters);
     
-    boolean isInterstitialAdAvailable();
-    boolean isRewardedAdAvailable();
+    boolean hasLoadedInterstitialAd();
+    boolean hasLoadedRewardedAd();
     
-    void showInterstitialAd(@Nullable String adPoint);
-    void showRewardedAd(@Nullable String adPoint);
+    void showInterstitialAd(
+            @Nullable String decisionPoint,
+            @Nullable JSONObject parameters);
+    void showRewardedAd(
+            @Nullable String decisionPoint,
+            @Nullable JSONObject parameters);
+    
+    @Nullable
+    Date getLastShown(String decisionPoint);
+    int getSessionCount(String decisionPoint);
+    int getDailyCount(String decisionPoint);
     
     void onPause();
     void onResume();

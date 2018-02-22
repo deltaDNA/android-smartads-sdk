@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 deltaDNA Ltd. All rights reserved.
+ * Copyright (c) 2018 deltaDNA Ltd. All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-android {
-    lintOptions {
-        // workaround for aar build, which reports missing stax dependency.
-        disable 'InvalidPackage'
-    }
-}
+package com.deltadna.android.sdk.ads.core;
 
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
-dependencies {
-    api project(':library-core')
+enum Preferences {
     
-    api 'com.deltadna.android:deltadna-sdk:4.7.0-SNAPSHOT'
-    implementation "com.android.support:support-v4:$supportVersion"
+    METRICS;
+    
+    String preferencesName() {
+        return PREFIX + '.' + name().toLowerCase();
+    }
+    
+    private static final String PREFIX = "com.deltadna.android.sdk.ads";
 }

@@ -17,63 +17,62 @@
 package com.deltadna.android.sdk.ads;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.deltadna.android.sdk.Engagement;
 import com.deltadna.android.sdk.ads.listeners.InterstitialAdsListener;
-
-import org.json.JSONObject;
 
 /**
  * Class for creating and showing an interstitial ad.
  * <p>
  * The ad can be created through one of the static {@code create} helpers,
- * from an {@link Engagement} as well as without one.
+ * from an {@link Engagement}.
  * <p>
  * The ad can be shown through {@link #show()}.
- * <p>
- * {@link DDNASmartAds} must be registered for ads beforehand.
  */
-public final class InterstitialAd {
+public final class InterstitialAd extends Ad {
     
-    /**
-     * Parameters from the Engage response if the ad was created from a
-     * successful {@link Engagement}, else {@code null}.
-     */
     @Nullable
-    public final JSONObject params;
-    @Nullable
-    private final InterstitialAdsListener listener;
-    
-    private final DDNASmartAds smartAds = DDNASmartAds.instance();
+    InterstitialAdsListener listener;
     
     private InterstitialAd(
-            @Nullable JSONObject params,
+            @Nullable Engagement engagement,
             @Nullable final InterstitialAdsListener listener) {
         
-        this.params = params;
+        super(engagement);
+        
         this.listener = listener;
     }
     
-    /**
-     * Gets whether an ad is available to be shown.
-     *
-     * @return {@code true} when an ad is available, else {@code false}
-     */
-    public boolean isReady() {
-        return (smartAds.getAds() != null
-                && smartAds.getAds().isInterstitialAdAvailable());
+    public InterstitialAd setListener(@Nullable InterstitialAdsListener listener) {
+        this.listener = listener;
+        return this;
     }
     
-    /**
-     * Shows an ad, if one is available.
-     *
-     * @return this instance
-     */
+    @Override
+    public boolean isReady() {
+        final Ads ads = DDNASmartAds.instance().getAds();
+        
+        if (engagement == null) {
+            return ads.hasLoadedInterstitialAd();
+        } else {
+            return (ads.isInterstitialAdAllowed(engagement, true)
+                    && ads.hasLoadedInterstitialAd());
+        }
+    }
+    
+    @Override
     public InterstitialAd show() {
-        final Ads ads = smartAds.getAds();
-        if (ads != null) {
-            ads.setInterstitialAdsListener(listener);
+        final Ads ads = DDNASmartAds.instance().getAds();
+        
+        // this is the instance that will receive callbacks
+        ads.setInterstitialAd(this);
+        
+        if (engagement == null) {
+            Log.w(BuildConfig.LOG_TAG, "Prefer showing ads with Engagements");
             ads.showInterstitialAd(null);
+        } else {
+            ads.showInterstitialAd(engagement);
         }
         
         return this;
@@ -111,7 +110,7 @@ public final class InterstitialAd {
     }
     
     /**
-     * Creates an interstitial ad from an Engage,ent once it has been populated
+     * Creates an interstitial ad from an Engagement once it has been populated
      * with response data after a successful request.
      * <p>
      * {@code null} may be returned in case the Engagement was not set-up to
@@ -148,14 +147,21 @@ public final class InterstitialAd {
             @Nullable InterstitialAdsListener listener) {
         
         final Ads ads = DDNASmartAds.instance().getAds();
-        if (ads == null || !ads.isInterstitialAdAllowed(engagement))  {
+        if (ads == null || !ads.isInterstitialAdAllowed(engagement, false))  {
             return null;
         } else {
-            return new InterstitialAd(
-                    (engagement == null || engagement.getJson() == null)
-                            ? null
-                            : engagement.getJson().optJSONObject("parameters"),
-                    listener);
+            return new InterstitialAd(engagement, listener);
+        }
+    }
+    
+    static InterstitialAd createUnchecked(
+            @Nullable Engagement engagement,
+            @Nullable InterstitialAdsListener listener) {
+        
+        if (engagement != null && engagement.getJson() == null) {
+            return new InterstitialAd(null, listener);
+        } else {
+            return new InterstitialAd(engagement, listener);
         }
     }
 }

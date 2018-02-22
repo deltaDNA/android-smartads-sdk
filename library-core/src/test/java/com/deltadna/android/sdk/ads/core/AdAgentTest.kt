@@ -57,7 +57,7 @@ class AdAgentTest {
             
             requestAd(activity, config)
             
-            assertThat(isAdLoaded).isTrue()
+            assertThat(hasLoadedAd()).isTrue()
             assertThat(adapters[0].requests).isEqualTo(1)
             verify(listener).onAdLoaded(same(this), same(adapters[0]), any())
             verifyNoMoreInteractions(listener)
@@ -73,7 +73,7 @@ class AdAgentTest {
             
             requestAd(activity, config)
             
-            assertThat(isAdLoaded).isFalse()
+            assertThat(hasLoadedAd()).isFalse()
             assertThat(adapters[0].requests).isEqualTo(0)
             verify(listener).onAdFailedToLoad(
                     same(this), 
@@ -97,7 +97,7 @@ class AdAgentTest {
             
             requestAd(activity, config)
             
-            assertThat(isAdLoaded).isTrue()
+            assertThat(hasLoadedAd()).isTrue()
             verify(listener).onAdLoaded(same(this), same(adapters[1]), any())
         }
     }
@@ -118,13 +118,13 @@ class AdAgentTest {
                     .getForegroundThreadScheduler()
                     .advanceBy(5, TimeUnit.SECONDS)
             
-            assertThat(isAdLoaded).isFalse()
+            assertThat(hasLoadedAd()).isFalse()
             
             Robolectric
                     .getForegroundThreadScheduler()
                     .advanceBy(10, TimeUnit.SECONDS)
             
-            assertThat(isAdLoaded).isTrue()
+            assertThat(hasLoadedAd()).isTrue()
             inOrder(listener) {
                 verify(listener).onAdFailedToLoad(
                         same(this@withAgent),
@@ -201,7 +201,7 @@ class AdAgentTest {
         withAgent(spiedAdapters(1)) { adapters ->
             requestAd(activity, config)
             
-            assertThat(isAdLoaded).isFalse()
+            assertThat(hasLoadedAd()).isFalse()
             verify(listener).onAdFailedToLoad(
                     same(this),
                     same(adapters[0]),
@@ -221,7 +221,7 @@ class AdAgentTest {
         withAgent(spiedAdapters(1)) { adapters ->
             requestAd(activity, config)
             
-            assertThat(isAdLoaded).isFalse()
+            assertThat(hasLoadedAd()).isFalse()
             verify(listener).onAdFailedToLoad(
                     same(this),
                     same(adapters[0]),
@@ -242,7 +242,7 @@ class AdAgentTest {
             
             requestAd(activity, config)
             
-            assertThat(isAdLoaded).isFalse()
+            assertThat(hasLoadedAd()).isFalse()
             verify(listener).onAdLoaded(same(this), same(adapters[0]), any())
             verify(listener).onAdOpened(same(this), same(adapters[0]))
             verify(listener).onAdClosed(same(this), same(adapters[0]), any())
@@ -256,7 +256,7 @@ class AdAgentTest {
         withAgent(spiedAdapters(1), crashes = arrayListOf(reason)) { adapters ->
             requestAd(activity, config)
             
-            assertThat(isAdLoaded).isFalse()
+            assertThat(hasLoadedAd()).isFalse()
             verify(listener).onAdFailedToLoad(
                     same(this),
                     same(adapters[0]),
@@ -291,7 +291,7 @@ class AdAgentTest {
             requestAd(activity, config)
             showAd("adpoint")
             
-            assertThat(isAdLoaded).isFalse()
+            assertThat(hasLoadedAd()).isFalse()
             inOrder(listener) {
                 verify(listener).onAdLoaded(
                         same(this@withAgent), same(adapters[0]), any())

@@ -21,6 +21,7 @@ import android.app.Application;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.deltadna.android.sdk.DDNA;
 import com.deltadna.android.sdk.ads.core.utils.Preconditions;
 import com.deltadna.android.sdk.ads.exceptions.NotInitialisedException;
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
@@ -43,6 +44,7 @@ public final class DDNASmartAds {
     private static DDNASmartAds instance = null;
     
     private final Ads ads;
+    private final EngageFactory engageFactory;
     
     /**
      * Initialises the {@link DDNASmartAds} singleton instance.
@@ -83,6 +85,16 @@ public final class DDNASmartAds {
         }
         
         return instance;
+    }
+    
+    /**
+     * Gets the Engage factory which provides an easier way of requesting
+     * Engage actions.
+     *
+     * @return the {@link EngageFactory}
+     */
+    public EngageFactory getEngageFactory() {
+        return engageFactory;
     }
     
     /**
@@ -137,6 +149,7 @@ public final class DDNASmartAds {
             @Nullable Class<? extends Activity> activity) {
         
         ads = new Ads(application, activity);
+        engageFactory = new EngageFactory(DDNA.instance(), ads);
     }
     
     /**

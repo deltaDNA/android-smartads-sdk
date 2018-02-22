@@ -16,6 +16,8 @@
 
 package com.deltadna.android.sdk.ads.listeners;
 
+import com.deltadna.android.sdk.ads.InterstitialAd;
+
 /**
  * Listener for events within the interstitial ad lifecycle.
  */
@@ -23,18 +25,23 @@ public interface InterstitialAdsListener {
     
     /**
      * Called when an interstitial ad has been opened.
+     *
+     * @param ad    the rewarded ad
      */
-    void onOpened();
+    void onOpened(InterstitialAd ad);
     
     /**
      * Called when an interstitial ad has failed to open.
      *
-     * @param reason the reason for the failure
+     * @param ad        the rewarded ad
+     * @param reason    the reason for the failure
      */
-    void onFailedToOpen(String reason);
+    void onFailedToOpen(InterstitialAd ad, String reason);
     
     /**
      * Called when an interstitial ad has closed.
+     *
+     * @param ad    the rewarded ad
      */
-    void onClosed();
+    void onClosed(InterstitialAd ad);
 }
