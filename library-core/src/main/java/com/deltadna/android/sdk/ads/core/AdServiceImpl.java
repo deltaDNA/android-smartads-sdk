@@ -30,8 +30,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.Actions;
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MainThread;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.core.utils.Preconditions;
@@ -315,7 +315,7 @@ final class AdServiceImpl implements AdService {
         switch (result) {
             case MIN_TIME_NOT_ELAPSED:
             case MIN_TIME_DECISION_POINT_NOT_ELAPSED:
-            case NO_AD_AVAILABLE:
+            case NOT_LOADED:
                 allowed = !checkTime;
                 break;
                 
@@ -383,7 +383,7 @@ final class AdServiceImpl implements AdService {
         switch (result) {
             case AD_SHOW_POINT:
                 postAdShowEvent(agent, decisionPoint, result);
-                didFailToOpenAd(agent, result.getStatus());
+                didFailToOpenAd(agent, result.status);
                 return;
             
             case MIN_TIME_NOT_ELAPSED:
@@ -421,7 +421,7 @@ final class AdServiceImpl implements AdService {
         }
         
         if (!agent.hasLoadedAd()) {
-            postAdShowEvent(agent, decisionPoint, AdShowResult.NO_AD_AVAILABLE);
+            postAdShowEvent(agent, decisionPoint, AdShowResult.NOT_LOADED);
             didFailToOpenAd(agent, "Ad not loaded");
             return;
         }
@@ -494,7 +494,7 @@ final class AdServiceImpl implements AdService {
         }
         
         if (!agent.hasLoadedAd()) {
-            return AdShowResult.NO_AD_AVAILABLE;
+            return AdShowResult.NOT_LOADED;
         }
         
         return AdShowResult.FULFILLED;
@@ -513,7 +513,7 @@ final class AdServiceImpl implements AdService {
             params.put("adPoint", decisionPoint);
             params.put("adProvider", provider != null ? provider.getProviderString() : "N/A");
             params.put("adProviderVersion", provider != null ? provider.getProviderVersionString() : "N/A");
-            params.put("adStatus", result.getStatus());
+            params.put("adStatus", result.status);
             params.put("adSdkVersion", VERSION);
         } catch (JSONException e) {
             Log.w(BuildConfig.LOG_TAG, "Failed to build adShow parameters", e);
@@ -525,7 +525,7 @@ final class AdServiceImpl implements AdService {
         listener.onRecordEvent("adShow", params.toString());
     }
     
-    private void postAdClosedEvent(AdAgent adAgent, MediationAdapter mediationAdapter, AdClosedResult adClosedResult) {
+    private void postAdClosedEvent(AdAgent adAgent, MediationAdapter mediationAdapter) {
         JSONObject eventParams = new JSONObject();
         try {
             eventParams.put("adProvider", mediationAdapter != null ? mediationAdapter.getProviderString() : "N/A");
@@ -535,7 +535,7 @@ final class AdServiceImpl implements AdService {
             eventParams.put("adLeftApplication", adAgent != null && adAgent.adDidLeaveApplication());
             eventParams.put("adEcpm", mediationAdapter != null ? mediationAdapter.eCPM : 0);
             eventParams.put("adSdkVersion", VERSION);
-            eventParams.put("adStatus", adClosedResult.status);
+            eventParams.put("adStatus", "Success");
         } catch (JSONException e) {
             Log.e(BuildConfig.LOG_TAG, e.getMessage());
         }
@@ -651,19 +651,19 @@ final class AdServiceImpl implements AdService {
                 AdAgent agent,
                 MediationAdapter adapter,
                 String reason,
-                AdClosedResult result) {
+                AdShowResult result) {
             
             if (agent.equals(interstitialAgent)) {
                 Log.w(  BuildConfig.LOG_TAG,
                         "Interstitial ad failed to open: " + reason);
                 
-                postAdClosedEvent(agent, adapter, result);
+                postAdShowEvent(agent, decisionPoint, result);
                 listener.onInterstitialAdFailedToOpen(reason);
             } else if (agent.equals(rewardedAgent)) {
                 Log.w(  BuildConfig.LOG_TAG,
                         "Rewarded ad failed to open: " + reason);
                 
-                postAdClosedEvent(agent, adapter, result);
+                postAdShowEvent(agent, decisionPoint, result);
                 listener.onRewardedAdFailedToOpen(reason);
             }
         }
@@ -683,12 +683,12 @@ final class AdServiceImpl implements AdService {
             if (agent.equals(interstitialAgent)) {
                 Log.d(BuildConfig.LOG_TAG, "Interstitial ad closed");
                 
-                postAdClosedEvent(agent, adapter, AdClosedResult.SUCCESS);
+                postAdClosedEvent(agent, adapter);
                 listener.onInterstitialAdClosed();
             } else if (agent.equals(rewardedAgent)) {
                 Log.d(BuildConfig.LOG_TAG, "Rewarded ad closed");
                 
-                postAdClosedEvent(agent, adapter, AdClosedResult.SUCCESS);
+                postAdClosedEvent(agent, adapter);
                 listener.onRewardedAdClosed(complete);
             }
         }
@@ -916,7 +916,7 @@ final class AdServiceImpl implements AdService {
                 AdAgent agent,
                 MediationAdapter adapter,
                 String reason,
-                AdClosedResult result) {}
+                AdShowResult result) {}
         
         @Override
         public void onAdClosed(

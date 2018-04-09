@@ -21,8 +21,8 @@ import android.util.Log;
 
 import com.chartboost.sdk.ChartboostDelegate;
 import com.chartboost.sdk.Model.CBError;
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 
@@ -186,11 +186,11 @@ final class Delegate extends ChartboostDelegate {
             boolean loadFailure) {
         
         final AdRequestResult loadResult;
-        AdClosedResult showResult = AdClosedResult.ERROR;
+        AdShowResult showResult = AdShowResult.ERROR;
         switch (error) {
             case NO_AD_FOUND:
                 loadResult = AdRequestResult.NoFill;
-                showResult = AdClosedResult.NOT_READY;
+                showResult = AdShowResult.EXPIRED;
                 break;
             
             case INTERNET_UNAVAILABLE:

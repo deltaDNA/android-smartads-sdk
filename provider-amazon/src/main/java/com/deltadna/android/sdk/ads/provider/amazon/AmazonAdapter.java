@@ -22,8 +22,8 @@ import android.util.Log;
 
 import com.amazon.device.ads.AdRegistration;
 import com.amazon.device.ads.InterstitialAd;
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 
@@ -114,18 +114,18 @@ public final class AmazonAdapter extends MediationAdapter {
     public void showAd() {
         if (listener != null) {
             if (interstitial == null) {
-                Log.w(BuildConfig.LOG_TAG, "Failed to show ad: null");
-                listener.onAdFailedToShow(this, AdClosedResult.ERROR);
+                Log.w(BuildConfig.LOG_TAG, "Ad is null");
+                listener.onAdFailedToShow(this, AdShowResult.ERROR);
             } else if (forwarder != null && forwarder.isExpired()) {
-                Log.w(BuildConfig.LOG_TAG, "Failed to show ad: expired");
-                listener.onAdFailedToShow(this, AdClosedResult.EXPIRED);
+                Log.w(BuildConfig.LOG_TAG, "Forwarded expired ad");
+                listener.onAdFailedToShow(this, AdShowResult.EXPIRED);
             } else if (!interstitial.isReady()) {
-                Log.w(BuildConfig.LOG_TAG, "Failed to show ad: not ready");
-                listener.onAdFailedToShow(this, AdClosedResult.NOT_READY);
+                Log.w(BuildConfig.LOG_TAG, "Ad is not ready");
+                listener.onAdFailedToShow(this, AdShowResult.EXPIRED);
             } else {
                 if (!interstitial.showAd()) {
-                    Log.w(BuildConfig.LOG_TAG, "Failed to show ad");
-                    listener.onAdFailedToShow(this, AdClosedResult.ERROR);
+                    Log.w(BuildConfig.LOG_TAG, "Showing ad failed");
+                    listener.onAdFailedToShow(this, AdShowResult.ERROR);
                 } else {
                     listener.onAdShowing(this);
                 }

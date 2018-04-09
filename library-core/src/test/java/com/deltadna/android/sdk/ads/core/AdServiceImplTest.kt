@@ -19,8 +19,8 @@ package com.deltadna.android.sdk.ads.core
 import android.app.Activity
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
+import com.deltadna.android.sdk.ads.bindings.AdShowResult
 import com.deltadna.android.sdk.ads.core.network.DummyAdapter
 import com.github.salomonbrys.kotson.jsonArray
 import com.github.salomonbrys.kotson.jsonObject
@@ -511,7 +511,6 @@ class AdServiceImplTest {
             verify(listener).onRecordEvent(eq("adClosed"), argThat {
                 contains("\"adProvider\":\"Dummy\"") &&
                 contains("\"adType\":\"INTERSTITIAL\"") &&
-                contains("\"adStatus\":\"${AdClosedResult.SUCCESS}") &&
                 contains("\"adProviderVersion\":") &&
                 contains("\"adClicked\":") &&
                 contains("\"adLeftApplication\":") &&
@@ -531,8 +530,8 @@ class AdServiceImplTest {
             verify(listener).onRecordEvent(eq("adClosed"), argThat {
                 contains("\"adProvider\":\"Dummy\"") &&
                 contains("\"adType\":\"REWARDED\"") &&
-                contains("\"adStatus\":\"${AdClosedResult.SUCCESS}") &&
                 contains("\"adProviderVersion\":") &&
+                contains("\"adStatus\":\"Success") &&
                 contains("\"adClicked\":") &&
                 contains("\"adLeftApplication\":") &&
                 contains("\"adEcpm\":")
@@ -573,7 +572,7 @@ class AdServiceImplTest {
             uut.registerForAds(decisionPoint)
         }
         
-        block.invoke(uut)
+        block(uut)
     }
     
     private fun advance(time: Int) {

@@ -20,8 +20,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.vungle.publisher.VungleAdEventListener;
@@ -86,7 +86,7 @@ final class EventForwarder implements VungleAdEventListener {
         
         if (!isSamePlacement(placementId)) return;
         
-        listener.onAdFailedToShow(adapter, AdClosedResult.EXPIRED);
+        listener.onAdFailedToShow(adapter, AdShowResult.EXPIRED);
     }
     
     @Override

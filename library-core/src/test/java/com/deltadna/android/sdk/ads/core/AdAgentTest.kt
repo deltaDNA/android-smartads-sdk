@@ -20,8 +20,8 @@ import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
+import com.deltadna.android.sdk.ads.bindings.AdShowResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockito_kotlin.*
@@ -326,7 +326,7 @@ class AdAgentTest {
                     same(this),
                     same(adapters[0]),
                     any(),
-                    eq(AdClosedResult.NOT_READY))
+                    eq(AdShowResult.NOT_LOADED))
         }
     }
     
@@ -337,7 +337,7 @@ class AdAgentTest {
                 onAdLoaded(adapters[0])
             }.whenever(adapters[0]).requestAd(activity, this, config)
             doAnswer {
-                onAdFailedToShow(adapters[0], AdClosedResult.ERROR)
+                onAdFailedToShow(adapters[0], AdShowResult.ERROR)
             }.whenever(adapters[0]).showAd()
             doAnswer {
                 onAdLoaded(adapters[1])
@@ -351,7 +351,7 @@ class AdAgentTest {
                         same(this@withAgent),
                         same(adapters[0]),
                         any(),
-                        eq(AdClosedResult.ERROR))
+                        eq(AdShowResult.ERROR))
                 verify(listener).onAdLoaded(
                         same(this@withAgent), same(adapters[1]), any())
             }

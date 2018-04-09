@@ -16,7 +16,6 @@
 
 package com.deltadna.android.sdk.ads.provider.machinezone
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.fractionalmedia.sdk.AdRequest

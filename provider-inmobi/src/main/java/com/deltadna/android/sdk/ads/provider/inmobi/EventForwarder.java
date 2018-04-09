@@ -18,8 +18,8 @@ package com.deltadna.android.sdk.ads.provider.inmobi;
 
 import android.util.Log;
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.inmobi.ads.InMobiAdRequestStatus;
@@ -102,7 +102,7 @@ abstract class EventForwarder implements
     @Override
     public void onAdDisplayFailed(InMobiInterstitial ad) {
         Log.w(BuildConfig.LOG_TAG, "Ad display failed: " + ad);
-        listener.onAdFailedToShow(adapter, AdClosedResult.ERROR);
+        listener.onAdFailedToShow(adapter, AdShowResult.ERROR);
     }
     
     @Override
