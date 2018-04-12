@@ -16,15 +16,29 @@
 
 package com.deltadna.android.sdk.ads.bindings;
 
-public enum AdClosedResult {
-    SUCCESS("Success"),
+public enum AdShowResult {
+    
+    FULFILLED("Fulfilled"),
+    AD_SHOW_POINT("Engage disallowed the ad"),
+    SESSION_LIMIT_REACHED("Session limit reached"),
+    SESSION_DECISION_POINT_LIMIT_REACHED("Session decision point limit reached"),
+    DAILY_DECISION_POINT_LIMIT_REACHED("Daily decision point limit reached"),
+    MIN_TIME_NOT_ELAPSED("Minimum time not elapsed"),
+    MIN_TIME_DECISION_POINT_NOT_ELAPSED("Minimum decision point time not elapsed"),
+    NOT_LOADED("Not loaded"),
     EXPIRED("Expired"),
-    ERROR("Error"),
-    NOT_READY("Not Ready");
+    ERROR("Error");
     
     public final String status;
     
-    AdClosedResult(String status) {
+    AdShowResult(String status) {
         this.status = status;
+    }
+    
+    @Override
+    public String toString() {
+        return "AdStatus{" +
+                "status='" + status + '\'' +
+                '}';
     }
 }

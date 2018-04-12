@@ -18,8 +18,8 @@ package com.deltadna.android.sdk.ads.provider.machinezone;
 
 import android.util.Log;
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.fractionalmedia.sdk.AdRequest;
 import com.fractionalmedia.sdk.AdZoneError;
@@ -54,11 +54,11 @@ final class EventForwarder {
         switch (error) {
             case E_30500:
             case E_30501:
-                listener.onAdFailedToShow(adapter, AdClosedResult.ERROR);
+                listener.onAdFailedToShow(adapter, AdShowResult.ERROR);
                 return;
                 
             case E_30502:
-                listener.onAdFailedToShow(adapter, AdClosedResult.NOT_READY);
+                listener.onAdFailedToShow(adapter, AdShowResult.EXPIRED);
                 return;
                 
             case E_30000:

@@ -18,8 +18,9 @@ package com.deltadna.android.sdk.ads.provider.admob;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.google.android.gms.ads.AdRequest;
@@ -88,10 +89,12 @@ public final class AdMobRewardedAdapter extends MediationAdapter {
                 listener = null;
                 ad = null;
             } else if (listener != null) {
-                listener.onAdFailedToShow(this, AdClosedResult.NOT_READY);
+                Log.w(BuildConfig.LOG_TAG, "Ad is not loaded");
+                listener.onAdFailedToShow(this, AdShowResult.EXPIRED);
             }
         } else if (listener != null) {
-            listener.onAdFailedToShow(this, AdClosedResult.ERROR);
+            Log.w(BuildConfig.LOG_TAG, "Ad is null");
+            listener.onAdFailedToShow(this, AdShowResult.ERROR);
         }
     }
     

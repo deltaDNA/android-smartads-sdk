@@ -26,8 +26,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.util.Log;
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 
@@ -151,7 +151,7 @@ class AdAgent implements MediationListener {
                             AdAgent.this,
                             currentAdapter,
                             "Not loaded an ad",
-                            AdClosedResult.NOT_READY);
+                            AdShowResult.NOT_LOADED);
                 }
             });
         }
@@ -304,7 +304,7 @@ class AdAgent implements MediationListener {
     @Override
     public void onAdFailedToShow(
             final MediationAdapter adapter,
-            final AdClosedResult result) {
+            final AdShowResult result) {
         
         if (adapter.equals(currentAdapter)) {
             Log.d(TAG, String.format(

@@ -19,8 +19,8 @@ package com.deltadna.android.sdk.ads.provider.ironsource;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.ironsource.mediationsdk.logger.IronSourceError;
@@ -80,7 +80,7 @@ final class IronSourceRewardedEventForwarder implements RewardedVideoListener {
     @Override
     public void onRewardedVideoAdShowFailed(IronSourceError error) {
         Log.w(BuildConfig.LOG_TAG, "Rewarded video ad show failed: " + error);
-        if (listener != null) listener.onAdFailedToShow(adapter, AdClosedResult.ERROR);
+        if (listener != null) listener.onAdFailedToShow(adapter, AdShowResult.ERROR);
     }
     
     @Override

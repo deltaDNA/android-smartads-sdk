@@ -18,8 +18,8 @@ package com.deltadna.android.sdk.ads.provider.ironsource;
 
 import android.util.Log;
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.ironsource.mediationsdk.logger.IronSourceError;
@@ -82,7 +82,7 @@ final class IronSourceInterstitialEventForwarder implements InterstitialListener
     @Override
     public void onInterstitialAdShowFailed(IronSourceError error) {
         Log.w(BuildConfig.LOG_TAG, "Interstitial ad show failed: " + error);
-        listener.onAdFailedToShow(adapter, AdClosedResult.ERROR);
+        listener.onAdFailedToShow(adapter, AdShowResult.ERROR);
     }
     
     @Override

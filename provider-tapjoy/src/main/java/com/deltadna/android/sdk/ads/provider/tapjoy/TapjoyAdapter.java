@@ -22,8 +22,8 @@ import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.tapjoy.TJConnectListener;
@@ -105,12 +105,15 @@ public final class TapjoyAdapter extends MediationAdapter {
                 listener = null;
             } else if (listener != null) {
                 Log.w(BuildConfig.LOG_TAG, "Ad is not ready");
-                listener.onAdFailedToShow(this, AdClosedResult.NOT_READY);
+                listener.onAdFailedToShow(this, AdShowResult.EXPIRED);
             } else {
                 Log.w(BuildConfig.LOG_TAG, "Listener is null");
             }
-        } else {
+        } else if (listener != null) {
             Log.w(BuildConfig.LOG_TAG, "Ad is null");
+            listener.onAdFailedToShow(this, AdShowResult.ERROR);
+        } else {
+            Log.w(BuildConfig.LOG_TAG, "Listener is null");
         }
     }
     

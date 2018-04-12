@@ -16,9 +16,6 @@
 
 package com.deltadna.android.sdk.ads.bindings;
 
-/**
- * Created by davidwhite on 29/05/15.
- */
 public interface MediationListener {
 
     void onAdLoaded(MediationAdapter mediationAdapter);
@@ -27,7 +24,7 @@ public interface MediationListener {
 
     void onAdShowing(MediationAdapter mediationAdapter);
 
-    void onAdFailedToShow(MediationAdapter mediationAdapter, AdClosedResult adClosedResult);
+    void onAdFailedToShow(MediationAdapter adapter, AdShowResult result);
 
     void onAdClicked(MediationAdapter mediationAdapter);
 

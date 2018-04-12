@@ -16,8 +16,8 @@
 
 package com.deltadna.android.sdk.ads.core;
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 
 public interface AdAgentListener {
@@ -28,7 +28,7 @@ public interface AdAgentListener {
 
     void onAdOpened(AdAgent adAgent, MediationAdapter mediationAdapter);
 
-    void onAdFailedToOpen(AdAgent adAgent, MediationAdapter mediationAdapter, String reason, AdClosedResult adClosedResult);
+    void onAdFailedToOpen(AdAgent agent, MediationAdapter adapter, String reason, AdShowResult result);
 
     void onAdClosed(AdAgent adAgent, MediationAdapter mediationAdapter, boolean complete);
 }

@@ -18,8 +18,9 @@ package com.deltadna.android.sdk.ads.provider.loopme;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.loopme.LoopMeInterstitial;
@@ -71,9 +72,11 @@ public final class LoopMeAdapter extends MediationAdapter {
     public void showAd() {
         if (ad != null) {
             if (forwarder != null && forwarder.hasExpired() && listener != null) {
-                listener.onAdFailedToShow(this, AdClosedResult.EXPIRED);
+                Log.w(BuildConfig.LOG_TAG, "Forwarded expired ad");
+                listener.onAdFailedToShow(this, AdShowResult.EXPIRED);
             } else if (!ad.isReady() && listener != null) {
-                listener.onAdFailedToShow(this, AdClosedResult.NOT_READY);
+                Log.w(BuildConfig.LOG_TAG, "Ad is not ready");
+                listener.onAdFailedToShow(this, AdShowResult.EXPIRED);
             } else if (ad.isReady()) {
                 ad.show();
             }

@@ -18,8 +18,8 @@ package com.deltadna.android.sdk.ads.provider.flurry;
 
 import android.util.Log;
 
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.flurry.android.ads.FlurryAdErrorType;
@@ -156,7 +156,7 @@ final class FlurryInterstitialEventForwarder implements FlurryAdInterstitialList
             
             case RENDER:
             case CLICK:
-                listener.onAdFailedToShow(adapter, AdClosedResult.ERROR);
+                listener.onAdFailedToShow(adapter, AdShowResult.ERROR);
                 break;
             
             default:

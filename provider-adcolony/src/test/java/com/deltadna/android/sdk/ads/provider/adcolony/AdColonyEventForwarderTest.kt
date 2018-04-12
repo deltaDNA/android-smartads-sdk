@@ -17,8 +17,8 @@
 package com.deltadna.android.sdk.ads.provider.adcolony
 
 import com.adcolony.sdk.AdColonyInterstitial
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
+import com.deltadna.android.sdk.ads.bindings.AdShowResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.google.common.truth.Truth.assertThat
@@ -127,6 +127,6 @@ class AdColonyEventForwarderTest {
         
         verify(listener).onAdFailedToShow(
                 same(adapter),
-                eq(AdClosedResult.EXPIRED))
+                eq(AdShowResult.EXPIRED))
     }
 }

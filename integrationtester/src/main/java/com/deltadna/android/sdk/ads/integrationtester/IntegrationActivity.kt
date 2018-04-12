@@ -22,8 +22,8 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
-import com.deltadna.android.sdk.ads.bindings.AdClosedResult
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
+import com.deltadna.android.sdk.ads.bindings.AdShowResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter
@@ -105,9 +105,9 @@ class IntegrationActivity : AppCompatActivity() {
         
         override fun onAdFailedToShow(
                 mediationAdapter: MediationAdapter,
-                adClosedResult: AdClosedResult) {
+                adShowResult: AdShowResult) {
             
-            debug("Ad failed to show; result: $adClosedResult")
+            debug("Ad failed to show; result: $adShowResult")
         }
         
         override fun onAdClicked(mediationAdapter: MediationAdapter) {
