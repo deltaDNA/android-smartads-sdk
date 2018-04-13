@@ -17,6 +17,7 @@
 package com.deltadna.android.sdk.ads.provider.vungle
 
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
+import com.deltadna.android.sdk.ads.bindings.AdShowResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.nhaarman.mockito_kotlin.*
@@ -83,7 +84,7 @@ class EventForwarderTest {
         
         verify(listener).onAdFailedToShow(
                 same(adapter),
-                eq(AdClosedResult.EXPIRED))
+                eq(AdShowResult.EXPIRED))
     }
     
     @Test

@@ -21,6 +21,7 @@ import com.deltadna.android.sdk.Engagement
 import com.deltadna.android.sdk.Params
 import com.deltadna.android.sdk.listeners.EngageListener
 import com.nhaarman.mockito_kotlin.*
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +48,12 @@ class EngageFactoryTest {
         uut = EngageFactory(analytics, ads)
         
         DDNA.initialise(DDNA.Configuration(app, "envKey", "collUrl", "engUrl"))
-        DDNASmartAds.initialise(DDNASmartAds.Configuration(app))
+        DDNASmartAds.initialise(DDNASmartAds.Configuration(app)).inject(ads)
+    }
+    
+    @After
+    fun after() {
+        DDNASmartAds.instance().scrubAds()
     }
     
     @Test

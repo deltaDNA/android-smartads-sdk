@@ -17,6 +17,7 @@
 package com.deltadna.android.sdk.ads.provider.machinezone
 
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
+import com.deltadna.android.sdk.ads.bindings.AdShowResult
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.fractionalmedia.sdk.AdRequest
 import com.fractionalmedia.sdk.AdZoneError
@@ -68,10 +69,10 @@ class EventForwarderTest {
         
         verify(listener, times(2)).onAdFailedToShow(
                 same(adapter),
-                eq(AdClosedResult.ERROR))
+                eq(AdShowResult.ERROR))
         verify(listener).onAdFailedToShow(
                 same(adapter),
-                eq(AdClosedResult.NOT_READY))
+                eq(AdShowResult.EXPIRED))
         verify(listener).onAdFailedToLoad(
                 same(adapter),
                 eq(AdRequestResult.NoFill),

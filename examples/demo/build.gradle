@@ -159,7 +159,3 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$supportVersion"
     implementation "com.android.support:multidex:$multidexVersion"
 }
-
-nimbledroid {
-    variant 'all_Release'
-}

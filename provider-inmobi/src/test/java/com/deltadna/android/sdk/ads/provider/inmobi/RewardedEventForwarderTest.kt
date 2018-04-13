@@ -17,6 +17,7 @@
 package com.deltadna.android.sdk.ads.provider.inmobi
 
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
+import com.deltadna.android.sdk.ads.bindings.AdShowResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.inmobi.ads.InMobiAdRequestStatus
@@ -120,7 +121,7 @@ class RewardedEventForwarderTest {
             verify(listener).onAdLoaded(same(adapter))
             verify(listener).onAdFailedToShow(
                     same(adapter),
-                    eq(AdClosedResult.ERROR))
+                    eq(AdShowResult.ERROR))
         }
     }
     

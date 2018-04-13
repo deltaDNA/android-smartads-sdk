@@ -18,6 +18,7 @@ package com.deltadna.android.sdk.ads.provider.chartboost
 
 import com.chartboost.sdk.Model.CBError
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
+import com.deltadna.android.sdk.ads.bindings.AdShowResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.nhaarman.mockito_kotlin.*
@@ -127,7 +128,7 @@ class DelegateTest {
         verify(interstitialListener).onAdLoaded(same(interstitialAdapter))
         verify(interstitialListener).onAdFailedToShow(
                 same(interstitialAdapter),
-                eq(AdClosedResult.ERROR))
+                eq(AdShowResult.ERROR))
     }
     
     @Test
@@ -203,6 +204,6 @@ class DelegateTest {
         verify(rewardedListener).onAdLoaded(same(rewardedAdapter))
         verify(rewardedListener).onAdFailedToShow(
                 same(rewardedAdapter),
-                eq(AdClosedResult.ERROR))
+                eq(AdShowResult.ERROR))
     }
 }

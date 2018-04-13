@@ -16,7 +16,7 @@
 
 buildscript {
     ext {
-        kotlinVersion = '1.2.21'
+        kotlinVersion = '1.2.31'
         multidexVersion = '1.0.1'
         playServicesVersion = '11.8.0'
         supportVersion = '26.1.0'
@@ -32,10 +32,12 @@ buildscript {
     }
     
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.2'
-        classpath 'gradle.plugin.com.nimbledroid:gradle-profiler:1.1.8'
-        classpath 'org.jacoco:org.jacoco.core:0.7.9'
+        classpath 'com.android.tools.build:gradle:3.2.0-alpha10'
+        classpath('com.dicedmelon.gradle:jacoco-android:0.1.2') {
+            // https://github.com/arturdm/jacoco-android-gradle-plugin/issues/42
+            exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+        }
+        classpath 'org.jacoco:org.jacoco.core:0.8.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
@@ -62,7 +64,6 @@ subprojects {
         apply plugin: 'jacoco-android'
     } else {
         apply plugin: 'com.android.application'
-        apply plugin: 'com.nimbledroid.profiler'
     }
     apply plugin: 'kotlin-android'
     apply plugin: 'kotlin-android-extensions'
@@ -75,7 +76,7 @@ subprojects {
     
     android {
         compileSdkVersion 26
-        buildToolsVersion '26.0.3'
+        buildToolsVersion '27.0.3'
         
         defaultConfig {
             minSdkVersion 16
@@ -137,13 +138,7 @@ subprojects {
             testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
             testImplementation 'org.json:json:20171018'
             testImplementation 'org.mockito:mockito-core:2.16.0'
-            testImplementation 'org.robolectric:robolectric:3.7'
-        }
-    }
-    
-    if (!isLibrary && project.hasProperty('nimbleDroidApiKey')) {
-        nimbledroid {
-            apiKey nimbleDroidApiKey
+            testImplementation 'org.robolectric:robolectric:3.8'
         }
     }
     
@@ -153,7 +148,7 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.4.1'
+    gradleVersion = '4.6'
 }
 
 task clean(type: Delete) {

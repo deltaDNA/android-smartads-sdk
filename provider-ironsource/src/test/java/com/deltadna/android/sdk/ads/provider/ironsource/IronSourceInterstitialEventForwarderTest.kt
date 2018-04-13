@@ -17,6 +17,7 @@
 package com.deltadna.android.sdk.ads.provider.ironsource
 
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
+import com.deltadna.android.sdk.ads.bindings.AdShowResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.ironsource.mediationsdk.logger.IronSourceError
@@ -79,7 +80,7 @@ class IronSourceInterstitialEventForwarderTest {
         
         verify(listener).onAdFailedToShow(
                 same(adapter),
-                eq(AdClosedResult.ERROR))
+                eq(AdShowResult.ERROR))
     }
     
     @Test

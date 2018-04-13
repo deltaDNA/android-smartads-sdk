@@ -109,7 +109,7 @@ class AdMetricsTest {
         val date3 = Date()
         uut.newSession(date3)
         
-        assertThat(uut.lastShown(dp)).isEqualTo(date3)
+        assertThat(uut.lastShown(dp)).isEqualTo(date2)
         assertThat(uut.sessionCount(dp)).isEqualTo(0)
         assertThat(uut.dailyCount(dp)).isEqualTo(3)
     }
