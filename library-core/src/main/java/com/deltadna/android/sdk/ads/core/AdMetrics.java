@@ -25,6 +25,7 @@ import com.deltadna.android.sdk.ads.core.utils.Preconditions;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 final class AdMetrics {
@@ -37,7 +38,7 @@ final class AdMetrics {
         DAILY_COUNT;
         
         final String keyFor(String decisionPoint) {
-            return decisionPoint + '_' + name().toLowerCase();
+            return decisionPoint + '_' + name().toLowerCase(Locale.ENGLISH);
         }
     }
     

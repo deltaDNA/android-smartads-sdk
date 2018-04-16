@@ -16,12 +16,14 @@
 
 package com.deltadna.android.sdk.ads.core;
 
+import java.util.Locale;
+
 enum Preferences {
     
     METRICS;
     
     String preferencesName() {
-        return PREFIX + '.' + name().toLowerCase();
+        return PREFIX + '.' + name().toLowerCase(Locale.ENGLISH);
     }
     
     private static final String PREFIX = "com.deltadna.android.sdk.ads";

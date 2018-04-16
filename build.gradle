@@ -17,7 +17,7 @@
 buildscript {
     ext {
         kotlinVersion = '1.2.31'
-        multidexVersion = '1.0.1'
+        multidexVersion = '1.0.3'
         playServicesVersion = '11.8.0'
         supportVersion = '26.1.0'
         
