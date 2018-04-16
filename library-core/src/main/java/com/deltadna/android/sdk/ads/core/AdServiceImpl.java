@@ -148,7 +148,6 @@ final class AdServiceImpl implements AdService {
     
     @Override
     public void onNewSession() {
-        metrics.newSession(new Date());
         broadcasts.sendBroadcast(new Intent(Actions.SESSION_UPDATED));
     }
     
@@ -838,6 +837,8 @@ final class AdServiceImpl implements AdService {
                                 Actions.REASON,
                                 "No rewarded ad networks configured"));
             }
+            
+            metrics.newSession(new Date());
         }
         
         @Override
