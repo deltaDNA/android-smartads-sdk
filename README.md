@@ -123,20 +123,20 @@ DDNASmartAds.instance().getEngageFactory().requestInterstitialAd(
         });
 ```
 
-Alternatively, if more control is needed, ads can also be created by performing an Engage request and creating an `InterstitialAd` or `RewardedAd` instance from the returned `Engagement`.
+Alternatively, if more control over the possible Engage responses is needed, Engage checked ads can be created by performing an Engage request and then creating an `InterstitialAd` or `RewardedAd` instance from the returned `Engagement`. The following example shows how to handle Engage returning an ad or an image message.
 ```java
 DDNA.instance().requestEngagement(
-        new Engagement("myDecisionPoint"),
+        new Engagement("showAdOrImageMessage"),
         new EngageListener<Engagement>() {
             @Override
             public void onCompleted(Engagement engagement) {
-                RewardedAd reward = RewardedAd.create(engagement);
+                RewardedAd ad = RewardedAd.create(engagement);
                 ImageMessage image = ImageMessage.create(engagement);
                 
                 if (image != null) {
                     // code for showing Image Message
-                } else if (reward != null) {
-                    reward.show();
+                } else if (ad != null) {
+                    ad.show();
                 }
             }
             
