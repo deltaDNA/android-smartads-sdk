@@ -19,6 +19,7 @@ package com.deltadna.android.sdk.ads.core;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +36,7 @@ final class WaterfallFactory {
             int adFloorPrice,
             int demoteOnCode,
             int maxRequests,
+            Privacy privacy,
             AdProviderType type) {
         
         final List<MediationAdapter> adapters =
@@ -47,7 +49,7 @@ final class WaterfallFactory {
                 config = providers.getJSONObject(i);
                 provider = AdProvider.valueOf(config, type);
             } catch (JSONException | IllegalArgumentException e) {
-                Log.w(BuildConfig.LOG_TAG,
+                Log.w(  BuildConfig.LOG_TAG,
                         String.format(
                                 Locale.US,
                                 "Failed to find ad network at index %d",
@@ -57,7 +59,7 @@ final class WaterfallFactory {
             }
             
             if (!provider.present()) {
-                Log.d(BuildConfig.LOG_TAG,
+                Log.d(  BuildConfig.LOG_TAG,
                         "Ad network " + provider + " is not built into app");
                 continue;
             }
@@ -65,20 +67,32 @@ final class WaterfallFactory {
             try {
                 final int eCpm = config.getInt("eCPM");
                 if (eCpm > adFloorPrice) {
-                    adapters.add(provider.createAdapter(
+                    final MediationAdapter adapter = provider.createAdapter(
                             eCpm,
-                            adFloorPrice,
                             demoteOnCode,
+                            privacy,
                             i,
-                            config));
+                            config);
                     
-                    Log.d(BuildConfig.LOG_TAG, "Added ad network " + provider);
+                    /*
+                    If GDPR compliant we can pass the privacy controls for
+                    them, else we should only start a network if the use has
+                    consented and are not under age.
+                    */
+                    if (    adapter.isGdprCompliant()
+                            || (privacy.userConsent && !privacy.ageRestricted)) {
+                        adapters.add(adapter);
+                        Log.d(BuildConfig.LOG_TAG, "Added ad network " + provider);
+                    } else {
+                        Log.d(  BuildConfig.LOG_TAG,
+                                "Skipping " + provider + " due to missing GDPR compliance and user not consented");
+                    }
                 } else {
-                    Log.d(BuildConfig.LOG_TAG,
+                    Log.d(  BuildConfig.LOG_TAG,
                             "Ad network " + provider + " not being added as eCPM < adFloorPrice");
                 }
             } catch (JSONException e) {
-                Log.w(BuildConfig.LOG_TAG,
+                Log.w(  BuildConfig.LOG_TAG,
                         "Failed to build adapter for ad network " + provider,
                         e);
             }

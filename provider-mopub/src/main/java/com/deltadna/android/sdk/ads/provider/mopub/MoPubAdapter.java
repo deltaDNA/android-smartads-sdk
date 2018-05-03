@@ -22,6 +22,7 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.mopub.mobileads.MoPubInterstitial;
 
 import org.json.JSONObject;
@@ -36,11 +37,15 @@ public final class MoPubAdapter extends MediationAdapter {
     public MoPubAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String adUnitId,
             boolean testMode) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.adUnitId = adUnitId;
         this.testMode = testMode;

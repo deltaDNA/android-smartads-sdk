@@ -63,6 +63,7 @@ public final class DDNASmartAds {
         if (instance == null) {
             instance = new DDNASmartAds(
                     configuration.application,
+                    configuration.settings,
                     configuration.activity);
         } else {
             Log.w(BuildConfig.LOG_TAG, "SDK has already been initialised");
@@ -140,15 +141,27 @@ public final class DDNASmartAds {
     @Deprecated
     public void onDestroy() {}
     
+    /**
+     * Gets the {@link Settings} used for SmartAds. Any changes made to the
+     * settings will be applied the next time registration for ads will take
+     * place.
+     * 
+     * @return the settings
+     */
+    public Settings getSettings() {
+        return ads.getSettings();
+    }
+    
     Ads getAds() {
         return ads;
     }
     
     private DDNASmartAds(
             Application application,
+            Settings settings,
             @Nullable Class<? extends Activity> activity) {
         
-        ads = new Ads(application, activity);
+        ads = new Ads(settings, application, activity);
         engageFactory = new EngageFactory(DDNA.instance(), ads);
     }
     
@@ -160,6 +173,7 @@ public final class DDNASmartAds {
     public static final class Configuration {
         
         private final Application application;
+        private final Settings settings;
         
         @Nullable
         private Class<? extends Activity> activity;
@@ -170,6 +184,8 @@ public final class DDNASmartAds {
                     "application cannot be null");
             
             this.application = application;
+            
+            settings = new Settings();
         }
         
         /**
@@ -187,5 +203,22 @@ public final class DDNASmartAds {
             activity = cls;
             return this;
         }
+        
+        /**
+         * Allows changing of {@link Settings} values.
+         *
+         * @param modifier the settings modifier
+         *
+         * @return this {@link Configuration} instance
+         */
+        public Configuration withSettings(SettingsModifier modifier) {
+            modifier.modify(settings);
+            return this;
+        }
+    }
+    
+    public interface SettingsModifier {
+        
+        void modify(Settings settings);
     }
 }

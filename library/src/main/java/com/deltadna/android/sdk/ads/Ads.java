@@ -60,6 +60,8 @@ class Ads implements
     };
     
     private final WeakHashMap<RewardedAd, Void> rewardedAds = new WeakHashMap<>();
+    
+    private final Settings settings;
     private final ActivityCatcher catcher;
     
     @Nullable
@@ -71,7 +73,12 @@ class Ads implements
     private WeakReference<InterstitialAd> interstitialAd = new WeakReference<>(null);
     private WeakReference<RewardedAd> rewardedAd = new WeakReference<>(null);
     
-    Ads(Application application, @Nullable Class<? extends Activity> activity)  {
+    Ads(    Settings settings,
+            Application application,
+            @Nullable Class<? extends Activity> activity)  {
+        
+        this.settings = settings;
+        
         if (activity != null) {
             catcher = new ConcreteActivityCatcher(this, activity);
         } else {
@@ -80,6 +87,10 @@ class Ads implements
         
         DDNA.instance().register(this);
         application.registerActivityLifecycleCallbacks(catcher);
+    }
+    
+    Settings getSettings() {
+        return settings;
     }
     
     void setAdRegistrationListener(
@@ -404,7 +415,10 @@ class Ads implements
         if (service == null) {
             if (catcher.getActivity() != null) {
                 serviceCreator.run();
-                service.registerForAds(DECISION_POINT);
+                service.registerForAds(
+                        DECISION_POINT,
+                        settings.isUserConsent(),
+                        settings.isAgeRestrictedUser());
             } else {
                 Log.w(BuildConfig.LOG_TAG, "Activity has not been captured");
             }
@@ -437,7 +451,10 @@ class Ads implements
         }
         
         if (service != null) {
-            service.registerForAds(DECISION_POINT);
+            service.registerForAds(
+                    DECISION_POINT,
+                    settings.isUserConsent(),
+                    settings.isAgeRestrictedUser());
             service.onNewSession();
         }
     }

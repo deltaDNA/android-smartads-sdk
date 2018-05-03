@@ -569,7 +569,7 @@ class AdServiceImplTest {
                     eq("SmartAds v${BuildConfig.VERSION_NAME}"),
                     any())
             
-            uut.registerForAds(decisionPoint)
+            uut.registerForAds(decisionPoint, true, false)
         }
         
         block(uut)

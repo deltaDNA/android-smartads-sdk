@@ -22,6 +22,7 @@ import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.inmobi.ads.InMobiInterstitial;
 import com.inmobi.sdk.InMobiSdk;
 
@@ -43,12 +44,16 @@ abstract class InMobiAdapter<T extends EventForwarder> extends MediationAdapter 
     InMobiAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String accountId,
             Long placementId,
             boolean logging) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.accountId = accountId;
         this.placementId = placementId;

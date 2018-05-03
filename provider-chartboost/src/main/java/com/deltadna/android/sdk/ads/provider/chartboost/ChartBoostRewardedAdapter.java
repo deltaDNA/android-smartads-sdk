@@ -22,6 +22,7 @@ import android.support.annotation.Nullable;
 import com.chartboost.sdk.CBLocation;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 
 import org.json.JSONObject;
 
@@ -39,12 +40,16 @@ public final class ChartBoostRewardedAdapter extends MediationAdapter {
     public ChartBoostRewardedAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String appId,
             String appSignature,
             String location) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.appId = appId;
         this.appSignature = appSignature;

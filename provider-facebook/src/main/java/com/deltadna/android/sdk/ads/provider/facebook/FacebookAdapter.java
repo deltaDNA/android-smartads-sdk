@@ -17,6 +17,7 @@
 package com.deltadna.android.sdk.ads.provider.facebook;
 
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 
 abstract class FacebookAdapter extends MediationAdapter {
     
@@ -25,10 +26,14 @@ abstract class FacebookAdapter extends MediationAdapter {
     FacebookAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String placementId) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.placementId = placementId;
     }

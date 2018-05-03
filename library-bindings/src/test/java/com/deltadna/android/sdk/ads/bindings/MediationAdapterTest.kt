@@ -65,9 +65,14 @@ class MediationAdapterTest {
             assertThat(compareTo(StubbedAdapter(1))).isEqualTo(1)
         }
     }
-
+    
+    @Test
+    fun isNotGdprCompliantByDefault() {
+        assertThat(StubbedAdapter(1).isGdprCompliant).isFalse()
+    }
+    
     private inner class StubbedAdapter(waterfallIndex: Int) :
-            MediationAdapter(0, 0b1, waterfallIndex) {
+            MediationAdapter(0, 0b1, Privacy(false, false), waterfallIndex) {
         
         override fun requestAd(
                 activity: Activity?,

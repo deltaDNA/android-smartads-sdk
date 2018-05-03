@@ -19,6 +19,7 @@ package com.deltadna.android.sdk.ads.provider.facebook;
 import android.app.Activity;
 
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.facebook.ads.RewardedVideoAd;
 
 import org.json.JSONObject;
@@ -30,10 +31,15 @@ public final class FacebookRewardedAdapter extends FacebookAdapter {
     public FacebookRewardedAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String placementId) {
         
-        super(eCPM, demoteOnCode, waterfallIndex, placementId);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex,
+                placementId);
     }
     
     @Override

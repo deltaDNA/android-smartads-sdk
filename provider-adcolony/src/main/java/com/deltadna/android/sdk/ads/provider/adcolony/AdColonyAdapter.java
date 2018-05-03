@@ -25,6 +25,7 @@ import com.adcolony.sdk.AdColonyInterstitial;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 
 import org.json.JSONObject;
 
@@ -42,12 +43,16 @@ public final class AdColonyAdapter extends MediationAdapter {
     public AdColonyAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String appId,
             String zoneIds,
             boolean testMode) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.appId = appId;
         this.zoneIds = zoneIds.split(",");

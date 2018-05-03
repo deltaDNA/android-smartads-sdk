@@ -42,17 +42,19 @@ class AdsTest {
     
     private lateinit var uut: Ads
     
+    private lateinit var settings: Settings
     private lateinit var analytics: DDNA
     private lateinit var service: AdService
     
     @Before
     fun before() {
+        settings = mock()
         analytics = mock()
         DDNA.initialise(DDNA.Configuration(app, "envKey", "collUrl", "engUrl"))
         DDNA.instance().inject(analytics)
         
         service = mock()
-        uut = Ads(app, null).inject(service)
+        uut = Ads(settings, app, null).inject(service)
         DDNASmartAds.initialise(DDNASmartAds.Configuration(app))
         DDNASmartAds.instance().inject(uut)
     }
@@ -338,9 +340,12 @@ class AdsTest {
     
     @Test
     fun onNewSession() {
+        whenever(settings.isUserConsent).then { false }
+        whenever(settings.isAgeRestrictedUser).then { true }
+        
         uut.onNewSession()
         
-        verify(service).registerForAds(eq("advertising"))
+        verify(service).registerForAds(eq("advertising"), eq(false), eq(true))
         verify(service).onNewSession()
     }
     

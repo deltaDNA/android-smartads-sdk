@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.mobfox.sdk.interstitialads.InterstitialAd;
 
 import org.json.JSONObject;
@@ -35,10 +36,14 @@ public final class MobFoxAdapter extends MediationAdapter {
     public MobFoxAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String publicationId) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.publicationId = publicationId;
     }

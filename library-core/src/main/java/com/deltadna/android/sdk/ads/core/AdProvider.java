@@ -19,6 +19,7 @@ package com.deltadna.android.sdk.ads.core;
 import android.support.annotation.Nullable;
 
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.deltadna.android.sdk.ads.core.network.DummyAdapter;
 import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter;
 import com.deltadna.android.sdk.ads.provider.admob.AdMobInterstitialAdapter;
@@ -59,14 +60,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new AdColonyAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("appId"),
                     config.getString("zoneId"),
@@ -84,14 +86,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new AdMobInterstitialAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("appId"),
                     config.getString("adUnitId"),
@@ -115,14 +118,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new AdMobRewardedAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("appId"),
                     config.getString("adUnitId"),
@@ -140,14 +144,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new AmazonAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("appKey"),
                     config.optBoolean("testMode", false));
@@ -165,14 +170,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new AppLovinRewardedAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("sdkKey"),
                     config.optString("placement"),
@@ -191,14 +197,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new ChartBoostInterstitialAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("appId"),
                     config.getString("appSignature"),
@@ -224,14 +231,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new ChartBoostRewardedAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("appId"),
                     config.getString("appSignature"),
@@ -252,14 +260,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new FacebookInterstitialAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("placementId"));
         }
@@ -281,14 +290,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new FacebookRewardedAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("placementId"));
         }
@@ -304,14 +314,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new FlurryInterstitialAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("apiKey"),
                     config.getString("adSpace"),
@@ -336,14 +347,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new FlurryRewardedAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("apiKey"),
                     config.getString("adSpace"),
@@ -362,14 +374,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new HyprMxAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("distributorId"),
                     config.getString("propertyId"));
@@ -386,14 +399,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new InMobiInterstitialAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("accountId"),
                     config.getLong("placementId"),
@@ -417,14 +431,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new InMobiRewardedAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("accountId"),
                     config.getLong("placementId"),
@@ -443,14 +458,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new IronSourceInterstitialAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("appKey"),
                     config.optString("placementName", null),
@@ -474,14 +490,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new IronSourceRewardedAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("appKey"),
                     config.optString("placementName", null),
@@ -499,14 +516,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new LoopMeAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("appKey"),
                     config.optBoolean("testMode"));
@@ -524,14 +542,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new MachineZoneInterstitialAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("adUnitId"));
         }
@@ -553,14 +572,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
 
             return new MachineZoneRewardedAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("adUnitId"));
         }
@@ -576,14 +596,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new MobFoxAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("publicationId"));
         }
@@ -599,14 +620,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new MoPubAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("adUnitId"),
                     config.optBoolean("testMode"));
@@ -623,14 +645,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new TapjoyAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("sdkKey"),
                     config.getString("placementName"),
@@ -649,14 +672,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new ThirdPresenceRewardedAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("accountName"),
                     config.getString("placementId"),
@@ -674,14 +698,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new UnityRewardedAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("gameId"),
                     config.getString("placementId"),
@@ -699,14 +724,15 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
                 JSONObject config) throws JSONException {
             
             return new VungleAdapter(
                     eCPM,
                     demoteOnCode,
+                    privacy,
                     index,
                     config.getString("appId"),
                     config.getString("placementId"));
@@ -728,12 +754,17 @@ enum AdProvider {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
-                int adFloorPrice,
                 int demoteOnCode,
+                Privacy privacy,
                 int index,
-                JSONObject config) throws JSONException {
+                JSONObject config) {
             
-            return new DummyAdapter(eCPM, demoteOnCode, index);
+            return new DummyAdapter(
+                    eCPM,
+                    demoteOnCode,
+                    privacy,
+                    index,
+                    config.optBoolean("gdprCompliant"));
         }
         
         @Override
@@ -775,8 +806,8 @@ enum AdProvider {
     
     abstract MediationAdapter createAdapter(
             int eCPM,
-            int adFloorPrice,
             int demoteOnCode,
+            Privacy privacy,
             int index,
             JSONObject config) throws JSONException;
     
