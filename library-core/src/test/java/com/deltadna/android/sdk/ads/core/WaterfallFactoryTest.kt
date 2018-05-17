@@ -16,6 +16,7 @@
 
 package com.deltadna.android.sdk.ads.core
 
+import com.deltadna.android.sdk.ads.bindings.Privacy
 import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter
 import com.deltadna.android.sdk.ads.provider.admob.AdMobInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.amazon.AmazonAdapter
@@ -31,12 +32,14 @@ class WaterfallFactoryTest {
     
     @Test
     fun noAdaptersBuilt() {
-        WaterfallFactory.create(
+        assertThat(WaterfallFactory.create(
                 JSONArray(),
                 1,
                 0,
                 1,
+                Privacy(true, false),
                 AdProviderType.INTERSTITIAL)
+                .adapters).isEmpty()
     }
     
     @Test
@@ -49,6 +52,7 @@ class WaterfallFactoryTest {
                 1,
                 0,
                 1,
+                Privacy(true, false),
                 AdProviderType.INTERSTITIAL)) {
             assertThat(adapters.size).isEqualTo(2)
             
@@ -68,6 +72,69 @@ class WaterfallFactoryTest {
     }
     
     @Test
+    fun gdprComplianceAndUserConsent() {
+        assertThat(WaterfallFactory.create(
+                JSONArray().put(buildGdprNonCompliantProvider()),
+                0,
+                0,
+                1,
+                Privacy(false, false),
+                AdProviderType.INTERSTITIAL)
+                .adapters).isEmpty()
+        
+        assertThat(WaterfallFactory.create(
+                JSONArray().put(buildGdprNonCompliantProvider()),
+                0,
+                0,
+                1,
+                Privacy(false, true),
+                AdProviderType.INTERSTITIAL)
+                .adapters).isEmpty()
+        
+        assertThat(WaterfallFactory.create(
+                JSONArray().put(buildGdprNonCompliantProvider()),
+                0,
+                0,
+                1,
+                Privacy(true, true),
+                AdProviderType.INTERSTITIAL)
+                .adapters).isEmpty()
+        
+        assertThat(WaterfallFactory.create(
+                JSONArray().put(buildGdprNonCompliantProvider()),
+                0,
+                0,
+                1,
+                Privacy(true, false),
+                AdProviderType.INTERSTITIAL)
+                .adapters).hasSize(1)
+        
+        assertThat(WaterfallFactory.create(
+                JSONArray()
+                        .put(buildGdprCompliantProvider())
+                        .put(buildGdprNonCompliantProvider())
+                        .put(buildGdprCompliantProvider()),
+                0,
+                0,
+                1,
+                Privacy(false, false),
+                AdProviderType.INTERSTITIAL)
+                .adapters).hasSize(2)
+        
+        assertThat(WaterfallFactory.create(
+                JSONArray()
+                        .put(buildGdprCompliantProvider())
+                        .put(buildGdprNonCompliantProvider())
+                        .put(buildGdprCompliantProvider()),
+                0,
+                0,
+                1,
+                Privacy(true, false),
+                AdProviderType.INTERSTITIAL)
+                .adapters).hasSize(3)
+    }
+    
+    @Test
     fun badAdapterConfig() {
         with(WaterfallFactory.create(
                 JSONArray()
@@ -77,6 +144,7 @@ class WaterfallFactoryTest {
                 1,
                 0,
                 1,
+                Privacy(true, false),
                 AdProviderType.INTERSTITIAL)) {
             assertThat(adapters.size).isEqualTo(1)
             assertThat(resetAndGetFirst()).isInstanceOf(AdMobInterstitialAdapter::class.java)
@@ -99,6 +167,16 @@ class WaterfallFactoryTest {
             .put("adProvider", AdProvider.AMAZON.legacyName())
             .put("eCPM", eCpm)
             .put("appKey", "appKey")
+    
+    private fun buildGdprCompliantProvider() = JSONObject()
+            .put("adProvider", AdProvider.DUMMY.legacyName())
+            .put("gdprCompliant", true)
+            .put("eCPM", 1)
+    
+    private fun buildGdprNonCompliantProvider() = JSONObject()
+            .put("adProvider", AdProvider.DUMMY.legacyName())
+            .put("gdprCompliant", false)
+            .put("eCPM", 1)
     
     private fun buildInvalidProvider() = JSONObject()
             .put("adProvider", "invalid")

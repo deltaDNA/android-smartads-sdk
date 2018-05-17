@@ -19,6 +19,7 @@ package com.deltadna.android.sdk.ads.provider.machinezone;
 import android.content.Context;
 
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.fractionalmedia.sdk.AdZone;
 
 public final class MachineZoneInterstitialAdapter extends MachineZoneAdapter {
@@ -26,10 +27,15 @@ public final class MachineZoneInterstitialAdapter extends MachineZoneAdapter {
     public MachineZoneInterstitialAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String adUnitId) {
         
-        super(eCPM, demoteOnCode, waterfallIndex, adUnitId);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex,
+                adUnitId);
     }
     
     @Override

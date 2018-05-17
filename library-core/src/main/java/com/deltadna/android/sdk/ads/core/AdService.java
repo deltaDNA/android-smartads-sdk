@@ -25,7 +25,10 @@ import java.util.Date;
 @UnityInterOp
 public interface AdService {
     
-    void registerForAds(String decisionPoint);
+    void registerForAds(
+            String decisionPoint,
+            boolean userConsent,
+            boolean ageRestricted);
     void onNewSession();
     
     boolean isInterstitialAdAllowed(

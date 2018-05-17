@@ -24,11 +24,12 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.deltadna.android.sdk.DDNA;
-import com.deltadna.android.sdk.ads.Ad;
 import com.deltadna.android.sdk.EngageFactory;
+import com.deltadna.android.sdk.ads.Ad;
 import com.deltadna.android.sdk.ads.DDNASmartAds;
 import com.deltadna.android.sdk.ads.InterstitialAd;
 import com.deltadna.android.sdk.ads.RewardedAd;
@@ -75,6 +76,9 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
     private Button rewardedAd1Button;
     private Button rewardedAd2Button;
     
+    private Switch userConsentToggle;
+    private Switch ageRestrictedToggle;
+    
     private InterstitialAd interstitialAd;
     private RewardedAd rewardedAd1;
     private RewardedAd rewardedAd2;
@@ -97,6 +101,9 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
         interstitialAdButton = findViewById(R.id.interstitial_ad);
         rewardedAd1Button = findViewById(R.id.rewarded_ad1);
         rewardedAd2Button = findViewById(R.id.rewarded_ad2);
+        
+        userConsentToggle = findViewById(R.id.user_consent);
+        ageRestrictedToggle = findViewById(R.id.age_restricted);
         
         DDNASmartAds.instance().setAdRegistrationListener(this);
         
@@ -151,6 +158,18 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
         DDNA.instance().newSession();
     }
     
+    public void onUserConsent(View view) {
+        DDNASmartAds.instance().getSettings()
+                .setUserConsent(userConsentToggle.isChecked());
+        DDNA.instance().newSession();
+    }
+    
+    public void onAgeRestricted(View view) {
+        DDNASmartAds.instance().getSettings()
+                .setAgeRestrictedUser(ageRestrictedToggle.isChecked());
+        DDNA.instance().newSession();
+    }
+    
     private void updateStats(Ad action, TextView view) {
         if (action == null) return;
         
@@ -183,6 +202,8 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
     public void onRegisteredForInterstitial() {
         Log.i(TAG, "Registered for interstitial ads");
         
+        interstitialAdMessage.setText(null);
+        
         DDNASmartAds.instance().getEngageFactory().requestInterstitialAd(
                 "interstitialAd",
                 new EngageFactory.Callback<InterstitialAd>() {
@@ -208,6 +229,9 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
     @Override
     public void onRegisteredForRewarded() {
         Log.i(TAG, "Registered for rewarded ads");
+        
+        rewardedAd1Message.setText(null);
+        rewardedAd2Message.setText(null);
         
         DDNASmartAds.instance().getEngageFactory().requestRewardedAd(
                 "rewardedAd1",

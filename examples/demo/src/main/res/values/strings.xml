@@ -24,6 +24,9 @@ limitations under the License.
     <string name="show_rewarded_ad1">Show rewarded ad 1</string>
     <string name="show_rewarded_ad2">Show rewarded ad 2</string>
     
+    <string name="user_consent">User consent</string>
+    <string name="age_restricted">Age restricted</string>
+    
     <string name="user_id">User ID: %s</string>
     <string name="stats">Session: %1$d (%2$d) | Today: %3$d (%4$d) | Time: %5$s%6$s</string>
     

@@ -26,6 +26,7 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.fractionalmedia.sdk.AdRequest;
 import com.fractionalmedia.sdk.AdZone;
 import com.fractionalmedia.sdk.AdZoneError;
@@ -51,10 +52,14 @@ abstract class MachineZoneAdapter extends MediationAdapter {
     MachineZoneAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String adUnitId) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.adUnitId = adUnitId;
     }

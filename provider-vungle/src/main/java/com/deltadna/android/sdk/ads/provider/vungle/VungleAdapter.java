@@ -24,6 +24,7 @@ import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MainThread;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.vungle.publisher.VungleAdEventListener;
 import com.vungle.publisher.VungleInitListener;
 import com.vungle.publisher.VunglePub;
@@ -43,11 +44,15 @@ public final class VungleAdapter extends MediationAdapter {
     public VungleAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String appId,
             String placementId) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.appId = appId;
         this.placementId = placementId;

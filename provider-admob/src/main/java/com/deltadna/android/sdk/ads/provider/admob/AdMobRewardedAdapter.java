@@ -23,6 +23,7 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -45,12 +46,16 @@ public final class AdMobRewardedAdapter extends MediationAdapter {
     public AdMobRewardedAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String appId,
             String adUnitId,
             boolean testMode) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.appId = appId;
         this.adUnitId = testMode

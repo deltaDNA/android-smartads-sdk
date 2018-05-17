@@ -166,7 +166,7 @@ class RewardedAdConcurrentTest {
         DDNA.instance().inject(analytics)
         
         service = mock()
-        ads = Ads(app, null).inject(service)
+        ads = Ads(mock(), app, null).inject(service)
         DDNASmartAds.initialise(DDNASmartAds.Configuration(app))
         DDNASmartAds.instance().inject(ads)
     }
