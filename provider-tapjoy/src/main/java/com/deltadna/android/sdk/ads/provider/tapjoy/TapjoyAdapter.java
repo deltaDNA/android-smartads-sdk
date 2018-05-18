@@ -26,6 +26,7 @@ import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.tapjoy.TJConnectListener;
 import com.tapjoy.TJPlacement;
 import com.tapjoy.Tapjoy;
@@ -54,12 +55,16 @@ public final class TapjoyAdapter extends MediationAdapter {
     public TapjoyAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String sdkKey,
             String placementName,
             boolean logging) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.sdkKey = sdkKey;
         this.placementName = placementName;

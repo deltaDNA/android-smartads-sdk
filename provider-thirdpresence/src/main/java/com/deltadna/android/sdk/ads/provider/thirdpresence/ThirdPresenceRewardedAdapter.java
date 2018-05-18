@@ -23,6 +23,7 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.thirdpresence.adsdk.sdk.VideoAd;
 import com.thirdpresence.adsdk.sdk.VideoAdManager;
 import com.thirdpresence.adsdk.sdk.internal.TLog;
@@ -49,12 +50,16 @@ public final class ThirdPresenceRewardedAdapter extends MediationAdapter {
     public ThirdPresenceRewardedAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String accountName,
             String placementId,
             boolean testMode) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.placementId = placementId;
         

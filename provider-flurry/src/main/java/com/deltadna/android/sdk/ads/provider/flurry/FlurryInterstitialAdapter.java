@@ -22,6 +22,7 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.flurry.android.ads.FlurryAdInterstitial;
 import com.flurry.android.ads.FlurryAdTargeting;
 
@@ -39,13 +40,17 @@ public final class FlurryInterstitialAdapter extends MediationAdapter {
     public FlurryInterstitialAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String apiKey,
             String adSpace,
             boolean testMode,
             boolean logging) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.apiKey = apiKey;
         this.adSpace = adSpace;

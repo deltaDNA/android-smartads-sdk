@@ -24,6 +24,7 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.MainThread;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.ironsource.mediationsdk.IronSource;
 import com.ironsource.mediationsdk.logger.IronSourceLogger;
 import com.ironsource.mediationsdk.logger.LogListener;
@@ -45,12 +46,16 @@ public final class IronSourceInterstitialAdapter extends MediationAdapter {
     public IronSourceInterstitialAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String appKey,
             @Nullable String placementName,
             boolean logging) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.appKey = appKey;
         this.placementName = placementName;

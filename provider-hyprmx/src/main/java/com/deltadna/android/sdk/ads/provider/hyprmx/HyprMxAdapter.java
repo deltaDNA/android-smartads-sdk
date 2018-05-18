@@ -27,6 +27,7 @@ import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.deltadna.android.sdk.ads.bindings.Preferences;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.hyprmx.android.sdk.HyprMXHelper;
 import com.hyprmx.android.sdk.HyprMXPresentation;
 import com.hyprmx.android.sdk.api.data.OffersAvailableResponse;
@@ -53,11 +54,15 @@ public final class HyprMxAdapter extends MediationAdapter {
     public HyprMxAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String distributorId,
             String propertyId) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.distributorId = distributorId;
         this.propertyId = propertyId;

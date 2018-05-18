@@ -22,10 +22,7 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
-import com.deltadna.android.sdk.ads.bindings.AdRequestResult
-import com.deltadna.android.sdk.ads.bindings.AdShowResult
-import com.deltadna.android.sdk.ads.bindings.MediationAdapter
-import com.deltadna.android.sdk.ads.bindings.MediationListener
+import com.deltadna.android.sdk.ads.bindings.*
 import com.deltadna.android.sdk.ads.provider.adcolony.AdColonyAdapter
 import com.deltadna.android.sdk.ads.provider.admob.AdMobInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.admob.AdMobRewardedAdapter
@@ -128,10 +125,12 @@ class IntegrationActivity : AppCompatActivity() {
     
     private companion object {
         
+        val PRIVACY = Privacy(false, false)
         val PROVIDERS = listOf(
                 AdColonyAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.ADCOLONY_APP_ID,
                         BuildConfig.ADCOLONY_ZONE_IDS,
@@ -139,6 +138,7 @@ class IntegrationActivity : AppCompatActivity() {
                 AdMobInterstitialAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.ADMOB_APP_ID,
                         BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID,
@@ -146,6 +146,7 @@ class IntegrationActivity : AppCompatActivity() {
                 AdMobRewardedAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.ADMOB_APP_ID,
                         BuildConfig.ADMOB_REWARDED_AD_UNIT_ID,
@@ -153,12 +154,14 @@ class IntegrationActivity : AppCompatActivity() {
                 AmazonAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.AMAZON_APP_KEY,
                         true),
                 AppLovinRewardedAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.APPLOVIN_KEY,
                         "Interstitial",
@@ -166,6 +169,7 @@ class IntegrationActivity : AppCompatActivity() {
                 ChartBoostInterstitialAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.CHARTBOOST_APP_ID,
                         BuildConfig.CHARTBOOST_APP_SIGNATURE,
@@ -173,6 +177,7 @@ class IntegrationActivity : AppCompatActivity() {
                 ChartBoostRewardedAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.CHARTBOOST_APP_ID,
                         BuildConfig.CHARTBOOST_APP_SIGNATURE,
@@ -180,16 +185,19 @@ class IntegrationActivity : AppCompatActivity() {
                 FacebookInterstitialAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.FACEBOOK_INTERSTITIAL_PLACEMENT_ID),
                 FacebookRewardedAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.FACEBOOK_REWARDED_PLACEMENT_ID),
                 FlurryInterstitialAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.FLURRY_API_KEY,
                         BuildConfig.FLURRY_INTERSTITIAL_AD_SPACE,
@@ -198,6 +206,7 @@ class IntegrationActivity : AppCompatActivity() {
                 FlurryRewardedAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.FLURRY_API_KEY,
                         BuildConfig.FLURRY_REWARDED_AD_SPACE,
@@ -206,12 +215,14 @@ class IntegrationActivity : AppCompatActivity() {
                 HyprMxAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.HYPRMX_DISTRIBUTOR_ID,
                         BuildConfig.HYPRMX_PROPERTY_ID),
                 InMobiInterstitialAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.INMOBI_ACCOUNT_ID,
                         BuildConfig.INMOBI_INTERSTITIAL_PLACEMENT_ID,
@@ -219,6 +230,7 @@ class IntegrationActivity : AppCompatActivity() {
                 InMobiRewardedAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.INMOBI_ACCOUNT_ID,
                         BuildConfig.INMOBI_REWARDED_PLACEMENT_ID,
@@ -226,6 +238,7 @@ class IntegrationActivity : AppCompatActivity() {
                 IronSourceInterstitialAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.IRONSOURCE_APP_KEY,
                         null,
@@ -233,6 +246,7 @@ class IntegrationActivity : AppCompatActivity() {
                 IronSourceRewardedAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.IRONSOURCE_APP_KEY,
                         null,
@@ -240,33 +254,39 @@ class IntegrationActivity : AppCompatActivity() {
                 LoopMeAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         "",
                         true),
                 MachineZoneInterstitialAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.MACHINEZONE_INTERSTITIAL_AD_UNIT_ID),
                 MachineZoneRewardedAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.MACHINEZONE_REWARDED_AD_UNIT_ID),
                 MobFoxAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.MOBFOX_PUBLICATION_ID),
                 MoPubAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.MOPUB_AD_UNIT_ID,
                         true),
                 TapjoyAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.TAPJOY_SDK_KEY,
                         BuildConfig.TAPJOY_PLACEMENT,
@@ -274,6 +294,7 @@ class IntegrationActivity : AppCompatActivity() {
                 ThirdPresenceRewardedAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.THIRDPRESENCE_ACCOUNT_NAME,
                         BuildConfig.THIRDPRESENCE_PLACEMENT_ID,
@@ -281,6 +302,7 @@ class IntegrationActivity : AppCompatActivity() {
                 UnityRewardedAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.UNITY_GAME_ID,
                         BuildConfig.UNITY_PLACEMENT_ID,
@@ -288,6 +310,7 @@ class IntegrationActivity : AppCompatActivity() {
                 VungleAdapter(
                         0,
                         0,
+                        PRIVACY,
                         0,
                         BuildConfig.VUNGLE_APP_ID,
                         BuildConfig.VUNGLE_PLACEMENT_ID))

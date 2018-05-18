@@ -27,6 +27,7 @@ import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkSettings;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 
 import org.json.JSONObject;
 
@@ -48,12 +49,16 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
     public AppLovinRewardedAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String key,
             @Nullable String placement,
             boolean verboseLogging) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.key = key;
         this.placement = placement;

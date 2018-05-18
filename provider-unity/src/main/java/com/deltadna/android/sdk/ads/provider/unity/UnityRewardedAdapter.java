@@ -24,6 +24,7 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.unity3d.ads.UnityAds;
 
 import org.json.JSONObject;
@@ -44,12 +45,16 @@ public final class UnityRewardedAdapter extends MediationAdapter {
     public UnityRewardedAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String gameId,
             String placementId,
             boolean testMode) {
         
-        super(eCPM, demoteOnCode, waterfallIndex);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
         
         this.gameId = gameId;
         this.placementId = placementId;

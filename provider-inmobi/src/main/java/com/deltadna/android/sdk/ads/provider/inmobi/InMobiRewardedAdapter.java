@@ -17,6 +17,7 @@
 package com.deltadna.android.sdk.ads.provider.inmobi;
 
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 
 public final class InMobiRewardedAdapter
         extends InMobiAdapter<RewardedEventForwarder> {
@@ -24,12 +25,19 @@ public final class InMobiRewardedAdapter
     public InMobiRewardedAdapter(
             int eCPM,
             int demoteOnCode,
+            Privacy privacy,
             int waterfallIndex,
             String accountId,
             Long placementId,
             boolean logging) {
         
-        super(eCPM, demoteOnCode, waterfallIndex, accountId, placementId, logging);
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex,
+                accountId,
+                placementId,
+                logging);
     }
     
     @Override

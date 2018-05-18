@@ -46,6 +46,7 @@ allprojects {
     repositories {
         jcenter()
         google()
+        maven { url 'http://corp-vm-artifactory/artifactory/deltadna-repo' }
         maven { url 'http://deltadna.bintray.com/android' }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven { url 'https://raw.githubusercontent.com/HyprMXMobile/Android-SDKs/master' }

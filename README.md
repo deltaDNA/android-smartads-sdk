@@ -10,9 +10,10 @@
 The deltaDNA SmartAds SDK provides your Android game with access to our intelligent ad mediation platform.  It supports both interstitial and rewarded type ads.
 
 ## Contents
-* [Adding to a project](#adding-to-a-project)
+* [Adding to a Project](#adding-to-a-project)
 * [Initialising](#initialising)
-* [Showing ads](#showing-ads)
+* [Showing Ads](#showing-ads)
+* [User Consent for Tracking and Age Restriction (GDPR)](#user-consent-for-tracking-and-age-restriction-(gdpr))
 * [Permissions](#permissions)
 * [Diagnostics](#diagnostics)
 * [ProGuard](#proguard)
@@ -20,8 +21,9 @@ The deltaDNA SmartAds SDK provides your Android game with access to our intellig
 * [Changelog](#changelog)
 * [Migrations](#migrations)
 * [License](#license)
+* [Contact Us](#contact-us)
 
-## Adding to a project
+## Adding to a Project
 The deltaDNA SmartAds SDK can be used in Android projects using minimum SDK version 16 and newer (Android 4.1+).
 
 ### Gradle
@@ -40,27 +42,27 @@ allprojects {
 In your app's build script
 ```groovy
 compile 'com.deltadna.android:deltadna-sdk:VERSION'
-compile 'com.deltadna.android:deltadna-smartads:1.8.0'
+compile 'com.deltadna.android:deltadna-smartads:1.9.0-SNAPSHOT'
 
 // ad providers
-compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-facebook:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-hyprmx:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-ironsource:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-loopme:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-machinezone:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-tapjoy:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-thirdpresence:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.8.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.8.0'
+compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-facebook:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-hyprmx:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-ironsource:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-loopme:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-machinezone:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-tapjoy:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-thirdpresence:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.9.0-SNAPSHOT'
+compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.9.0-SNAPSHOT'
 ```
 Any combination of the above ad providers can be defined in your build script, depending on which ad networks you would like to use in your application.
 
@@ -101,7 +103,7 @@ DDNASmartAds.instance().setAdRegistrationListener(new AdRegistrationListener() {
 });
 ```
 
-## Showing ads
+## Showing Ads
 Showing interstitial ads can be done by creating an instance of an `InterstitialAd` and calling `show()`. The result should be null-checked after `create()` is called as the creation may fail if the time or session limits have been exceeded.
 ```java
 InterstitialAd ad = InterstitialAd.create();
@@ -149,6 +151,9 @@ DDNA.instance().requestEngagement(
 
 Both ad classes allow for a listener to be passed in at creation and by calling `setListener` for listening to ad lifecycle events.
 
+## User Consent for Tracking and Age Restriction (GDPR)
+By default user consent is not given for advertising user tracking and the user is assumed to not be age restricted (16 and over). These settings can be changed through the `Settings` class by calling `DDNASmartAds.instance().getSettings()` or when SmartAds is being initialised. Changes to either of the values while SmartAds is running will take effect during the next session.
+
 ## Permissions
 The library includes all the required permissions in its manifest file which will get included by Android's manifest merger during the build process. The included permissions are the minimal required set for ensuring functionality of the ad providers, and all of them are non-dangerous permissions and thus don't require explicit granting of permissions on Android 6+ versions.
 
@@ -158,8 +163,8 @@ Additional (often dangerous) permissions may be added to increase the functional
 More details can be shown about which ads are loaded and have been shown by adding the `deltadna-smartads-debug` dependency to your project. We only recommend adding this for debug builds of your application. You can achieve this with Gradle with the following example:
 ```groovy
 dependencies {
-    compile 'com.deltadna.android:deltadna-smartads:1.8.0'
-    debugCompile 'com.deltadna.android:deltadna-smartads-debug:1.8.0'
+    compile 'com.deltadna.android:deltadna-smartads:1.9.0-SNAPSHOT'
+    debugCompile 'com.deltadna.android:deltadna-smartads-debug:1.9.0-SNAPSHOT'
 }
 ```
 The notification can be hidden, until the application is restarted, by swiping away on it.

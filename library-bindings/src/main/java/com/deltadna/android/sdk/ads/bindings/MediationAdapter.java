@@ -25,15 +25,22 @@ public abstract class MediationAdapter implements Comparable<MediationAdapter> {
     
     public final int eCPM;
     public final int demoteOnCode;
+    public final Privacy privacy;
     
     private int waterfallIndex;
     
     private int requests;
     private int score;
     
-    public MediationAdapter(int eCPM, int demoteOnCode, int waterfallIndex) {
+    public MediationAdapter(
+            int eCPM,
+            int demoteOnCode,
+            Privacy privacy,
+            int waterfallIndex) {
+        
         this.eCPM = eCPM;
         this.demoteOnCode = demoteOnCode;
+        this.privacy = privacy;
         this.waterfallIndex = waterfallIndex;
     }
     
@@ -99,4 +106,8 @@ public abstract class MediationAdapter implements Comparable<MediationAdapter> {
      * or when the waterfall has been reset.
      */
     public void onSwappedOut() {}
+    
+    public boolean isGdprCompliant() {
+        return false;
+    }
 }

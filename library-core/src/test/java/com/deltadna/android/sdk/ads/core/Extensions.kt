@@ -19,6 +19,7 @@ package com.deltadna.android.sdk.ads.core
 import android.app.Activity
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
+import com.deltadna.android.sdk.ads.bindings.Privacy
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import org.json.JSONObject
@@ -41,16 +42,10 @@ fun stubbedAdapters(n: Int): List<MediationAdapter> {
 
 fun JsonObject.convert() = JSONObject(this.toString())
 
-// String
-
-fun String.toJson(): JsonObject {
-    return JsonParser().parse(this).asJsonObject
-}
-
 // classes
 
 open class StubbedAdapter(waterfallIndex: Int) :
-        MediationAdapter(0, 0b1001, waterfallIndex) {
+        MediationAdapter(0, 0b1001, Privacy(false, false), waterfallIndex) {
     
     override fun requestAd(
             activity: Activity?,

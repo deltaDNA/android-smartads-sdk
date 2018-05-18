@@ -16,6 +16,7 @@
 
 package com.deltadna.android.sdk.ads.core
 
+import com.deltadna.android.sdk.ads.bindings.Privacy
 import com.deltadna.android.sdk.ads.core.AdProvider.*
 import com.deltadna.android.sdk.ads.core.AdProviderType.INTERSTITIAL
 import com.deltadna.android.sdk.ads.core.AdProviderType.REWARDED
@@ -56,7 +57,7 @@ class AdProviderTest {
     @Test
     fun adColony() {
         with(ADCOLONY.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("appId", "appId")
                         .put("clientOptions", "clientOptions")
@@ -71,7 +72,7 @@ class AdProviderTest {
     @Test
     fun adMob() {
         with(ADMOB.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("appId", "appId")
                         .put("adUnitId", "adUnitId")
@@ -85,7 +86,7 @@ class AdProviderTest {
     @Test
     fun adMobRewarded() {
         with(ADMOB_REWARDED.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("appId", "appId")
                         .put("adUnitId", "adUnitId")
@@ -101,7 +102,7 @@ class AdProviderTest {
     @Test
     fun amazon() {
         with(AMAZON.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("appKey", "appKey")
                         .put("testMode", true))) {
@@ -114,7 +115,7 @@ class AdProviderTest {
     @Test
     fun appLovin() {
         with(APPLOVIN.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("sdkKey", "sdkKey")
                         .put("placement", "placement")
@@ -129,7 +130,7 @@ class AdProviderTest {
     @Test
     fun chartboost() {
         with(CHARTBOOST.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("appId", "appId")
                         .put("appSignature", "appSignature"))) {
@@ -142,7 +143,7 @@ class AdProviderTest {
     @Test
     fun chartboostRewarded() {
         with(CHARTBOOST_REWARDED.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("appId", "appId")
                         .put("appSignature", "appSignature"))) {
@@ -157,7 +158,7 @@ class AdProviderTest {
     @Test
     fun facebook() {
         with(FACEBOOK.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("placementId", "placement"))) {
             assertThat(this).isInstanceOf(FacebookInterstitialAdapter::class.java)
@@ -169,7 +170,7 @@ class AdProviderTest {
     @Test
     fun facebookRewarded() {
         with(FACEBOOK_REWARDED.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("placementId", "placement"))) {
             assertThat(this).isInstanceOf(FacebookRewardedAdapter::class.java)
@@ -183,7 +184,7 @@ class AdProviderTest {
     @Test
     fun flurry() {
         with(FLURRY.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("apiKey", "apiKey")
                         .put("adSpace", "adSpace")
@@ -197,7 +198,7 @@ class AdProviderTest {
     @Test
     fun flurryRewarded() {
         with(FLURRY_REWARDED.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("apiKey", "apiKey")
                         .put("adSpace", "adSpace")
@@ -213,10 +214,7 @@ class AdProviderTest {
     @Test
     fun hyprmx() {
         with(HYPRMX.createAdapter(
-                1,
-                2,
-                3,
-                4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("distributorId", "distributorId")
                         .put("propertyId", "propertyId"))) {
@@ -229,7 +227,7 @@ class AdProviderTest {
     @Test
     fun inMobi() {
         with(INMOBI.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("accountId", "accountId")
                         .put("placementId", 1L))) {
@@ -242,7 +240,7 @@ class AdProviderTest {
     @Test
     fun inMobiRewarded() {
         with(INMOBI_REWARDED.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("accountId", "accountId")
                         .put("placementId", 1L))) {
@@ -257,7 +255,7 @@ class AdProviderTest {
     @Test
     fun ironSource() {
         with(IRONSOURCE.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("appKey", "appKey")
                         .put("placementName", "placementName"))) {
@@ -270,7 +268,7 @@ class AdProviderTest {
     @Test
     fun ironSourceRewarded() {
         with(IRONSOURCE_REWARDED.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("appKey", "appKey")
                         .put("placementName", "placementName"))) {
@@ -285,10 +283,7 @@ class AdProviderTest {
     @Test
     fun loopMe() {
         with(LOOPME.createAdapter(
-                1,
-                2,
-                3,
-                4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("appKey", "appKey")
                         .put("testMode", false))) {
@@ -301,7 +296,7 @@ class AdProviderTest {
     @Test
     fun machineZone() {
         with(MACHINEZONE.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject().put("adUnitId", "adUnitId"))) {
             assertThat(this).isInstanceOf(MachineZoneInterstitialAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(MACHINEZONE.version())
@@ -312,7 +307,7 @@ class AdProviderTest {
     @Test
     fun machineZoneRewarded() {
         with(MACHINEZONE_REWARDED.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject().put("adUnitId", "adUnitId"))) {
             assertThat(this).isInstanceOf(MachineZoneRewardedAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(MACHINEZONE_REWARDED.version())
@@ -325,7 +320,7 @@ class AdProviderTest {
     @Test
     fun mobFox() {
         with(MOBFOX.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject().put("publicationId", "publicationId"))) {
             assertThat(this).isInstanceOf(MobFoxAdapter::class.java)
             assertThat(this.providerVersionString).isEqualTo(MOBFOX.version())
@@ -336,7 +331,7 @@ class AdProviderTest {
     @Test
     fun moPub() {
         with(MOPUB.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("adUnitId", "adUnitId")
                         .put("testMode", true))) {
@@ -349,10 +344,7 @@ class AdProviderTest {
     @Test
     fun tapjoy() {
         with(TAPJOY.createAdapter(
-                1,
-                2,
-                3,
-                4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("sdkKey", "sdkKey")
                         .put("placementName", "placementName")
@@ -366,10 +358,7 @@ class AdProviderTest {
     @Test
     fun thirdpresence() {
         with(THIRDPRESENCE.createAdapter(
-                1,
-                2,
-                3,
-                4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("accountName", "accountName")
                         .put("placementId", "placementId")
@@ -383,7 +372,7 @@ class AdProviderTest {
     @Test
     fun unity() {
         with(UNITY.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("gameId", "gameId")
                         .put("placementId", "placementId")
@@ -397,7 +386,7 @@ class AdProviderTest {
     @Test
     fun vungle() {
         with(VUNGLE.createAdapter(
-                1, 2, 3, 4,
+                1, 2, Privacy(false, false), 3,
                 JSONObject()
                         .put("appId", "appId")
                         .put("placementId", "placementId"))) {
@@ -440,9 +429,9 @@ class AdProviderTest {
     
     @Test
     fun defines() {
-        assertThat(defines(AdMobInterstitialAdapter(0, 0, 0, "", "", false)))
+        assertThat(defines(AdMobInterstitialAdapter(0, 0, Privacy(false, false), 0, "", "", false)))
                 .isEqualTo(ADMOB)
-        assertThat(defines(IronSourceRewardedAdapter(0, 0, 0, "", "", false)))
+        assertThat(defines(IronSourceRewardedAdapter(0, 0, Privacy(false, false), 0, "", "", false)))
                 .isEqualTo(IRONSOURCE_REWARDED)
     }
     

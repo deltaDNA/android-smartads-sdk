@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 
 import org.json.JSONObject;
 
@@ -28,11 +29,24 @@ public final class DummyAdapter extends MediationAdapter {
     
     public static final int DISMISS_AFTER = 1000;
     
+    private final boolean gdprCompliant;
+    
     @Nullable
     private DummyInterstitial interstitial;
     
-    public DummyAdapter(int eCPM, int demoteOnCode, int waterfallIndex) {
-        super(eCPM, demoteOnCode, waterfallIndex);
+    public DummyAdapter(
+            int eCPM,
+            int demoteOnCode,
+            Privacy privacy,
+            int waterfallIndex,
+            boolean gdprCompliant) {
+        
+        super(  eCPM,
+                demoteOnCode,
+                privacy,
+                waterfallIndex);
+        
+        this.gdprCompliant = gdprCompliant;
     }
     
     @Override
@@ -74,4 +88,9 @@ public final class DummyAdapter extends MediationAdapter {
     
     @Override
     public void onResume() {}
+    
+    @Override
+    public boolean isGdprCompliant() {
+        return gdprCompliant;
+    }
 }

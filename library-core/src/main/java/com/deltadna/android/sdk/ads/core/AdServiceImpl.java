@@ -34,6 +34,7 @@ import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MainThread;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.deltadna.android.sdk.ads.core.utils.Preconditions;
 
 import org.json.JSONArray;
@@ -69,6 +70,7 @@ final class AdServiceImpl implements AdService {
     private final Set<AdAgentListener> adAgentListeners;
     
     private String decisionPoint;
+    private Privacy privacy;
     
     private AdAgent interstitialAgent;
     private AdAgent rewardedAgent;
@@ -137,11 +139,16 @@ final class AdServiceImpl implements AdService {
     }
     
     @Override
-    public void registerForAds(String decisionPoint) {
+    public void registerForAds(
+            String decisionPoint,
+            boolean userConsent,
+            boolean ageRestricted) {
+        
         Log.d(  BuildConfig.LOG_TAG,
                 "Registering for ads with decision point " + decisionPoint);
         
         this.decisionPoint = decisionPoint;
+        this.privacy = new Privacy(userConsent, ageRestricted);
         
         requestAdConfiguration();
     }
@@ -758,6 +765,7 @@ final class AdServiceImpl implements AdService {
                         adFloorPrice,
                         demoteOnCode,
                         maxPerNetwork,
+                        privacy,
                         AdProviderType.INTERSTITIAL);
                 
                 if (waterfall.adapters.isEmpty()) {
@@ -802,6 +810,7 @@ final class AdServiceImpl implements AdService {
                         adFloorPrice,
                         demoteOnCode,
                         maxPerNetwork,
+                        privacy,
                         AdProviderType.REWARDED);
                 
                 if (waterfall.adapters.isEmpty()) {
