@@ -1,10 +1,12 @@
 # Change Log
 
+## [1.9.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.9.0) (YYYY-MM-DD)
+Added settings for tracking consent and age restriction (GDPR).  
+
 ## [1.8.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.8.0) (2018-04-17)
 Added automatic registration for ads.  
 Added automatic lifecycle callback forwarding.  
 Added EngageFactory to simplify ad creation.  
-Added settings for tracking consent and age restriction (GDPR).
 
 ## [1.7.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.7.0) (2018-01-24)
 Added MachineZone ads.  
