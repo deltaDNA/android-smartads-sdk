@@ -28,6 +28,6 @@ configurations.all {
 dependencies {
     api project(':library-core')
     
-    api 'com.deltadna.android:deltadna-sdk:4.8.0-SNAPSHOT'
+    api 'com.deltadna.android:deltadna-sdk:4.8.0'
     implementation "com.android.support:support-v4:$supportVersion"
 }
