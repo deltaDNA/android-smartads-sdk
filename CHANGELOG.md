@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.9.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.9.1) (2018-06-21)
+Updated analytics library to fix automatic ads registration.  
+
 ## [1.9.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.9.0) (2018-05-18)
 Added settings for tracking consent and age restriction (GDPR).  
 Updated analytics library.  
