@@ -16,7 +16,7 @@
 
 buildscript {
     ext {
-        kotlinVersion = '1.2.31'
+        kotlinVersion = '1.2.50'
         multidexVersion = '1.0.3'
         playServicesVersion = '11.8.0'
         supportVersion = '26.1.0'
@@ -32,7 +32,7 @@ buildscript {
     }
     
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha11'
+        classpath 'com.android.tools.build:gradle:3.2.0-alpha18'
         classpath('com.dicedmelon.gradle:jacoco-android:0.1.2') {
             // https://github.com/arturdm/jacoco-android-gradle-plugin/issues/42
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
@@ -51,6 +51,7 @@ allprojects {
         maven { url 'https://raw.githubusercontent.com/HyprMXMobile/Android-SDKs/master' }
         maven { url 'https://s3.amazonaws.com/moat-sdk-builds' }
         maven { url 'https://tapjoy.bintray.com/maven' }
+        maven { url 'http://corp-vm-artifactory/artifactory/deltadna-repo' }
     }
 }
 
@@ -102,8 +103,8 @@ subprojects {
         }
         
         compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_7
-            targetCompatibility JavaVersion.VERSION_1_7
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
         }
         
         if (isLibrary) {
