@@ -16,8 +16,6 @@
 
 package com.deltadna.android.sdk.ads.core;
 
-import android.support.annotation.Nullable;
-
 @UnityInterOp
 public interface AdServiceListener {
 
@@ -44,10 +42,4 @@ public interface AdServiceListener {
     void onRewardedAdClosed(boolean completed);
 
     void onRecordEvent(String name, String jsonParams);
-
-    void onRequestEngagement(
-            String decisionPoint,
-            String flavour,
-            @Nullable String version,
-            EngagementListener listener);
 }

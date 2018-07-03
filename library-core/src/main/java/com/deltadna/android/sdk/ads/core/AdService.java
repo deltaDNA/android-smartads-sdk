@@ -25,11 +25,12 @@ import java.util.Date;
 @UnityInterOp
 public interface AdService {
     
-    void registerForAds(
-            String decisionPoint,
+    void onNewSession();
+    void configure(
+            JSONObject config,
+            boolean cached,
             boolean userConsent,
             boolean ageRestricted);
-    void onNewSession();
     
     boolean isInterstitialAdAllowed(
             @Nullable String decisionPoint,

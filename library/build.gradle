@@ -26,13 +26,9 @@ android {
     }
 }
 
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
 dependencies {
     api project(':library-core')
     
-    api 'com.deltadna.android:deltadna-sdk:4.9.3'
+    api 'com.deltadna.android:deltadna-sdk:4.10.0-SNAPSHOT'
     implementation "com.android.support:support-v4:$supportVersion"
 }

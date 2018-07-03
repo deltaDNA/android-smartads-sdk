@@ -51,7 +51,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 final class AdServiceImpl implements AdService {
     
-    private static final int TIME_ONE_SECOND = 60 * 1000;
     private static final String VERSION = "SmartAds v" + BuildConfig.VERSION_NAME;
     
     private static final boolean DEFAULT_AD_SHOW_POINT = true;
@@ -69,7 +68,6 @@ final class AdServiceImpl implements AdService {
     private final LocalBroadcastManager broadcasts;
     private final Set<AdAgentListener> adAgentListeners;
     
-    private String decisionPoint;
     private Privacy privacy;
     
     private AdAgent interstitialAgent;
@@ -139,23 +137,21 @@ final class AdServiceImpl implements AdService {
     }
     
     @Override
-    public void registerForAds(
-            String decisionPoint,
-            boolean userConsent,
-            boolean ageRestricted) {
-        
-        Log.d(  BuildConfig.LOG_TAG,
-                "Registering for ads with decision point " + decisionPoint);
-        
-        this.decisionPoint = decisionPoint;
-        this.privacy = new Privacy(userConsent, ageRestricted);
-        
-        requestAdConfiguration();
+    public void onNewSession() {
+        metrics.newSession(new Date());
+        broadcasts.sendBroadcast(new Intent(Actions.SESSION_UPDATED));
     }
     
     @Override
-    public void onNewSession() {
-        broadcasts.sendBroadcast(new Intent(Actions.SESSION_UPDATED));
+    public void configure(
+            JSONObject configuration,
+            boolean cached,
+            boolean userConsent,
+            boolean ageRestricted) {
+        
+        this.privacy = new Privacy(userConsent, ageRestricted);
+        
+        configure(configuration, cached);
     }
     
     @Override
@@ -211,6 +207,7 @@ final class AdServiceImpl implements AdService {
             @Nullable JSONObject parameters) {
         
         if (interstitialAgent != null) {
+            interstitialAgent.setDecisionPoint(decisionPoint);
             showAd(interstitialAgent, decisionPoint, parameters);
         } else {
             listener.onInterstitialAdFailedToOpen("Not registered");
@@ -223,6 +220,7 @@ final class AdServiceImpl implements AdService {
             @Nullable JSONObject parameters) {
         
         if (rewardedAgent != null) {
+            rewardedAgent.setDecisionPoint(decisionPoint);
             showAd(rewardedAgent, decisionPoint, parameters);
         } else {
             listener.onRewardedAdFailedToOpen("Not registered");
@@ -289,6 +287,152 @@ final class AdServiceImpl implements AdService {
                 }
             }
         });
+    }
+    
+    private void configure(JSONObject configuration, boolean cached) {
+        final JSONObject adConfiguration =
+                configuration.optJSONObject("parameters");
+        if (adConfiguration == null) {
+            Log.w(BuildConfig.LOG_TAG, "No configuration found");
+            
+            broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
+                    .putExtra(Actions.REASON, "No configuration found"));
+            return;
+        }
+        
+        if (cached) {
+            Log.v(BuildConfig.LOG_TAG, "Using cached configuration");
+        } else {
+            Log.v(BuildConfig.LOG_TAG, "Using live configuration");
+        }
+        
+        if (!adConfiguration.optBoolean("adShowSession", false)) {
+            listener.onFailedToRegisterForInterstitialAds(
+                    "Ads disabled for this session");
+            listener.onFailedToRegisterForRewardedAds(
+                    "Ads disabled for this session");
+            broadcasts.sendBroadcast(
+                    new Intent(Actions.FAILED_TO_REGISTER).putExtra(
+                            Actions.REASON,
+                            "Ads disabled for this session"));
+            return;
+        }
+        
+        if (    !adConfiguration.has("adProviders")
+                && !adConfiguration.has("adRewardedProviders")) {
+            listener.onFailedToRegisterForInterstitialAds(
+                    "Invalid Engage response, missing 'adProviders' key");
+            listener.onFailedToRegisterForRewardedAds(
+                    "Invalid Engage response, missing 'adRewardedProviders' key");
+            broadcasts.sendBroadcast(
+                    new Intent(Actions.FAILED_TO_REGISTER).putExtra(
+                            Actions.REASON,
+                            "Missing providers key in Engage response"));
+            return;
+        }
+        
+        adDebugMode = adConfiguration.optBoolean(
+                "adRecordAdRequests", DEFAULT_AD_DEBUG_MODE);
+        
+        final int adFloorPrice = adConfiguration.optInt("adFloorPrice");
+        final int demoteOnCode = adConfiguration.optInt("adDemoteOnRequestCode");
+        final int maxPerNetwork = adConfiguration.optInt("adMaxPerNetwork");
+        adMinimumInterval = adConfiguration.optInt(
+                "adMinimumInterval", DEFAULT_AD_MINIMUM_INTERVAL);
+        adMaxPerSession = adConfiguration.optInt(
+                "adMaxPerSession", DEFAULT_AD_MAX_PER_SESSION);
+        
+        final JSONArray interstitialProviders =
+                adConfiguration.optJSONArray("adProviders");
+        if (interstitialProviders != null && interstitialProviders.length() > 0) {
+            final Waterfall waterfall = WaterfallFactory.create(
+                    interstitialProviders,
+                    adFloorPrice,
+                    demoteOnCode,
+                    maxPerNetwork,
+                    privacy,
+                    AdProviderType.INTERSTITIAL);
+            
+            if (waterfall.adapters.isEmpty()) {
+                Log.w(BuildConfig.LOG_TAG, "No interstitial ad networks enabled");
+                
+                listener.onFailedToRegisterForInterstitialAds(
+                        "No interstitial ad networks enabled");
+                broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
+                        .putExtra(
+                                Actions.AGENT,
+                                Actions.Agent.INTERSTITIAL)
+                        .putExtra(
+                                Actions.REASON,
+                                "No interstitial ad networks enabled"));
+            } else {
+                interstitialAgent = new AdAgent(
+                        adAgentListeners,
+                        waterfall,
+                        adMaxPerSession,
+                        exceptionHandler);
+                interstitialAgent.requestAd(activity, adConfiguration);
+                
+                listener.onRegisteredForInterstitialAds();
+            }
+        } else {
+            listener.onFailedToRegisterForInterstitialAds(
+                    "No interstitial ad networks configured");
+            broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
+                    .putExtra(
+                            Actions.AGENT,
+                            Actions.Agent.INTERSTITIAL)
+                    .putExtra(
+                            Actions.REASON,
+                            "No interstitial ad providers defined"));
+        }
+        
+        final JSONArray rewardedProviders =
+                adConfiguration.optJSONArray("adRewardedProviders");
+        if (rewardedProviders != null && rewardedProviders.length() > 0) {
+            final Waterfall waterfall = WaterfallFactory.create(
+                    rewardedProviders,
+                    adFloorPrice,
+                    demoteOnCode,
+                    maxPerNetwork,
+                    privacy,
+                    AdProviderType.REWARDED);
+            
+            if (waterfall.adapters.isEmpty()) {
+                Log.w(BuildConfig.LOG_TAG, "No rewarded ad networks enabled");
+                
+                listener.onFailedToRegisterForRewardedAds(
+                        "No rewarded ad networks enabled");
+                broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
+                        .putExtra(
+                                Actions.AGENT,
+                                Actions.Agent.REWARDED)
+                        .putExtra(
+                                Actions.REASON,
+                                "No rewarded ad networks enabled"));
+            } else {
+                rewardedAgent = new AdAgent(
+                        adAgentListeners,
+                        waterfall,
+                        adMaxPerSession,
+                        exceptionHandler);
+                rewardedAgent.requestAd(activity, adConfiguration);
+                
+                listener.onRegisteredForRewardedAds();
+            }
+        } else {
+            listener.onFailedToRegisterForRewardedAds(
+                    "No rewarded ad networks configured");
+            broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
+                    .putExtra(
+                            Actions.AGENT,
+                            Actions.Agent.REWARDED)
+                    .putExtra(
+                            Actions.REASON,
+                            "No rewarded ad networks configured"));
+        }
+        
+        metrics.newSession(new Date());
     }
     
     private boolean isAdAllowed(
@@ -380,73 +524,63 @@ final class AdServiceImpl implements AdService {
             Log.w(BuildConfig.LOG_TAG, "Prefer showing ads with Engagements");
         }
         
-        agent.setDecisionPoint(decisionPoint);
-        
         final AdShowResult result = getResult(
                 agent,
                 decisionPoint,
                 parameters);
         switch (result) {
             case AD_SHOW_POINT:
-                postAdShowEvent(agent, decisionPoint, result);
+                postAdShowEvent(agent, result);
                 didFailToOpenAd(agent, result.status);
                 return;
             
             case MIN_TIME_NOT_ELAPSED:
-                postAdShowEvent(agent, decisionPoint, result);
+                postAdShowEvent(agent, result);
                 didFailToOpenAd(
                         agent,
                         "Minimum environment time between ads not elapsed");
                 return;
             
             case MIN_TIME_DECISION_POINT_NOT_ELAPSED:
-                postAdShowEvent(agent, decisionPoint, result);
+                postAdShowEvent(agent, result);
                 didFailToOpenAd(
                         agent,
                         "Minimum decision point time between ads not elapsed");
                 return;
             
             case SESSION_LIMIT_REACHED:
-                postAdShowEvent(agent, decisionPoint, result);
+                postAdShowEvent(agent, result);
                 didFailToOpenAd(
                         agent,
                         "Session limit for environment reached");
                 return;
             
             case SESSION_DECISION_POINT_LIMIT_REACHED:
-                postAdShowEvent(agent, decisionPoint, result);
+                postAdShowEvent(agent, result);
                 didFailToOpenAd(
                         agent,
                         "Session limit for decision point reached");
                 return;
             
             case DAILY_DECISION_POINT_LIMIT_REACHED:
-                postAdShowEvent(agent, decisionPoint, result);
+                postAdShowEvent(agent, result);
                 didFailToOpenAd(agent, "Daily limit for decision point reached");
                 return;
         }
         
         if (!agent.hasLoadedAd()) {
-            postAdShowEvent(agent, decisionPoint, AdShowResult.NOT_LOADED);
+            postAdShowEvent(agent, AdShowResult.NOT_LOADED);
             didFailToOpenAd(agent, "Ad not loaded");
             return;
         }
         
-        postAdShowEvent(agent, decisionPoint, AdShowResult.FULFILLED);
+        postAdShowEvent(agent, AdShowResult.FULFILLED);
         handler.post(new Runnable() {
             @Override
             public void run() {
                 agent.showAd(decisionPoint);
             }
         });
-    }
-    
-    private void requestAdConfiguration() {
-        listener.onRequestEngagement(
-                decisionPoint,
-                EngagementFlavour.INTERNAL.toString(),
-                VERSION,
-                new ConfigurationListener());
     }
     
     private AdShowResult getResult(
@@ -506,17 +640,16 @@ final class AdServiceImpl implements AdService {
         return AdShowResult.FULFILLED;
     }
     
-    private void postAdShowEvent(
-            AdAgent agent,
-            String decisionPoint,
-            AdShowResult result) {
+    private void postAdShowEvent(AdAgent agent, AdShowResult result) {
         
         final MediationAdapter provider = agent.getCurrentAdapter();
         
         final JSONObject params = new JSONObject();
         try {
             params.put("adType", getType(agent));
-            params.put("adPoint", decisionPoint);
+            if (!TextUtils.isEmpty(agent.getDecisionPoint())) {
+                params.put("adPoint", agent.getDecisionPoint());
+            }
             params.put("adProvider", provider != null ? provider.getProviderString() : "N/A");
             params.put("adProviderVersion", provider != null ? provider.getProviderVersionString() : "N/A");
             params.put("adStatus", result.status);
@@ -663,13 +796,13 @@ final class AdServiceImpl implements AdService {
                 Log.w(  BuildConfig.LOG_TAG,
                         "Interstitial ad failed to open: " + reason);
                 
-                postAdShowEvent(agent, decisionPoint, result);
+                postAdShowEvent(agent, result);
                 listener.onInterstitialAdFailedToOpen(reason);
             } else if (agent.equals(rewardedAgent)) {
                 Log.w(  BuildConfig.LOG_TAG,
                         "Rewarded ad failed to open: " + reason);
                 
-                postAdShowEvent(agent, decisionPoint, result);
+                postAdShowEvent(agent, result);
                 listener.onRewardedAdFailedToOpen(reason);
             }
         }
@@ -697,181 +830,6 @@ final class AdServiceImpl implements AdService {
                 postAdClosedEvent(agent, adapter);
                 listener.onRewardedAdClosed(complete);
             }
-        }
-    }
-    
-    private final class ConfigurationListener implements EngagementListener {
-        
-        @Override
-        public void onSuccess(JSONObject result) {
-            Log.d(BuildConfig.LOG_TAG, "Engage request succeeded: " + result);
-            
-            if (!result.has("parameters")) {
-                Log.w(  BuildConfig.LOG_TAG,
-                        "No configuration returned by Engage due to missing 'parameters' key");
-                
-                broadcasts.sendBroadcast(
-                        new Intent(Actions.FAILED_TO_REGISTER).putExtra(
-                                Actions.REASON,
-                                "No configuration returned by Engage due to missing 'parameters' key"));
-                scheduleConfigurationRequest();
-                
-                return;
-            }
-            
-            final JSONObject adConfiguration = result.optJSONObject("parameters");
-            
-            if (!adConfiguration.optBoolean("adShowSession", false)) {
-                listener.onFailedToRegisterForInterstitialAds(
-                        "Ads disabled for this session");
-                listener.onFailedToRegisterForRewardedAds(
-                        "Ads disabled for this session");
-                broadcasts.sendBroadcast(
-                        new Intent(Actions.FAILED_TO_REGISTER).putExtra(
-                                Actions.REASON,
-                                "Ads disabled for this session"));
-                return;
-            }
-            
-            if (    !adConfiguration.has("adProviders")
-                    && !adConfiguration.has("adRewardedProviders")) {
-                listener.onFailedToRegisterForInterstitialAds(
-                        "Invalid Engage response, missing 'adProviders' key");
-                listener.onFailedToRegisterForRewardedAds(
-                        "Invalid Engage response, missing 'adRewardedProviders' key");
-                broadcasts.sendBroadcast(
-                        new Intent(Actions.FAILED_TO_REGISTER).putExtra(
-                                Actions.REASON,
-                                "Missing providers key in Engage response"));
-                return;
-            }
-            
-            adDebugMode = adConfiguration.optBoolean(
-                    "adRecordAdRequests", DEFAULT_AD_DEBUG_MODE);
-            
-            final int adFloorPrice = adConfiguration.optInt("adFloorPrice");
-            final int demoteOnCode = adConfiguration.optInt("adDemoteOnRequestCode");
-            final int maxPerNetwork = adConfiguration.optInt("adMaxPerNetwork");
-            adMinimumInterval = adConfiguration.optInt(
-                    "adMinimumInterval", DEFAULT_AD_MINIMUM_INTERVAL);
-            adMaxPerSession = adConfiguration.optInt(
-                    "adMaxPerSession", DEFAULT_AD_MAX_PER_SESSION);
-            
-            final JSONArray interstitialProviders =
-                    adConfiguration.optJSONArray("adProviders");
-            if (interstitialProviders != null && interstitialProviders.length() > 0) {
-                final Waterfall waterfall = WaterfallFactory.create(
-                        interstitialProviders,
-                        adFloorPrice,
-                        demoteOnCode,
-                        maxPerNetwork,
-                        privacy,
-                        AdProviderType.INTERSTITIAL);
-                
-                if (waterfall.adapters.isEmpty()) {
-                    Log.w(BuildConfig.LOG_TAG, "No interstitial ad networks enabled");
-                    
-                    listener.onFailedToRegisterForInterstitialAds(
-                            "No interstitial ad networks enabled");
-                    broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
-                            .putExtra(
-                                    Actions.AGENT,
-                                    Actions.Agent.INTERSTITIAL)
-                            .putExtra(
-                                    Actions.REASON,
-                                    "No interstitial ad networks enabled"));
-                } else {
-                    interstitialAgent = new AdAgent(
-                            adAgentListeners,
-                            waterfall,
-                            adMaxPerSession,
-                            exceptionHandler);
-                    interstitialAgent.requestAd(activity, adConfiguration);
-                    
-                    listener.onRegisteredForInterstitialAds();
-                }
-            } else {
-                listener.onFailedToRegisterForInterstitialAds(
-                        "No interstitial ad networks configured");
-                broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
-                        .putExtra(
-                                Actions.AGENT,
-                                Actions.Agent.INTERSTITIAL)
-                        .putExtra(
-                                Actions.REASON,
-                                "No interstitial ad providers defined"));
-            }
-            
-            final JSONArray rewardedProviders =
-                    adConfiguration.optJSONArray("adRewardedProviders");
-            if (rewardedProviders != null && rewardedProviders.length() > 0) {
-                final Waterfall waterfall = WaterfallFactory.create(
-                        rewardedProviders,
-                        adFloorPrice,
-                        demoteOnCode,
-                        maxPerNetwork,
-                        privacy,
-                        AdProviderType.REWARDED);
-                
-                if (waterfall.adapters.isEmpty()) {
-                    Log.w(BuildConfig.LOG_TAG, "No rewarded ad networks enabled");
-                    
-                    listener.onFailedToRegisterForRewardedAds(
-                            "No rewarded ad networks enabled");
-                    broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
-                            .putExtra(
-                                    Actions.AGENT,
-                                    Actions.Agent.REWARDED)
-                            .putExtra(
-                                    Actions.REASON,
-                                    "No rewarded ad networks enabled"));
-                } else {
-                    rewardedAgent = new AdAgent(
-                            adAgentListeners,
-                            waterfall,
-                            adMaxPerSession,
-                            exceptionHandler);
-                    rewardedAgent.requestAd(activity, adConfiguration);
-                    
-                    listener.onRegisteredForRewardedAds();
-                }
-            } else {
-                listener.onFailedToRegisterForRewardedAds(
-                        "No rewarded ad networks configured");
-                broadcasts.sendBroadcast(new Intent(Actions.FAILED_TO_REGISTER)
-                        .putExtra(
-                                Actions.AGENT,
-                                Actions.Agent.REWARDED)
-                        .putExtra(
-                                Actions.REASON,
-                                "No rewarded ad networks configured"));
-            }
-            
-            metrics.newSession(new Date());
-        }
-        
-        @Override
-        public void onFailure(Throwable t) {
-            Log.w(BuildConfig.LOG_TAG, "Engage request failed: " + t);
-            
-            broadcasts.sendBroadcast(
-                    new Intent(Actions.FAILED_TO_REGISTER).putExtra(
-                            Actions.REASON,
-                            "Engage request failed: " + t.getMessage()));
-            scheduleConfigurationRequest();
-        }
-        
-        private void scheduleConfigurationRequest() {
-            handler.postDelayed(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d(  BuildConfig.LOG_TAG,
-                                    "Retrying to register for ads");
-                            requestAdConfiguration();
-                        }
-                    },
-                    TIME_ONE_SECOND);
         }
     }
     

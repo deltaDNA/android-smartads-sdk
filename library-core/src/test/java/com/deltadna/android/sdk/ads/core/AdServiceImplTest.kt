@@ -543,33 +543,28 @@ class AdServiceImplTest {
             config: Config = Config(),
             block: AdServiceImpl.() -> Unit) {
         with(config) {
-            doAnswer {
-                (it.arguments.find { it is EngagementListener } as EngagementListener)
-                        .onSuccess(jsonObject("parameters" to jsonObject(
-                                "adShowSession" to adShowSession,
-                                "adFloorPrice" to adFloorPrice,
-                                "adDemoteOnRequestCode" to onDemoteRequestCode,
-                                "adMaxPerNetwork" to maxPerNetwork,
-                                "adMinimumInterval" to adMinimumInterval,
-                                "adMaxPerSession" to adMaxPerSession,
-                                "adProviders" to jsonArray(
-                                        *interstitial.map { jsonObject(
-                                                "adProvider" to it.name,
-                                                "eCPM" to Int.MAX_VALUE)
-                                        }.toTypedArray()),
-                                "adRewardedProviders" to jsonArray(
-                                        *rewarded.map { jsonObject(
-                                                "adProvider" to it.name,
-                                                "eCPM" to Int.MAX_VALUE)
-                                        }.toTypedArray())))
-                                .convert())
-            }.whenever(listener).onRequestEngagement(
-                    eq(decisionPoint),
-                    eq(EngagementFlavour.INTERNAL.toString()),
-                    eq("SmartAds v${BuildConfig.VERSION_NAME}"),
-                    any())
-            
-            uut.registerForAds(decisionPoint, true, false)
+            uut.configure(
+                    jsonObject("parameters" to jsonObject(
+                            "adShowSession" to adShowSession,
+                            "adFloorPrice" to adFloorPrice,
+                            "adDemoteOnRequestCode" to onDemoteRequestCode,
+                            "adMaxPerNetwork" to maxPerNetwork,
+                            "adMinimumInterval" to adMinimumInterval,
+                            "adMaxPerSession" to adMaxPerSession,
+                            "adProviders" to jsonArray(
+                                    *interstitial.map { jsonObject(
+                                            "adProvider" to it.name,
+                                            "eCPM" to Int.MAX_VALUE)
+                                    }.toTypedArray()),
+                            "adRewardedProviders" to jsonArray(
+                                    *rewarded.map { jsonObject(
+                                            "adProvider" to it.name,
+                                            "eCPM" to Int.MAX_VALUE)
+                                    }.toTypedArray())))
+                            .convert(),
+                    false,
+                    true,
+                    false)
         }
         
         block(uut)

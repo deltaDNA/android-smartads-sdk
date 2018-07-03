@@ -19,12 +19,9 @@ package com.deltadna.android.sdk.ads
 import com.deltadna.android.sdk.DDNA
 import com.deltadna.android.sdk.Engagement
 import com.deltadna.android.sdk.ads.core.AdService
-import com.deltadna.android.sdk.ads.core.EngagementListener
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener
 import com.deltadna.android.sdk.ads.listeners.InterstitialAdsListener
 import com.deltadna.android.sdk.ads.listeners.RewardedAdsListener
-import com.deltadna.android.sdk.listeners.EngageListener
-import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockito_kotlin.*
 import org.json.JSONObject
 import org.junit.After
@@ -33,7 +30,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
-import java.lang.Exception
 
 @RunWith(RobolectricTestRunner::class)
 class AdsTest {
@@ -308,45 +304,20 @@ class AdsTest {
     }
     
     @Test
-    fun onRequestEngagement() {
-        val listener = mock<EngagementListener>()
-        uut.onRequestEngagement("decisionPoint", "flavour", "version", listener)
+    fun `on new session callback calls service`() {
+        uut.onNewSession()
         
-        val eng = argumentCaptor<Engagement<*>>()
-        val cbk = argumentCaptor<EngageListener<Engagement<*>>>()
-        verify(analytics).requestEngagement(eng.capture(), cbk.capture())
-        
-        assertThat(eng.firstValue.getDecisionPoint()).isEqualTo("decisionPoint")
-        
-        cbk.firstValue.apply {
-            val engagement = mock<Engagement<*>>()
-            
-            val result = mock<JSONObject>()
-            whenever(engagement.isSuccessful()).then { true }
-            whenever(engagement.getJson()).then { result }
-            onCompleted(engagement)
-            verify(listener).onSuccess(same(result))
-            
-            whenever(engagement.isSuccessful()).then { false }
-            whenever(engagement.getError()).then { "reason" }
-            onCompleted(engagement)
-            verify(listener).onFailure(argThat { message == "reason" })
-            
-            val exception = mock<Exception>()
-            onError(exception)
-            verify(listener).onFailure(same(exception))
-        }
+        verify(service).onNewSession()
     }
     
     @Test
-    fun onNewSession() {
-        whenever(settings.isUserConsent).then { false }
-        whenever(settings.isAgeRestrictedUser).then { true }
+    fun `on session configured callback calls service`() {
+        val config = JSONObject()
+        uut.onSessionConfigured(true, config)
         
-        uut.onNewSession()
-        
-        verify(service).registerForAds(eq("advertising"), eq(false), eq(true))
-        verify(service).onNewSession()
+        verify(settings).isUserConsent
+        verify(settings).isAgeRestrictedUser
+        verify(service).configure(same(config), eq(true), any(), any())
     }
     
     @Test
