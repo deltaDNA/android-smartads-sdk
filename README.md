@@ -163,13 +163,8 @@ Additional (often dangerous) permissions may be added to increase the functional
 More details can be shown about which ads are loaded and have been shown by adding the `deltadna-smartads-debug` dependency to your project. We only recommend adding this for debug builds of your application. You can achieve this with Gradle with the following example:
 ```groovy
 dependencies {
-<<<<<<< HEAD
     compile 'com.deltadna.android:deltadna-smartads:1.10.0-SNAPSHOT'
     debugCompile 'com.deltadna.android:deltadna-smartads-debug:1.10.0-SNAPSHOT'
-=======
-    compile 'com.deltadna.android:deltadna-smartads:1.9.1'
-    debugCompile 'com.deltadna.android:deltadna-smartads-debug:1.9.1'
->>>>>>> origin/master
 }
 ```
 The notification can be hidden, until the application is restarted, by swiping away on it.

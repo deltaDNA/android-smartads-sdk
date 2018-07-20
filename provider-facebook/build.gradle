@@ -30,7 +30,13 @@ dependencies {
     
     implementation("com.facebook.android:audience-network-sdk:$PROVIDER_VERSION") {
         exclude group: 'com.google.android.gms', module: 'play-services-ads'
+        /* Workaround for Unity Jar Resolver failing to resolve versions with
+         * 'r' prefix. Once Facebook update their SDK to use one of the newer
+         * versions without the 'r' we should no longer need this.
+         */
+        exclude group: 'com.google.android.exoplayer', module: 'exoplayer'
     }
+    implementation 'com.google.android.exoplayer:exoplayer:2.6.1'
     // workaround for strange 'GradleCompatible' lint error
     implementation "com.google.android.gms:play-services-ads:$playServicesVersion"
     
