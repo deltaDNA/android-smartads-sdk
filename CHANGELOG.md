@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.9.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.9.2) (YYYY-MM-DD)
+## [1.9.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.9.2) (2018-07-20)
 Workaround for transitive dependency resolution error with Facebook on Unity.  
 
 ## [1.9.1](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.9.1) (2018-06-21)
