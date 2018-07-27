@@ -22,7 +22,6 @@ import com.deltadna.android.sdk.ads.bindings.AdRequestResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
 import com.nhaarman.mockito_kotlin.*
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,47 +30,28 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class AppLovinEventForwarderTest {
     
-    private val listener = mock<MediationListener>()
-    private val adapter = mock<MediationAdapter>()
+    private lateinit var listener: MediationListener
+    private lateinit var adapter: MediationAdapter
     
-    private var uut = AppLovinEventForwarder(listener, adapter)
+    private lateinit var uut: AppLovinEventForwarder
     
     @Before
     fun before() {
+        listener = mock()
+        adapter = mock()
+        
         uut = AppLovinEventForwarder(listener, adapter)
     }
     
-    @After
-    fun after() {
-        reset(listener, adapter)
-    }
-    
     @Test
-    fun adReceived() {
+    fun `ad received notifies listener`() {
         uut.adReceived(mock())
-        uut.adReceived(mock())
-        
-        verify(listener).onAdLoaded(same(adapter))
-        verifyNoMoreInteractions(listener)
-    }
-    
-    @Test
-    fun adReceivedWithChecker() {
-        val checker = mock<PollingLoadChecker>()
-        uut.setChecker(checker)
-        uut.adReceived(mock())
-        
-        verify(checker).stop()
         verify(listener).onAdLoaded(same(adapter))
     }
     
     @Test
-    fun failedToReceiveAd() {
-        val checker = mock<PollingLoadChecker>()
-        uut.setChecker(checker)
+    fun `failed to receive ad notifies listener`() {
         uut.failedToReceiveAd(AppLovinErrorCodes.NO_FILL)
-        
-        verify(checker).stop()
         verify(listener).onAdFailedToLoad(
                 same(adapter),
                 eq(AdRequestResult.NoFill),
@@ -79,7 +59,7 @@ class AppLovinEventForwarderTest {
     }
     
     @Test
-    fun cycleCompleted() {
+    fun `completed ad play cycle notifies listener`() {
         with(mock<AppLovinAd>()) {
             uut.adDisplayed(this)
             uut.videoPlaybackBegan(this)
@@ -87,26 +67,29 @@ class AppLovinEventForwarderTest {
             uut.adHidden(this)
         }
         
-        verify(listener).onAdShowing(same(adapter))
-        verify(listener).onAdClosed(same(adapter), eq(true))
+        inOrder(listener) {
+            verify(listener).onAdShowing(same(adapter))
+            verify(listener).onAdClosed(same(adapter), eq(true))
+        }
     }
     
     @Test
-    fun cycleNotCompleted() {
+    fun `incomplete ad play cycle notifies listener`() {
         with(mock<AppLovinAd>()) {
             uut.adDisplayed(this)
             uut.videoPlaybackBegan(this)
             uut.adHidden(this)
         }
         
-        verify(listener).onAdShowing(same(adapter))
-        verify(listener).onAdClosed(same(adapter), eq(false))
+        inOrder(listener) {
+            verify(listener).onAdShowing(same(adapter))
+            verify(listener).onAdClosed(same(adapter), eq(false))
+        }
     }
     
     @Test
-    fun adClicked() {
+    fun `ad clicked notifies listener`() {
         uut.adClicked(mock())
-        
         verify(listener).onAdClicked(same(adapter))
     }
 }

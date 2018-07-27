@@ -16,7 +16,6 @@
 
 package com.deltadna.android.sdk.ads.provider.applovin;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.applovin.sdk.AppLovinAd;
@@ -40,10 +39,6 @@ final class AppLovinEventForwarder implements
     private final MediationListener listener;
     private final MediationAdapter adapter;
     
-    @Nullable
-    private PollingLoadChecker checker;
-    
-    private boolean notified;
     private boolean complete;
     
     AppLovinEventForwarder(MediationListener listener, MediationAdapter adapter) {
@@ -51,21 +46,10 @@ final class AppLovinEventForwarder implements
         this.adapter = adapter;
     }
     
-    void setChecker(@Nullable PollingLoadChecker checker) {
-        this.checker = checker;
-    }
-    
     @Override
     public void adReceived(AppLovinAd appLovinAd) {
         Log.d(BuildConfig.LOG_TAG, "Ad received");
-        
-        if (checker != null) {
-            checker.stop();
-        }
-        if (!notified) {
-            listener.onAdLoaded(adapter);
-            notified = true;
-        }
+        listener.onAdLoaded(adapter);
     }
     
     @Override
@@ -99,10 +83,6 @@ final class AppLovinEventForwarder implements
             default:
                 Log.w(BuildConfig.LOG_TAG, "Unknown case: " + i);
                 result = AdRequestResult.Error;
-        }
-        
-        if (checker != null) {
-            checker.stop();
         }
         
         listener.onAdFailedToLoad(

@@ -23,6 +23,8 @@ import android.util.Log;
 
 import com.applovin.adview.AppLovinInterstitialAd;
 import com.applovin.adview.AppLovinInterstitialAdDialog;
+import com.applovin.sdk.AppLovinAdSize;
+import com.applovin.sdk.AppLovinPrivacySettings;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkSettings;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
@@ -30,8 +32,6 @@ import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.deltadna.android.sdk.ads.bindings.Privacy;
 
 import org.json.JSONObject;
-
-import java.lang.reflect.InvocationTargetException;
 
 public final class AppLovinRewardedAdapter extends MediationAdapter {
     
@@ -77,46 +77,41 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
             final AppLovinSdkSettings settings = new AppLovinSdkSettings();
             settings.setVerboseLogging(verboseLogging);
             
-            sdk = AppLovinSdk.getInstance(
-                    key,
-                    settings,
-                    activity);
+            sdk = AppLovinSdk.getInstance(key, settings, activity);
+            sdk.initializeSdk();
             
-            try {
-                /*
-                 * This is actually true, it's just that the underlying
-                 * implementation checks the activity by looking at the stack
-                 * trace, so as soon as we're deep enough or running inside a
-                 * handler it fails. AppLovinSdkImpl is the class with the
-                 * implementation.
-                 */
-                sdk.getClass()
-                        .getMethod("setInitializedInMainActivity", boolean.class)
-                        .invoke(sdk, true);
-            } catch (NoSuchMethodException e) {
-                Log.w(BuildConfig.LOG_TAG, e);
-            } catch (InvocationTargetException e) {
-                Log.w(BuildConfig.LOG_TAG, e);
-            } catch (IllegalAccessException e) {
-                Log.w(BuildConfig.LOG_TAG, e);
+            AppLovinPrivacySettings.setHasUserConsent(
+                    privacy.userConsent, activity);
+            AppLovinPrivacySettings.setIsAgeRestrictedUser(
+                    privacy.ageRestricted, activity);
+            
+        } else {
+            if (    AppLovinPrivacySettings.hasUserConsent(activity)
+                    != privacy.userConsent) {
+                AppLovinPrivacySettings.setHasUserConsent(
+                        privacy.userConsent, activity);
+            }
+            if (    AppLovinPrivacySettings.isAgeRestrictedUser(activity)
+                    != privacy.ageRestricted) {
+                AppLovinPrivacySettings.setIsAgeRestrictedUser(
+                        privacy.userConsent, activity);
             }
         }
         
-        final AppLovinEventForwarder forwarder =
-                new AppLovinEventForwarder(listener, this);
-        
-        //noinspection ConstantConditions
         interstitial = AppLovinInterstitialAd.create(sdk, activity);
-        interstitial.setAdLoadListener(forwarder);
-        interstitial.setAdDisplayListener(forwarder);
-        interstitial.setAdVideoPlaybackListener(forwarder);
-        interstitial.setAdClickListener(forwarder);
         
-        final PollingLoadChecker checker = new PollingLoadChecker(
-                interstitial,
-                forwarder);
-        forwarder.setChecker(checker);
-        checker.start();
+        if (interstitial != null) {
+            final AppLovinEventForwarder forwarder =
+                    new AppLovinEventForwarder(listener, this);
+            
+            interstitial.setAdDisplayListener(forwarder);
+            interstitial.setAdVideoPlaybackListener(forwarder);
+            interstitial.setAdClickListener(forwarder);
+            
+            sdk.getAdService().loadNextAd(
+                    AppLovinAdSize.INTERSTITIAL,
+                    new AppLovinEventForwarder(listener,this));
+        }
     }
     
     @Override
@@ -152,12 +147,13 @@ public final class AppLovinRewardedAdapter extends MediationAdapter {
     }
     
     @Override
-    public void onPause() {
-        // cannot forward
-    }
+    public void onPause() {}
     
     @Override
-    public void onResume() {
-        // cannot forward
+    public void onResume() {}
+    
+    @Override
+    public boolean isGdprCompliant() {
+        return true;
     }
 }
