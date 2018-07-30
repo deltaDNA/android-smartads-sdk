@@ -17,25 +17,13 @@
 package com.deltadna.android.sdk.ads.provider.chartboost;
 
 import android.app.Activity;
-import android.support.annotation.Nullable;
 
-import com.chartboost.sdk.CBLocation;
-import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.deltadna.android.sdk.ads.bindings.Privacy;
 
 import org.json.JSONObject;
 
-public final class ChartBoostInterstitialAdapter extends MediationAdapter {
-    
-    public static final String LOCATION = CBLocation.LOCATION_DEFAULT;
-    
-    private final String appId;
-    private final String appSignature;
-    private final String location;
-    
-    @Nullable
-    private Activity activity;
+public final class ChartBoostInterstitialAdapter extends ChartBoostAdapter {
     
     public ChartBoostInterstitialAdapter(
             int eCPM,
@@ -49,11 +37,10 @@ public final class ChartBoostInterstitialAdapter extends MediationAdapter {
         super(  eCPM,
                 demoteOnCode,
                 privacy,
-                waterfallIndex);
-        
-        this.appId = appId;
-        this.appSignature = appSignature;
-        this.location = location;
+                waterfallIndex,
+                appId,
+                appSignature,
+                location);
     }
     
     @Override
@@ -62,14 +49,7 @@ public final class ChartBoostInterstitialAdapter extends MediationAdapter {
             MediationListener listener,
             JSONObject configuration) {
         
-        this.activity = activity;
-        
-        Helper.initialise(
-                activity,
-                appId,
-                appSignature,
-                this,
-                listener);
+        super.requestAd(activity, listener, configuration);
         
         Helper.requestInterstitial(
                 location,
@@ -80,30 +60,5 @@ public final class ChartBoostInterstitialAdapter extends MediationAdapter {
     @Override
     public void showAd() {
         Helper.showInterstitial(location);
-    }
-    
-    @Override
-    public String getProviderString() {
-        return BuildConfig.PROVIDER_NAME;
-    }
-    
-    @Override
-    public String getProviderVersionString() {
-        return BuildConfig.PROVIDER_VERSION;
-    }
-    
-    @Override
-    public void onResume() {
-        if (activity != null) Helper.onResume(activity);
-    }
-    
-    @Override
-    public void onPause() {
-        if (activity != null) Helper.onPause(activity);
-    }
-    
-    @Override
-    public void onDestroy() {
-        if (activity != null) Helper.onDestroy(activity);
     }
 }
