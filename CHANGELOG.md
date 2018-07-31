@@ -3,6 +3,7 @@
 ## [1.10.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.10.0) (YYYY-MM-DD)
 Updated AdColony ads with GDPR compliance.  
 Updated Chartboost ads with GDPR compliance.  
+Updated Flurry ads.  
 
 ## [1.9.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.9.2) (2018-07-20)
 Workaround for transitive dependency resolution error with Facebook on Unity.  
