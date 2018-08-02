@@ -18,18 +18,24 @@ package com.deltadna.android.sdk.ads.provider.ironsource;
 
 import android.app.Activity;
 
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.ironsource.mediationsdk.IronSource;
 
 class Helper {
     
     private static boolean initialised;
+    private static boolean consent;
     
-    static void initialise(Activity activity, String appKey) {
+    static void initialise(Activity activity, Privacy privacy, String appKey) {
         synchronized (Helper.class) {
             if (!initialised) {
                 IronSource.init(activity, appKey);
+                IronSource.setConsent(consent = privacy.userConsent);
                 IronSource.setMediationType("DeltaDNA");
+                
                 initialised = true;
+            } else if (consent != privacy.userConsent) {
+                IronSource.setConsent(consent = privacy.userConsent);
             }
         }
     }
