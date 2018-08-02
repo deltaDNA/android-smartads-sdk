@@ -33,6 +33,7 @@ allprojects {
     repositories {
         maven { url 'https://deltadna.bintray.com/android' }
         maven { url 'https://dl.bintray.com/ironsource-mobile/android-sdk' }
+        maven { url 'https://dl.bintray.com/loopme/maven' }
         maven { url 'https://raw.githubusercontent.com/HyprMXMobile/Android-SDKs/master' }
         maven { url 'https://s3.amazonaws.com/moat-sdk-builds' }
         maven { url 'https://tapjoy.bintray.com/maven' }

@@ -19,6 +19,9 @@ dependencies {
     
     implementation "com.loopme:loopme-sdk:$PROVIDER_VERSION@aar"
     
+    // workaround for dialog_gdpr_layout.xml not finding @style/Widget.AppCompat.ProgressBar.Horizontal
+    implementation "com.android.support:appcompat-v7:$supportVersion"
+    
     // needed for advertising id retrieval
     implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }
