@@ -125,7 +125,7 @@ class IntegrationActivity : AppCompatActivity() {
     
     private companion object {
         
-        val PRIVACY = Privacy(false, false)
+        val PRIVACY = Privacy(true, false)
         val PROVIDERS = listOf(
                 AdColonyAdapter(
                         0,

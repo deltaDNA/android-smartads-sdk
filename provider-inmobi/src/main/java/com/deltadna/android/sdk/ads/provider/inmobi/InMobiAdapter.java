@@ -20,12 +20,14 @@ import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.inmobi.ads.InMobiInterstitial;
 import com.inmobi.sdk.InMobiSdk;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 abstract class InMobiAdapter<T extends EventForwarder> extends MediationAdapter {
@@ -73,7 +75,23 @@ abstract class InMobiAdapter<T extends EventForwarder> extends MediationAdapter 
                 Log.d(BuildConfig.LOG_TAG, "Initialising SDK");
                 
                 if (logging) InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
-                InMobiSdk.init(activity, accountId);
+                
+                try {
+                    InMobiSdk.init(
+                            activity,
+                            accountId,
+                            new JSONObject()
+                                    .put(   InMobiSdk.IM_GDPR_CONSENT_AVAILABLE,
+                                            privacy.userConsent)
+                                    .put("gdpr", 1));
+                } catch (JSONException e) {
+                    Log.w(BuildConfig.LOG_TAG, "Failed to initialise SDK", e);
+                    listener.onAdFailedToLoad(
+                            this,
+                            AdRequestResult.Error,
+                            "Failed to initialise SDK due to: " + e.getMessage());
+                    return;
+                }
                 
                 initialised = true;
             }
@@ -118,5 +136,10 @@ abstract class InMobiAdapter<T extends EventForwarder> extends MediationAdapter 
     @Override
     public void onResume() {
         // cannot forward
+    }
+    
+    @Override
+    public boolean isGdprCompliant() {
+        return true;
     }
 }
