@@ -22,16 +22,23 @@ import android.support.annotation.Nullable;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.deltadna.android.sdk.ads.bindings.Privacy;
-import com.mobfox.sdk.interstitialads.InterstitialAd;
+import com.mobfox.sdk.interstitial.Interstitial;
+import com.mobfox.sdk.networking.MobfoxRequestParams;
 
 import org.json.JSONObject;
 
 public final class MobFoxAdapter extends MediationAdapter {
     
+    private static final MobfoxRequestParams PARAMS;
+    static {
+        PARAMS = new MobfoxRequestParams();
+        PARAMS.setParam(MobfoxRequestParams.GDPR, "1");
+    }
+    
     private final String publicationId;
     
     @Nullable
-    private InterstitialAd ad;
+    private Interstitial ad;
     
     public MobFoxAdapter(
             int eCPM,
@@ -54,9 +61,13 @@ public final class MobFoxAdapter extends MediationAdapter {
             MediationListener listener,
             JSONObject configuration) {
         
-        ad = new InterstitialAd(activity);
+        PARAMS.setParam(
+                MobfoxRequestParams.GDPR_CONSENT,
+                privacy.userConsent ? "1" : "0");
+        
+        ad = new Interstitial(activity, publicationId);
         ad.setListener(new MobFoxEventForwarder(listener, this));
-        ad.setInventoryHash(publicationId);
+        ad.setRequestParams(PARAMS);
         ad.load();
     }
     
@@ -81,12 +92,13 @@ public final class MobFoxAdapter extends MediationAdapter {
     }
     
     @Override
-    public void onPause() {
-        if (ad != null) ad.onPause();
-    }
+    public void onPause() {}
     
     @Override
-    public void onResume() {
-        if (ad != null) ad.onResume();
+    public void onResume() {}
+    
+    @Override
+    public boolean isGdprCompliant() {
+        return true;
     }
 }

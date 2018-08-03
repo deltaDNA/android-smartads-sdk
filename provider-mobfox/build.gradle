@@ -25,8 +25,12 @@ dependencies {
     api project(':library-bindings')
     
     implementation files("libs/MobFox-Android-SDK-Core-${PROVIDER_VERSION}.jar")
-    implementation 'com.danikula:videocache:2.7.0'
-    implementation "com.deltadna.android:MAT-moat-mobile-app-kit:${PROVIDER_VERSION}"
+    
+    implementation 'com.android.volley:volley:1.1.0'
+    // don't use mobfox's fork due to version prefix 'v' breaking in unity
+    // https://github.com/googlesamples/unity-jar-resolver/issues/133
+    implementation 'com.danikula:videocache:2.7.1'
+    implementation 'com.deltadna.android:MAT-moat-mobile-app-kit:3.3.0'
     
     // needed for advertising id retrieval
     implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
