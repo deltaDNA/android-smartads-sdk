@@ -26,16 +26,20 @@ import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.unity3d.ads.UnityAds;
+import com.unity3d.ads.metadata.MetaData;
 
 import org.json.JSONObject;
 
 public final class UnityRewardedAdapter extends MediationAdapter {
+    
+    private static final String GDPR_CONSENT = "gdpr.consent";
     
     private final String gameId;
     private final String placementId;
     private final boolean testMode;
     
     private boolean initialised;
+    private boolean committedConsent;
     
     @Nullable
     private Activity activity;
@@ -78,6 +82,11 @@ public final class UnityRewardedAdapter extends MediationAdapter {
                         forwarder,
                         testMode);
                 
+                final MetaData metaData = new MetaData(activity);
+                metaData.set(GDPR_CONSENT, privacy.userConsent);
+                metaData.commit();
+                committedConsent = privacy.userConsent;
+                
                 initialised = true;
                 Log.d(BuildConfig.LOG_TAG, "Initialised");
             } catch (Exception e) {
@@ -88,6 +97,11 @@ public final class UnityRewardedAdapter extends MediationAdapter {
                         "Invalid Unity configuration: " + e);
                 return;
             }
+        } else if (committedConsent != privacy.userConsent) {
+            final MetaData metaData = new MetaData(activity);
+            metaData.set(GDPR_CONSENT, privacy.userConsent);
+            metaData.commit();
+            committedConsent = privacy.userConsent;
         }
         
         this.activity = activity;
