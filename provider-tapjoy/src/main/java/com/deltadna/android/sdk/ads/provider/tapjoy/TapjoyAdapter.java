@@ -83,6 +83,9 @@ public final class TapjoyAdapter extends MediationAdapter {
             if (!initialising && !initialised) {
                 initialising = true;
                 
+                Tapjoy.subjectToGDPR(true);
+                Tapjoy.setUserConsent(privacy.userConsent ? "1" : "0");
+                
                 final Hashtable<String, Object> flags = new Hashtable<>(1);
                 flags.put(TapjoyConnectFlag.ENABLE_LOGGING, Boolean.toString(logging));
                 
@@ -143,6 +146,11 @@ public final class TapjoyAdapter extends MediationAdapter {
     @Override
     public String getProviderVersionString() {
         return BuildConfig.PROVIDER_VERSION;
+    }
+    
+    @Override
+    public boolean isGdprCompliant() {
+        return true;
     }
     
     private class Request implements Runnable {
