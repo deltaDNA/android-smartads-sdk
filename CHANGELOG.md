@@ -11,6 +11,7 @@ Updated MobFox ads with GDPR compliance.
 Updated MoPub ads with GDPR compliance.  
 Updated Tapjoy ads with GDPR compliance.  
 Updated Unity ads with GDPR compliance.  
+Updated Vungle ads with GDPR compliance.  
 
 ## [1.9.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.9.2) (2018-07-20)
 Workaround for transitive dependency resolution error with Facebook on Unity.  

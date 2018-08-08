@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 deltaDNA Ltd. All rights reserved.
+ * Copyright (c) 2018 deltaDNA Ltd. All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,120 +16,43 @@
 
 package com.deltadna.android.sdk.ads.provider.vungle
 
-import com.deltadna.android.sdk.ads.bindings.AdRequestResult
-import com.deltadna.android.sdk.ads.bindings.AdShowResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
-import com.nhaarman.mockito_kotlin.*
-import org.junit.After
+import com.google.common.truth.Truth.*
+import com.nhaarman.mockito_kotlin.mock
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
+import org.junit.runners.JUnit4
 
-@RunWith(RobolectricTestRunner::class)
+@RunWith(JUnit4::class)
 class EventForwarderTest {
     
-    private val placement = "placement"
-    private val adapter = mock<MediationAdapter>()
-    private val listener = mock<MediationListener>()
+    private lateinit var adapter: MediationAdapter
+    private lateinit var listener: MediationListener
     
-    private var uut = EventForwarder(placement, adapter, listener)
+    private lateinit var uut: EventForwarder
     
     @Before
     fun before() {
-        uut = EventForwarder(placement, adapter, listener)
-    }
-    
-    @After
-    fun after() {
-        reset(adapter, listener)
+        adapter = mock()
+        listener = mock()
+        
+        uut = EventForwarder(PLACEMENT_ID, adapter, listener)
     }
     
     @Test
-    fun firstAvailabilityUpdate() {
-        uut.onAdAvailabilityUpdate(placement, true)
+    fun `checks whether placement is the same`() {
+        assertThat(uut.isSamePlacement(null)).isFalse()
+        assertThat(uut.isSamePlacement("")).isFalse()
         
-        verify(listener).onAdLoaded(same(adapter))
+        assertThat(uut.isSamePlacement(PLACEMENT_ID)).isTrue()
+        
+        assertThat(uut.isSamePlacement("differentPlacementId"))
     }
     
-    @Test
-    fun firstAvailabilityUpdateFailure() {
-        uut.onAdAvailabilityUpdate(placement, false)
+    private companion object {
         
-        verify(listener).onAdFailedToLoad(
-                same(adapter),
-                eq(AdRequestResult.NoFill),
-                any())
-    }
-    
-    @Test
-    fun successiveAvailabilityUpdate() {
-        uut.onAdAvailabilityUpdate(placement, true)
-        uut.onAdAvailabilityUpdate(placement, false)
-        uut.requestPerformed(listener)
-        
-        inOrder(listener) {
-            verify(listener).onAdLoaded(same(adapter))
-            verify(listener).onAdFailedToLoad(
-                    same(adapter),
-                    eq(AdRequestResult.NoFill),
-                    any())
-        }
-    }
-    
-    @Test
-    fun unableToPlayAd() {
-        uut.onUnableToPlayAd(placement, "reason")
-        
-        verify(listener).onAdFailedToShow(
-                same(adapter),
-                eq(AdShowResult.EXPIRED))
-    }
-    
-    @Test
-    fun adStart() {
-        uut.onAdStart(placement)
-        
-        verify(listener).onAdShowing(same(adapter))
-    }
-    
-    @Test
-    fun adEndSuccessfulView() {
-        uut.onAdEnd(placement, true, false)
-        
-        verify(listener).onAdClosed(same(adapter), eq(true))
-        verifyNoMoreInteractions(listener)
-    }
-    
-    @Test
-    fun adEndUnsuccessfulView() {
-        uut.onAdEnd(placement, false, false)
-        
-        verify(listener).onAdClosed(same(adapter), eq(false))
-        verifyNoMoreInteractions(listener)
-    }
-    
-    @Test
-    fun adEndWithClicked() {
-        uut.onAdEnd(placement, true, true)
-        
-        inOrder(listener) {
-            verify(listener).onAdClicked(same(adapter))
-            verify(listener).onAdClosed(same(adapter), eq(true))
-        }
-        verifyNoMoreInteractions(listener)
-    }
-    
-    @Test
-    fun ignoresDifferentPlacement() {
-        with("different") {
-            uut.onAdAvailabilityUpdate(this, true)
-            uut.onUnableToPlayAd(this, "reason")
-            uut.onAdStart(this)
-            uut.onAdEnd(this, true, true)
-        }
-        
-        verifyZeroInteractions(listener)
+        const val PLACEMENT_ID = "placementId"
     }
 }

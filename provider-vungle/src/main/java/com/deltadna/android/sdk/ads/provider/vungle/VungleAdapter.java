@@ -17,29 +17,31 @@
 package com.deltadna.android.sdk.ads.provider.vungle;
 
 import android.app.Activity;
-import android.text.TextUtils;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
+import com.deltadna.android.sdk.ads.bindings.AdShowResult;
 import com.deltadna.android.sdk.ads.bindings.MainThread;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.deltadna.android.sdk.ads.bindings.Privacy;
-import com.vungle.publisher.VungleAdEventListener;
-import com.vungle.publisher.VungleInitListener;
-import com.vungle.publisher.VunglePub;
+import com.vungle.warren.InitCallback;
+import com.vungle.warren.LoadAdCallback;
+import com.vungle.warren.PlayAdCallback;
+import com.vungle.warren.Vungle;
 
 import org.json.JSONObject;
 
 public final class VungleAdapter extends MediationAdapter {
     
+    private static final String CONSENT_VERSION = "1";
+    
     private final String appId;
     private final String placementId;
     
-    private EventForwarder forwarder;
-    private boolean initialised;
-    
-    private VunglePub vunglePub;
+    @Nullable
+    private MediationListener listener;
     
     public VungleAdapter(
             int eCPM,
@@ -64,62 +66,49 @@ public final class VungleAdapter extends MediationAdapter {
             final MediationListener listener,
             JSONObject configuration) {
         
-        if (TextUtils.isEmpty(placementId)) {
-            listener.onAdFailedToLoad(
-                    this,
-                    AdRequestResult.Configuration,
-                    "placementId is null or empty");
-            return;
-        }
-        
-        if (!initialised) {
-            Log.d(BuildConfig.LOG_TAG, "Initialising");
-            
-            vunglePub = VunglePub.getInstance();
-            vunglePub.init(
-                    activity,
+        if (!Vungle.isInitialized()) {
+            Vungle.init(
                     appId,
-                    new String[] { placementId },
-                    MainThread.redirect(
-                            new VungleInitListener() {
-                                @Override
-                                public void onSuccess() {
-                                    initialised = true;
-                                    Log.d(BuildConfig.LOG_TAG, "Initialised");
-                                    
-                                    forwarder = new EventForwarder(
-                                            placementId,
-                                            VungleAdapter.this,
-                                            listener);
-                                    vunglePub.clearAndSetEventListeners(
-                                            MainThread.redirect(
-                                                    forwarder,
-                                                    VungleAdEventListener.class));
-                                    
-                                    vunglePub.loadAd(placementId);
-                                }
-                                
-                                @Override
-                                public void onFailure(Throwable throwable) {
-                                    Log.w(  BuildConfig.LOG_TAG,
-                                            "Failed to initialise",
-                                            throwable);
-                                    listener.onAdFailedToLoad(
-                                            VungleAdapter.this,
-                                            AdRequestResult.Configuration,
-                                            throwable.getMessage());
-                                }
-                            },
-                            VungleInitListener.class));
+                    activity.getApplicationContext(),
+                    new Callback(listener));
         } else {
-            forwarder.requestPerformed(listener);
+            switch (Vungle.getConsentStatus()) {
+                case OPTED_IN:
+                    if (!privacy.userConsent) Vungle.updateConsentStatus(
+                            Vungle.Consent.OPTED_OUT,
+                            CONSENT_VERSION);
+                    break;
+                    
+                case OPTED_OUT:
+                    if (privacy.userConsent) Vungle.updateConsentStatus(
+                            Vungle.Consent.OPTED_IN,
+                            CONSENT_VERSION);
+                    break;
+            }
+            
+            requestAd(listener);
         }
     }
     
     @Override
     public void showAd() {
-        if (vunglePub != null && vunglePub.isAdPlayable(placementId)) {
-            vunglePub.playAd(placementId, null);
+        if (Vungle.isInitialized()) {
+            if (Vungle.canPlayAd(placementId)) {
+                Vungle.playAd(
+                        placementId,
+                        null,
+                        MainThread.redirect(
+                                new PlayEventForwarder(placementId, this, listener),
+                                PlayAdCallback.class));
+            } else if (listener != null) {
+                listener.onAdFailedToShow(this, AdShowResult.NOT_LOADED);
+            } else {
+                Log.w(BuildConfig.LOG_TAG, "Can't play ad and listener is null");
+            }
+        } else if (listener != null) {
+            listener.onAdFailedToShow(this, AdShowResult.ERROR);
+        } else {
+            Log.w(BuildConfig.LOG_TAG, "SDK not initialised and listener is null");
         }
     }
     
@@ -135,20 +124,68 @@ public final class VungleAdapter extends MediationAdapter {
     
     @Override
     public void onDestroy() {
-        vunglePub = null;
+        listener = null;
     }
     
     @Override
-    public void onPause() {
-        if (vunglePub != null) {
-            vunglePub.onPause();
+    public void onPause() {}
+    
+    @Override
+    public void onResume() {}
+    
+    @Override
+    public boolean isGdprCompliant() {
+        return true;
+    }
+    
+    private void requestAd(MediationListener listener) {
+        this.listener = listener;
+        
+        if (Vungle.isInitialized()) {
+            Vungle.loadAd(
+                    placementId,
+                    MainThread.redirect(
+                            new LoadEventForwarder(placementId, this, listener),
+                            LoadAdCallback.class));
+        } else {
+            listener.onAdFailedToLoad(
+                    this,
+                    AdRequestResult.Error,
+                    "SDK not initialised");
         }
     }
     
-    @Override
-    public void onResume() {
-        if (vunglePub != null) {
-            vunglePub.onResume();
+    private final class Callback implements InitCallback {
+        
+        private final MediationListener listener;
+        
+        Callback(MediationListener listener) {
+            this.listener = listener;
         }
+        
+        @Override
+        public void onSuccess() {
+            Log.v(BuildConfig.LOG_TAG, "SDK initialised");
+            
+            Vungle.updateConsentStatus(
+                    privacy.userConsent
+                            ? Vungle.Consent.OPTED_IN
+                            : Vungle.Consent.OPTED_OUT,
+                    CONSENT_VERSION);
+            
+            requestAd(listener);
+        }
+        
+        @Override
+        public void onError(Throwable throwable) {
+            Log.w(BuildConfig.LOG_TAG, "Failed to initialise SDK", throwable);
+            listener.onAdFailedToLoad(
+                    VungleAdapter.this,
+                    AdRequestResult.Configuration,
+                    throwable.getMessage());
+        }
+        
+        @Override
+        public void onAutoCacheAdAvailable(String s) {}
     }
 }
