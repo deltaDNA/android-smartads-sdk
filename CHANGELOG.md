@@ -3,6 +3,7 @@
 ## [1.10.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.10.0) (YYYY-MM-DD)
 Updated AdColony ads with GDPR compliance.  
 Updated Chartboost ads with GDPR compliance.  
+Updated Facebook ads.  
 Updated Flurry ads.  
 Updated InMobi ads with GDPR compliance.  
 Updated IronSource ads with GDPR compliance.  
