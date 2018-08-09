@@ -18,7 +18,4 @@ dependencies {
     api project(':library-bindings')
     
     implementation "com.amazon.android:mobile-ads:$PROVIDER_VERSION"
-    
-    // needed for advertising id retrieval
-    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

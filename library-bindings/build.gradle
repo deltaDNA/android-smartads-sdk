@@ -18,4 +18,6 @@ android {}
 
 dependencies {
     api "com.android.support:support-annotations:$supportVersion"
+    // needed for GAID (http://www.androiddocs.com/google/play-services/id.html)
+    api "com.google.android.gms:play-services-ads-identifier:$playServicesVersion"
 }

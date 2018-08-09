@@ -31,7 +31,4 @@ dependencies {
     // https://github.com/googlesamples/unity-jar-resolver/issues/133
     implementation 'com.danikula:videocache:2.7.1'
     implementation 'com.deltadna.android:MAT-moat-mobile-app-kit:3.3.0'
-    
-    // needed for advertising id retrieval
-    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

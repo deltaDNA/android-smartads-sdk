@@ -50,6 +50,7 @@ class RewardedEventForwarderTest {
         uut.onRewardedVideoAdLoaded()
         uut.onRewardedVideoAdOpened()
         uut.onRewardedVideoStarted()
+        uut.onRewardedVideoCompleted()
         uut.onRewardedVideoAdClosed()
         
         verify(listener).onAdLoaded(same(adapter))
@@ -62,6 +63,7 @@ class RewardedEventForwarderTest {
         uut.onRewardedVideoAdLoaded()
         uut.onRewardedVideoAdOpened()
         uut.onRewardedVideoStarted()
+        uut.onRewardedVideoCompleted()
         uut.onRewarded(mock())
         uut.onRewardedVideoAdClosed()
         

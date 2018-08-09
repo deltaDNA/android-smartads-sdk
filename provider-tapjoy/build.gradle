@@ -26,7 +26,4 @@ dependencies {
     api project(':library-bindings')
     
     implementation "com.tapjoy:tapjoy-android-sdk:$PROVIDER_VERSION@aar"
-    
-    // needed for advertising id retrieval
-    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

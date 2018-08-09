@@ -40,7 +40,4 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer:2.6.1'
     // force same version of play services as $playServicesVersion
     implementation "com.google.android.gms:play-services-ads:$playServicesVersion"
-    
-    // needed for GAID
-    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

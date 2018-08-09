@@ -20,7 +20,4 @@ dependencies {
     implementation("com.mopub:mopub-sdk-interstitial:$PROVIDER_VERSION@aar") {
         transitive = true
     }
-    
-    // needed for advertising id retrieval
-    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

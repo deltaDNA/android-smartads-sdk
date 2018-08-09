@@ -21,7 +21,4 @@ dependencies {
     implementation "com.android.support:support-annotations:$supportVersion"
     implementation "com.android.support:support-v4:$supportVersion"
     implementation 'android.arch.lifecycle:common:1.1.1'
-    
-    // needed for advertising id retrieval
-    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

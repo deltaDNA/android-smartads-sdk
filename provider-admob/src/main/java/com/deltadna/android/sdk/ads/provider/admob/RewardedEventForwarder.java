@@ -79,6 +79,11 @@ final class RewardedEventForwarder implements RewardedVideoAdListener {
     }
     
     @Override
+    public void onRewardedVideoCompleted() {
+        Log.d(BuildConfig.LOG_TAG, "Rewarded video completed");
+    }
+    
+    @Override
     public void onRewarded(RewardItem rewardItem) {
         Log.d(BuildConfig.LOG_TAG, "Rewarded: " + rewardItem);
         complete = true;

@@ -18,7 +18,4 @@ dependencies {
     api project(':library-bindings')
     
     implementation "com.ironsource.sdk:mediationsdk:$PROVIDER_VERSION@jar"
-    
-    // needed for advertising id retrieval
-    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

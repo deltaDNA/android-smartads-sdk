@@ -25,7 +25,4 @@ dependencies {
             type = 'aar'
         }
     }
-    
-    // needed for advertising id retrieval
-    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

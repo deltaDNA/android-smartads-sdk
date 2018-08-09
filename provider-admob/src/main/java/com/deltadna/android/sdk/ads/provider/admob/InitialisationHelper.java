@@ -22,6 +22,8 @@ import com.google.android.gms.ads.MobileAds;
 
 class InitialisationHelper {
     
+    static final String NON_PERSONALISED_ADS = "npa";
+    
     private static boolean initialised;
     
     static void initialise(Context context, String appId) {

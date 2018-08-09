@@ -18,7 +18,8 @@ buildscript {
     ext {
         kotlinVersion = '1.2.50'
         multidexVersion = '1.0.3'
-        playServicesVersion = '11.8.0'
+        // needs to match version in provider-admob/gradle.properties
+        playServicesVersion = '15.0.1'
         supportVersion = '26.1.0'
         
         logTagName  = 'LOG_TAG'

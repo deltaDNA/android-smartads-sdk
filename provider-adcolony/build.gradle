@@ -33,6 +33,6 @@ dependencies {
     
     implementation files("libs/adcolony-${PROVIDER_VERSION}.jar")
     
-    // needed for advertising id retrieval (and GoogleApiAvailability)
+    // needed for GoogleApiAvailability
     implementation "com.google.android.gms:play-services-base:$playServicesVersion"
 }
