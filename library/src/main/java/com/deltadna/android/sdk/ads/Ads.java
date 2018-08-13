@@ -32,7 +32,7 @@ import com.deltadna.android.sdk.ads.core.EngagementListener;
 import com.deltadna.android.sdk.ads.exceptions.EngagementFailureException;
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
 import com.deltadna.android.sdk.listeners.EngageListener;
-import com.deltadna.android.sdk.listeners.EventListener;
+import com.deltadna.android.sdk.listeners.internal.IEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,10 +43,8 @@ import java.util.WeakHashMap;
 
 class Ads implements
         AdServiceListener,
-        EventListener,
+        IEventListener,
         ActivityCatcher.LifecycleCallbacks {
-    
-    private static final String DECISION_POINT = "advertising";
     
     private final Runnable serviceCreator = new Runnable() {
         @Override
@@ -380,46 +378,15 @@ class Ads implements
     }
     
     @Override
-    public void onRequestEngagement(
-            String decisionPoint,
-            String flavour,
-            String version,
-            final EngagementListener listener) {
-        
-        DDNA.instance().requestEngagement(
-                new Engagement(decisionPoint, flavour)
-                        .putParam("adSdkVersion", version),
-                new EngageListener<Engagement>() {
-                    @Override
-                    public void onCompleted(Engagement engagement) {
-                        if (engagement.isSuccessful()) {
-                            listener.onSuccess(engagement.getJson());
-                        } else {
-                            listener.onFailure(new EngagementFailureException(
-                                    engagement));
-                        }
-                    }
-                    
-                    @Override
-                    public void onError(Throwable t) {
-                        listener.onFailure(t);
-                    }
-                });
-    }
-    
-    @Override
     public void onStarted() {
-        Log.d(BuildConfig.LOG_TAG, "Received onStarted event");
+        Log.v(BuildConfig.LOG_TAG, "Received onStarted event");
         catcher.onAnalyticsStarted();
         
         if (service == null) {
             if (catcher.getActivity() != null) {
                 serviceCreator.run();
-                service.registerForAds(
-                        DECISION_POINT,
-                        settings.isUserConsent(),
-                        settings.isAgeRestrictedUser());
             } else {
+                // may happen on first-time analytics creation
                 Log.w(BuildConfig.LOG_TAG, "Activity has not been captured");
             }
         }
@@ -427,7 +394,7 @@ class Ads implements
     
     @Override
     public void onStopped() {
-        Log.d(BuildConfig.LOG_TAG, "Received onStopped event");
+        Log.v(BuildConfig.LOG_TAG, "Received onStopped event");
         catcher.onAnalyticsStopped();
         
         if (service == null) {
@@ -439,7 +406,7 @@ class Ads implements
     
     @Override
     public void onNewSession() {
-        Log.d(BuildConfig.LOG_TAG, "Received onNewSession event");
+        Log.v(BuildConfig.LOG_TAG, "Received onNewSession event");
         
         if (service == null) {
             if (catcher.getActivity() != null) {
@@ -450,13 +417,27 @@ class Ads implements
             }
         }
         
-        if (service != null) {
-            service.registerForAds(
-                    DECISION_POINT,
-                    settings.isUserConsent(),
-                    settings.isAgeRestrictedUser());
-            service.onNewSession();
+        if (service != null) service.onNewSession();
+    }
+    
+    @Override
+    public void onSessionConfigured(boolean cached, JSONObject config) {
+        Log.v(BuildConfig.LOG_TAG, "Received onSessionConfigured event");
+        
+        if (service == null) {
+            if (catcher.getActivity() != null) {
+                serviceCreator.run();
+            } else {
+                // may happen on first-time analytics creation
+                Log.w(BuildConfig.LOG_TAG, "Activity has not been captured");
+            }
         }
+        
+        if (service != null) service.configure(
+                config,
+                cached,
+                settings.isUserConsent(),
+                settings.isAgeRestrictedUser());
     }
     
     @Override
