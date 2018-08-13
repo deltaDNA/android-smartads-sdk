@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.adcolony.sdk.AdColony;
+import com.adcolony.sdk.AdColonyAppOptions;
 import com.adcolony.sdk.AdColonyInterstitial;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
@@ -66,11 +67,22 @@ public final class AdColonyAdapter extends MediationAdapter {
             JSONObject configuration) {
         
         if (!initialised) {
-            initialised = AdColony.configure(activity, appId, zoneIds);
-            
-            AdColony.setAppOptions(AdColony.getAppOptions()
-                    .setTestModeEnabled(testMode)
-                    .setMediationNetwork("DeltaDNA", BuildConfig.VERSION_NAME));
+            initialised = AdColony.configure(
+                    activity,
+                    new AdColonyAppOptions()
+                            .setGDPRRequired(true)
+                            .setGDPRConsentString(privacy.userConsent ? "1" : "0")
+                            .setTestModeEnabled(testMode)
+                            .setMediationNetwork("DeltaDNA", BuildConfig.VERSION_NAME),
+                    appId,
+                    zoneIds);
+        } else {
+            final AdColonyAppOptions options = AdColony.getAppOptions();
+            if (options.getGDPRConsentString().equals("1") && !privacy.userConsent) {
+                AdColony.setAppOptions(options.setGDPRConsentString("0"));
+            } else if (options.getGDPRConsentString().equals("0") && privacy.userConsent) {
+                AdColony.setAppOptions(options.setGDPRConsentString("1"));
+            }
         }
         
         if (!initialised) {
@@ -126,4 +138,9 @@ public final class AdColonyAdapter extends MediationAdapter {
     
     @Override
     public void onResume() {}
+    
+    @Override
+    public boolean isGdprCompliant() {
+        return true;
+    }
 }

@@ -21,10 +21,16 @@ limitations under the License.
     
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     
     <application>
-        <activity android:name="com.mobfox.sdk.interstitialads.InterstitialActivity" android:hardwareAccelerated="true"/>
-        <activity android:name="com.mobfox.sdk.interstitial.InterstitialActivity" android:hardwareAccelerated="true" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <service android:name="com.mobfox.sdk.services.MobFoxService" android:launchMode="singleTop"/>
+        <activity
+            android:name="com.mobfox.sdk.interstitial.InterstitialActivity"
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+        <service
+            android:name="com.mobfox.sdk.services.MobFoxService"
+            android:launchMode="singleTop"/>
     </application>
 </manifest>

@@ -1,5 +1,20 @@
 # Change Log
 
+## [1.10.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.10.0) (YYYY-MM-DD)
+Updated AdColony ads with GDPR compliance.  
+Updated AdMob ads with GDPR compliance.  
+Updated Chartboost ads with GDPR compliance.  
+Updated Facebook ads.  
+Updated Flurry ads.  
+Updated InMobi ads with GDPR compliance.  
+Updated IronSource ads with GDPR compliance.  
+Updated LoopMe ads with GDPR compliance.  
+Updated MobFox ads with GDPR compliance.  
+Updated MoPub ads with GDPR compliance.  
+Updated Tapjoy ads with GDPR compliance.  
+Updated Unity ads with GDPR compliance.  
+Updated Vungle ads with GDPR compliance.  
+
 ## [1.9.2](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.9.2) (2018-07-20)
 Workaround for transitive dependency resolution error with Facebook on Unity.  
 

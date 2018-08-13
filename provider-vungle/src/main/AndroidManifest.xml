@@ -32,18 +32,19 @@ limitations under the License.
     
     <application>
         <activity
-            android:name="com.vungle.publisher.VideoFullScreenAdActivity"
+            android:name="com.vungle.warren.ui.VungleActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
-            android:name="com.vungle.publisher.MraidFullScreenAdActivity"
+            android:name="com.vungle.warren.ui.VungleWebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
-        
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
-            android:name="com.vungle.publisher.FlexViewAdActivity"
+            android:name="com.vungle.warren.ui.VungleFlexViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
     </application>
 </manifest>

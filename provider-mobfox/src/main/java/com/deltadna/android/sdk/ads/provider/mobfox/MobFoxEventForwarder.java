@@ -21,12 +21,10 @@ import android.util.Log;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
-import com.mobfox.sdk.interstitialads.InterstitialAd;
-import com.mobfox.sdk.interstitialads.InterstitialAdListener;
+import com.mobfox.sdk.interstitial.Interstitial;
+import com.mobfox.sdk.interstitial.InterstitialListener;
 
-import java.util.Locale;
-
-final class MobFoxEventForwarder implements InterstitialAdListener {
+final class MobFoxEventForwarder implements InterstitialListener {
     
     private final MediationListener listener;
     private final MediationAdapter adapter;
@@ -39,47 +37,38 @@ final class MobFoxEventForwarder implements InterstitialAdListener {
     }
     
     @Override
-    public void onInterstitialLoaded(InterstitialAd ad) {
+    public void onInterstitialLoaded(Interstitial ad) {
         Log.d(BuildConfig.LOG_TAG, "Interstitial loaded: " + ad);
         listener.onAdLoaded(adapter);
     }
     
     @Override
-    public void onInterstitialFailed(InterstitialAd ad, Exception e) {
-        Log.w(BuildConfig.LOG_TAG, String.format(
-                Locale.US,
-                "Interstitial failed: %s/%s",
-                ad,
-                e));
+    public void onInterstitialFailed(String error) {
+        Log.w(BuildConfig.LOG_TAG, "Interstitial failed: " + error);
         
-        // messages taken from decompiled InterstitialAd class
+        // best guess at figuring out what the error could be...
         final AdRequestResult result;
-        switch (e.getMessage()) {
-            case "no fill":
-            case "no ads in response":
-                result = AdRequestResult.NoFill;
-                break;
-            
-            case "please set inventory hash before load()":
-                result = AdRequestResult.Configuration;
-                break;
-            
-            default:
-                result = AdRequestResult.Error;
+        final String e = error.toLowerCase();
+        if (e.contains("fill") || e.contains("no ad")) {
+            result = AdRequestResult.NoFill;
+        } else if (e.contains("inventory") || e.contains("hash") || e.contains("invh")) {
+            result = AdRequestResult.Configuration;
+        } else {
+            result = AdRequestResult.Error;
         }
         
-        listener.onAdFailedToLoad(adapter, result, e.getMessage());
+        listener.onAdFailedToLoad(adapter, result, error);
     }
     
     @Override
-    public void onInterstitialShown(InterstitialAd ad) {
-        Log.d(BuildConfig.LOG_TAG, "Interstitial shown: " + ad);
+    public void onInterstitialShown() {
+        Log.d(BuildConfig.LOG_TAG, "Interstitial shown");
         listener.onAdShowing(adapter);
     }
     
     @Override
-    public void onInterstitialClicked(InterstitialAd ad) {
-        Log.d(BuildConfig.LOG_TAG, "Interstitial clicked: " + ad);
+    public void onInterstitialClicked() {
+        Log.d(BuildConfig.LOG_TAG, "Interstitial clicked");
         listener.onAdClicked(adapter);
     }
     
@@ -90,8 +79,8 @@ final class MobFoxEventForwarder implements InterstitialAdListener {
     }
     
     @Override
-    public void onInterstitialClosed(InterstitialAd ad) {
-        Log.d(BuildConfig.LOG_TAG, "Interstitial closed: " + ad);
+    public void onInterstitialClosed() {
+        Log.d(BuildConfig.LOG_TAG, "Interstitial closed");
         listener.onAdClosed(adapter, completed);
     }
 }

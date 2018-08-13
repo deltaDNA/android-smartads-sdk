@@ -23,6 +23,7 @@ import com.chartboost.sdk.Chartboost;
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
+import com.deltadna.android.sdk.ads.bindings.Privacy;
 
 final class Helper {
     
@@ -41,6 +42,7 @@ final class Helper {
             Log.d(BuildConfig.LOG_TAG, "Initialising");
             
             try {
+                Chartboost.restrictDataCollection(activity, true);
                 Chartboost.startWithAppId(activity, appId, appSignature);
                 Chartboost.setDelegate(delegate);
                 Chartboost.onCreate(activity);

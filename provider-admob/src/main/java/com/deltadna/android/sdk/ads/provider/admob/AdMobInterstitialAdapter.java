@@ -17,12 +17,14 @@
 package com.deltadna.android.sdk.ads.provider.admob;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.deltadna.android.sdk.ads.bindings.Privacy;
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
@@ -58,7 +60,10 @@ final public class AdMobInterstitialAdapter extends MediationAdapter {
     }
     
     @Override
-    public void requestAd(final Activity activity, final MediationListener listener, JSONObject configuration) {
+    public void requestAd(
+            final Activity activity,
+            final MediationListener listener,
+            JSONObject configuration) {
         
         InitialisationHelper.initialise(activity, appId);
         
@@ -82,6 +87,13 @@ final public class AdMobInterstitialAdapter extends MediationAdapter {
         try {
             final AdRequest.Builder request = new AdRequest.Builder();
             if (testMode) request.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+            
+            final Bundle extras = new Bundle(1);
+            extras.putString(
+                    InitialisationHelper.NON_PERSONALISED_ADS,
+                    privacy.userConsent ? "0" : "1");
+            request.addNetworkExtrasBundle(AdMobAdapter.class, extras);
+            request.tagForChildDirectedTreatment(privacy.ageRestricted);
             
             interstitial.loadAd(request.build());
         } catch (Exception e) {
@@ -116,12 +128,13 @@ final public class AdMobInterstitialAdapter extends MediationAdapter {
     }
     
     @Override
-    public void onPause() {
-        // cannot forward
-    }
+    public void onPause() {}
     
     @Override
-    public void onResume() {
-        // cannot forward
+    public void onResume() {}
+    
+    @Override
+    public boolean isGdprCompliant() {
+        return true;
     }
 }

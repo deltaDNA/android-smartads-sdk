@@ -14,32 +14,22 @@
  * limitations under the License.
  */
 
-android {
-    packagingOptions {
-        exclude 'assets/vg_close.png'
-        exclude 'assets/vg_cta.png'
-        exclude 'assets/vg_cta_disabled.png'
-        exclude 'assets/vg_mute_off.png'
-        exclude 'assets/vg_mute_on.png'
-        exclude 'assets/vg_privacy.png'
-    }
-}
-
 dependencies {
     api project(':library-bindings')
     
-    implementation files("libs/publisher-sdk-android-${PROVIDER_VERSION}.jar")
+    // not using jitpack dependency as it can be iffy
+    implementation files("libs/vungle-android-sdk-${PROVIDER_VERSION}.jar")
     
+    implementation files('libs/VNG-moat-mobile-app-kit-2.2.0.jar')
     implementation 'com.google.code.gson:gson:2.7'
-    implementation 'com.google.dagger:dagger:2.7'
-    implementation 'com.squareup.okhttp3:okhttp:3.6.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.7.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.7.0'
+    implementation 'com.squareup.okio:okio:1.12.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
     implementation 'com.squareup.retrofit2:retrofit:2.2.0'
-    implementation 'de.greenrobot:eventbus:2.2.1'
-    implementation 'io.reactivex:rxjava:1.2.0'
-    implementation 'javax.inject:javax.inject:1'
-    
-    // needed for advertising id retrieval (and GooglePlayServicesUtil)
-    implementation "com.google.android.gms:play-services-base:$playServicesVersion"
+    implementation('com.tonyodev.fetch:fetch:1.1.5') {
+        // requests version 27.0.2 which isn't compatible with $supportVersion
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    }
+    implementation "com.android.support:appcompat-v7:$supportVersion"
 }

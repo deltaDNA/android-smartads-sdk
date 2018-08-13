@@ -18,7 +18,8 @@ buildscript {
     ext {
         kotlinVersion = '1.2.50'
         multidexVersion = '1.0.3'
-        playServicesVersion = '11.8.0'
+        // needs to match version in provider-admob/gradle.properties
+        playServicesVersion = '15.0.1'
         supportVersion = '26.1.0'
         
         logTagName  = 'LOG_TAG'
@@ -32,7 +33,7 @@ buildscript {
     }
     
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha18'
+        classpath 'com.android.tools.build:gradle:3.2.0-beta04'
         classpath('com.dicedmelon.gradle:jacoco-android:0.1.2') {
             // https://github.com/arturdm/jacoco-android-gradle-plugin/issues/42
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
@@ -46,7 +47,9 @@ allprojects {
     repositories {
         jcenter()
         google()
-        maven { url 'http://deltadna.bintray.com/android' }
+        maven { url 'https://deltadna.bintray.com/android' }
+        maven { url 'https://dl.bintray.com/ironsource-mobile/android-sdk' }
+        maven { url 'https://dl.bintray.com/loopme/maven' }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven { url 'https://raw.githubusercontent.com/HyprMXMobile/Android-SDKs/master' }
         maven { url 'https://s3.amazonaws.com/moat-sdk-builds' }

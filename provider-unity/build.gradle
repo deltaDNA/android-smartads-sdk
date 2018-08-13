@@ -18,7 +18,4 @@ dependencies {
     api project(':library-bindings')
     
     implementation files("libs/unity-ads-${PROVIDER_VERSION}-classes.jar")
-    
-    // needed for advertising id retrieval
-    implementation "com.google.android.gms:play-services-basement:$playServicesVersion"
 }

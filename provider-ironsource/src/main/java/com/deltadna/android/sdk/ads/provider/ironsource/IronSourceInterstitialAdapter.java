@@ -19,29 +19,16 @@ package com.deltadna.android.sdk.ads.provider.ironsource;
 import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.MainThread;
-import com.deltadna.android.sdk.ads.bindings.MediationAdapter;
 import com.deltadna.android.sdk.ads.bindings.MediationListener;
 import com.deltadna.android.sdk.ads.bindings.Privacy;
 import com.ironsource.mediationsdk.IronSource;
-import com.ironsource.mediationsdk.logger.IronSourceLogger;
-import com.ironsource.mediationsdk.logger.LogListener;
 import com.ironsource.mediationsdk.sdk.InterstitialListener;
 
 import org.json.JSONObject;
 
-import java.util.Locale;
-
-public final class IronSourceInterstitialAdapter extends MediationAdapter {
-    
-    private final String appKey;
-    @Nullable
-    private final String placementName;
-    
-    @Nullable
-    private Activity activity;
+public final class IronSourceInterstitialAdapter extends IronSourceAdapter {
     
     public IronSourceInterstitialAdapter(
             int eCPM,
@@ -55,28 +42,10 @@ public final class IronSourceInterstitialAdapter extends MediationAdapter {
         super(  eCPM,
                 demoteOnCode,
                 privacy,
-                waterfallIndex);
-        
-        this.appKey = appKey;
-        this.placementName = placementName;
-        
-        if (logging) {
-            IronSource.setLogListener(new LogListener() {
-                @Override
-                public void onLog(
-                        IronSourceLogger.IronSourceTag tag,
-                        String s,
-                        int i) {
-                    
-                    Log.d(BuildConfig.LOG_TAG, String.format(
-                            Locale.US,
-                            "%s, %s, %d",
-                            tag,
-                            s,
-                            i));
-                }
-            });
-        }
+                waterfallIndex,
+                appKey,
+                placementName,
+                logging);
     }
     
     @Override
@@ -85,9 +54,7 @@ public final class IronSourceInterstitialAdapter extends MediationAdapter {
             MediationListener listener,
             JSONObject configuration) {
         
-        this.activity = activity;
-        
-        Helper.initialise(activity, appKey);
+        super.requestAd(activity, listener, configuration);
         
         IronSource.setInterstitialListener(MainThread.redirect(
                 new IronSourceInterstitialEventForwarder(this, listener),
@@ -104,30 +71,5 @@ public final class IronSourceInterstitialAdapter extends MediationAdapter {
                 IronSource.showInterstitial(placementName);
             }
         }
-    }
-    
-    @Override
-    public String getProviderString() {
-        return BuildConfig.PROVIDER_NAME;
-    }
-    
-    @Override
-    public String getProviderVersionString() {
-        return BuildConfig.PROVIDER_VERSION;
-    }
-    
-    @Override
-    public void onDestroy() {
-        if (activity != null) activity = null;
-    }
-    
-    @Override
-    public void onPause() {
-        if (activity != null) IronSource.onPause(activity);
-    }
-    
-    @Override
-    public void onResume() {
-        if (activity != null) IronSource.onResume(activity);
     }
 }
