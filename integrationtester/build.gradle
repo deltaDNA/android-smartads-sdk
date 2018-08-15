@@ -40,8 +40,6 @@ android {
         buildConfigField 'long', 'INMOBI_INTERSTITIAL_PLACEMENT_ID', "${findProperty('INMOBI_INTERSTITIAL_PLACEMENT_ID') ?: 0L}"
         buildConfigField 'long', 'INMOBI_REWARDED_PLACEMENT_ID', "${findProperty('INMOBI_REWARDED_PLACEMENT_ID') ?: 0L}"
         buildConfigField 'String', 'IRONSOURCE_APP_KEY', "\"${findProperty('IRONSOURCE_APP_KEY')}\""
-        buildConfigField 'String', 'MACHINEZONE_INTERSTITIAL_AD_UNIT_ID', "\"${findProperty('MACHINEZONE_INTERSTITIAL_AD_UNIT_ID')}\""
-        buildConfigField 'String', 'MACHINEZONE_REWARDED_AD_UNIT_ID', "\"${findProperty('MACHINEZONE_REWARDED_AD_UNIT_ID')}\""
         buildConfigField 'String', 'MOBFOX_PUBLICATION_ID', "\"${findProperty('MOBFOX_PUBLICATION_ID')}\""
         buildConfigField 'String', 'MOPUB_AD_UNIT_ID', "\"${findProperty('MOPUB_AD_UNIT_ID')}\""
         buildConfigField 'String', 'TAPJOY_SDK_KEY', "\"${findProperty('TAPJOY_SDK_KEY')}\""
@@ -102,7 +100,6 @@ dependencies {
     implementation project(':provider-inmobi')
     implementation project(':provider-ironsource')
     implementation project(':provider-loopme')
-    implementation project(':provider-machinezone')
     implementation project(':provider-mobfox')
     implementation project(':provider-mopub')
     implementation project(':provider-tapjoy')

@@ -38,8 +38,6 @@ import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter;
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.loopme.LoopMeAdapter;
-import com.deltadna.android.sdk.ads.provider.machinezone.MachineZoneInterstitialAdapter;
-import com.deltadna.android.sdk.ads.provider.machinezone.MachineZoneRewardedAdapter;
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter;
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter;
 import com.deltadna.android.sdk.ads.provider.tapjoy.TapjoyAdapter;
@@ -533,61 +531,6 @@ enum AdProvider {
         @Override
         String version() {
             return com.deltadna.android.sdk.ads.provider.loopme.BuildConfig.PROVIDER_VERSION;
-        }
-    },
-    
-    MACHINEZONE(
-            "com.deltadna.android.sdk.ads.provider.machinezone.MachineZoneInterstitialAdapter",
-            "com.fractionalmedia.sdk") {
-        @Override
-        MediationAdapter createAdapter(
-                int eCPM,
-                int demoteOnCode,
-                Privacy privacy,
-                int index,
-                JSONObject config) throws JSONException {
-            
-            return new MachineZoneInterstitialAdapter(
-                    eCPM,
-                    demoteOnCode,
-                    privacy,
-                    index,
-                    config.getString("adUnitId"));
-        }
-        
-        @Override
-        String version() {
-            return com.deltadna.android.sdk.ads.provider.machinezone.BuildConfig.PROVIDER_VERSION;
-        }
-        
-        @Override
-        AdProvider rewarded() {
-            return MACHINEZONE_REWARDED;
-        }
-    },
-    
-    MACHINEZONE_REWARDED(
-            "com.deltadna.android.sdk.ads.provider.machinezone.MachineZoneRewardedAdapter",
-            "com.fractionalmedia.sdk") {
-        @Override
-        MediationAdapter createAdapter(
-                int eCPM,
-                int demoteOnCode,
-                Privacy privacy,
-                int index,
-                JSONObject config) throws JSONException {
-
-            return new MachineZoneRewardedAdapter(
-                    eCPM,
-                    demoteOnCode,
-                    privacy,
-                    index,
-                    config.getString("adUnitId"));
-        }
-        
-        @Override
-        String version() {
-            return com.deltadna.android.sdk.ads.provider.machinezone.BuildConfig.PROVIDER_VERSION;
         }
     },
     

@@ -95,9 +95,6 @@ android {
         loopme {
             dimension 'default'
         }
-        machinezone {
-            dimension 'default'
-        }
         mobfox {
             dimension 'default'
         }
@@ -134,7 +131,6 @@ dependencies {
     all_Implementation project(':provider-inmobi')
     all_Implementation project(':provider-ironsource')
     all_Implementation project(':provider-loopme')
-    all_Implementation project(':provider-machinezone')
     all_Implementation project(':provider-mobfox')
     all_Implementation project(':provider-mopub')
     all_Implementation project(':provider-tapjoy')
@@ -153,7 +149,6 @@ dependencies {
     inmobiImplementation project(':provider-inmobi')
     ironsourceImplementation project(':provider-ironsource')
     loopmeImplementation project(':provider-loopme')
-    machinezoneImplementation project(':provider-machinezone')
     mobfoxImplementation project(':provider-mobfox')
     mopubImplementation project(':provider-mopub')
     tapjoyImplementation project(':provider-tapjoy')

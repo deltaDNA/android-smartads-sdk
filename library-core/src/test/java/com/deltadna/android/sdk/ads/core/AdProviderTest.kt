@@ -37,8 +37,6 @@ import com.deltadna.android.sdk.ads.provider.inmobi.InMobiRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceInterstitialAdapter
 import com.deltadna.android.sdk.ads.provider.ironsource.IronSourceRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.loopme.LoopMeAdapter
-import com.deltadna.android.sdk.ads.provider.machinezone.MachineZoneInterstitialAdapter
-import com.deltadna.android.sdk.ads.provider.machinezone.MachineZoneRewardedAdapter
 import com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter
 import com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter
 import com.deltadna.android.sdk.ads.provider.tapjoy.TapjoyAdapter
@@ -291,30 +289,6 @@ class AdProviderTest {
             assertThat(this.providerVersionString).isEqualTo(LOOPME.version())
             assertThat(this.javaClass.name).isEqualTo(LOOPME.cls)
         }
-    }
-    
-    @Test
-    fun machineZone() {
-        with(MACHINEZONE.createAdapter(
-                1, 2, Privacy(false, false), 3,
-                JSONObject().put("adUnitId", "adUnitId"))) {
-            assertThat(this).isInstanceOf(MachineZoneInterstitialAdapter::class.java)
-            assertThat(this.providerVersionString).isEqualTo(MACHINEZONE.version())
-            assertThat(this.javaClass.name).isEqualTo(MACHINEZONE.cls)
-        }
-    }
-    
-    @Test
-    fun machineZoneRewarded() {
-        with(MACHINEZONE_REWARDED.createAdapter(
-                1, 2, Privacy(false, false), 3,
-                JSONObject().put("adUnitId", "adUnitId"))) {
-            assertThat(this).isInstanceOf(MachineZoneRewardedAdapter::class.java)
-            assertThat(this.providerVersionString).isEqualTo(MACHINEZONE_REWARDED.version())
-            assertThat(this.javaClass.name).isEqualTo(MACHINEZONE_REWARDED.cls)
-        }
-        
-        assertThat(MACHINEZONE.rewarded()).isSameAs(MACHINEZONE_REWARDED)
     }
     
     @Test
