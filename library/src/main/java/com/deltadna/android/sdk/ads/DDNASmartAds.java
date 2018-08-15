@@ -18,6 +18,8 @@ package com.deltadna.android.sdk.ads;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -25,6 +27,13 @@ import com.deltadna.android.sdk.DDNA;
 import com.deltadna.android.sdk.ads.core.utils.Preconditions;
 import com.deltadna.android.sdk.ads.exceptions.NotInitialisedException;
 import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+
+import java.io.IOException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Singleton class for accessing the deltaDNA SmartAds SDK.
@@ -42,6 +51,9 @@ import com.deltadna.android.sdk.ads.listeners.AdRegistrationListener;
 public final class DDNASmartAds {
     
     private static DDNASmartAds instance = null;
+    
+    private final Executor background = Executors.newSingleThreadExecutor();
+    private final Handler foreground = new Handler(Looper.getMainLooper());
     
     private final Ads ads;
     private final EngageFactory engageFactory;
@@ -163,6 +175,22 @@ public final class DDNASmartAds {
         
         ads = new Ads(settings, application, activity);
         engageFactory = new EngageFactory(DDNA.instance(), ads);
+        
+        Log.v(BuildConfig.LOG_TAG, "Retrieving advertising id");
+        background.execute(() -> {
+            final String id;
+            try {
+                id = AdvertisingIdClient.getAdvertisingIdInfo(application).getId();
+                Log.v(BuildConfig.LOG_TAG, "Retrieved advertising id: " + id);
+            } catch (IOException
+                    | GooglePlayServicesNotAvailableException
+                    | GooglePlayServicesRepairableException e) {
+                Log.w(BuildConfig.LOG_TAG, "Failed to retrieve advertising id", e);
+                return;
+            }
+            
+            foreground.post(() -> DDNA.instance().setAdvertisingId(id));
+        });
     }
     
     /**
