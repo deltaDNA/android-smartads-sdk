@@ -103,6 +103,13 @@ limitations under the License.
         android:text="@string/new_session"
         android:onClick="onNewSession"/>
     
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/forget_me"
+        android:onClick="onForgetMe"/>
+    
     <Switch
         android:id="@+id/user_consent"
         android:layout_width="wrap_content"

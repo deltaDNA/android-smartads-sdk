@@ -158,6 +158,10 @@ public class ExampleActivity extends Activity implements AdRegistrationListener 
         DDNA.instance().newSession();
     }
     
+    public void onForgetMe(View view) {
+        DDNA.instance().forgetMe();
+    }
+    
     public void onUserConsent(View view) {
         DDNASmartAds.instance().getSettings()
                 .setUserConsent(userConsentToggle.isChecked());

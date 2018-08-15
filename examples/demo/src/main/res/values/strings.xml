@@ -19,6 +19,7 @@ limitations under the License.
     <string name="app_name">deltaDNA Ads SDK Example</string>
     
     <string name="new_session">New session</string>
+    <string name="forget_me">Forget me</string>
     
     <string name="show_interstitial_ad">Show interstitial ad</string>
     <string name="show_rewarded_ad1">Show rewarded ad 1</string>
