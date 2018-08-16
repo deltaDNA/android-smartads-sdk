@@ -371,7 +371,12 @@ final class AdServiceImpl implements AdService {
                         waterfall,
                         adMaxPerSession,
                         exceptionHandler);
-                interstitialAgent.requestAd(activity, adConfiguration);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        interstitialAgent.requestAd(activity, adConfiguration);
+                    }
+                });
                 
                 listener.onRegisteredForInterstitialAds();
             }
@@ -416,7 +421,12 @@ final class AdServiceImpl implements AdService {
                         waterfall,
                         adMaxPerSession,
                         exceptionHandler);
-                rewardedAgent.requestAd(activity, adConfiguration);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        rewardedAgent.requestAd(activity, adConfiguration);
+                    }
+                });
                 
                 listener.onRegisteredForRewardedAds();
             }

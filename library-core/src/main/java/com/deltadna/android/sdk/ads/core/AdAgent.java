@@ -200,6 +200,7 @@ class AdAgent implements MediationListener {
     }
     
     @Override
+    @UiThread
     public void onAdLoaded(final MediationAdapter adapter) {
         // some adapters keep loading without being requested to
         if (adapter.equals(currentAdapter)) {
@@ -227,6 +228,7 @@ class AdAgent implements MediationListener {
     }
     
     @Override
+    @UiThread
     public void onAdFailedToLoad(
             final MediationAdapter adapter,
             final AdRequestResult result,
@@ -279,6 +281,7 @@ class AdAgent implements MediationListener {
     }
     
     @Override
+    @UiThread
     public void onAdShowing(final MediationAdapter adapter) {
         if (adapter.equals(currentAdapter)) {
             if (state != State.SHOWING) {
@@ -302,6 +305,7 @@ class AdAgent implements MediationListener {
     }
     
     @Override
+    @UiThread
     public void onAdFailedToShow(
             final MediationAdapter adapter,
             final AdShowResult result) {
@@ -334,16 +338,19 @@ class AdAgent implements MediationListener {
     }
     
     @Override
+    @UiThread
     public void onAdClicked(MediationAdapter mediationAdapter) {
         adWasClicked = true;
     }
     
     @Override
+    @UiThread
     public void onAdLeftApplication(MediationAdapter mediationAdapter) {
         adDidLeaveApplication = true;
     }
     
     @Override
+    @UiThread
     public void onAdClosed(
             final MediationAdapter adapter,
             final boolean complete) {
