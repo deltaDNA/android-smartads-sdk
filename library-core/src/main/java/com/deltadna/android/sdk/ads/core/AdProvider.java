@@ -393,7 +393,7 @@ enum AdProvider {
     },
     
     INMOBI( "com.deltadna.android.sdk.ads.provider.inmobi.InMobiInterstitialAdapter",
-            "com.inmobi.sdk") {
+            "com.inmobi") {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
@@ -535,7 +535,7 @@ enum AdProvider {
     },
     
     MOBFOX( "com.deltadna.android.sdk.ads.provider.mobfox.MobFoxAdapter",
-            "com.mobfox.sdk.interstitialads") {
+            "com.mobfox.sdk") {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
@@ -559,7 +559,7 @@ enum AdProvider {
     },
     
     MOPUB(  "com.deltadna.android.sdk.ads.provider.mopub.MoPubAdapter",
-            "com.mopub.mobileads") {
+            "com.mopub") {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,
@@ -663,7 +663,7 @@ enum AdProvider {
     },
     
     VUNGLE( "com.deltadna.android.sdk.ads.provider.vungle.VungleAdapter",
-            "com.vungle.publisher") {
+            "com.vungle.warren") {
         @Override
         MediationAdapter createAdapter(
                 int eCPM,

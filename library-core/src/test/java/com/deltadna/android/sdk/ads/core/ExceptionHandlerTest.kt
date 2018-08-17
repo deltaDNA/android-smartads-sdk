@@ -31,31 +31,22 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE)
 class ExceptionHandlerTest {
     
-    private var uut = ExceptionHandler(
-            RuntimeEnvironment.application,
-            "1",
-            1,
-            "1",
-            "1")
+    private lateinit var uut: ExceptionHandler
     
     @Before
     fun before() {
         uut = ExceptionHandler(RuntimeEnvironment.application, "1", 1, "1", "1")
     }
     
-    private val element = { cls: String -> StackTraceElement(
-            cls,
-            "method",
-            "fileName",
-            0)}
-    
     @Test
-    fun capturesNothing() {
+    fun `does not capture anything without match`() {
         uut.uncaughtException(
                 Thread.currentThread(),
-                mock<Throwable>().apply { whenever(stackTrace).then {
-                    arrayOf(element(String::class.qualifiedName!!),
-                            element(Integer::class.qualifiedName!!))
+                mock<Throwable>().apply {
+                    whenever(cause).then { this }
+                    whenever(stackTrace).then {
+                        arrayOf(element(String::class.qualifiedName!!),
+                                element(Integer::class.qualifiedName!!))
                 }})
         
         AdProvider.values().forEach {
@@ -63,15 +54,17 @@ class ExceptionHandlerTest {
         }
     }
     
-    @Ignore
+    @Ignore // fails through `gradlew check`, works in AS
     @Test
-    fun capturesAdapter() {
+    fun `captures adapter exception when class found`() {
         uut.uncaughtException(
                 Thread.currentThread(),
-                mock<Throwable>().apply { whenever(stackTrace).then {
-                    arrayOf(element(String::class.qualifiedName!!),
-                            element(AdProvider.CHARTBOOST_REWARDED.cls),
-                            element(Integer::class.qualifiedName!!))
+                mock<Throwable>().apply {
+                    whenever(cause).then { this }
+                    whenever(stackTrace).then {
+                        arrayOf(element(String::class.qualifiedName!!),
+                                element(AdProvider.CHARTBOOST_REWARDED.cls),
+                                element(Integer::class.qualifiedName!!))
                 }})
         
         assertThat(uut.listCrashes(AdProvider.CHARTBOOST_REWARDED)).hasSize(1)
@@ -81,15 +74,17 @@ class ExceptionHandlerTest {
                 .forEach { assertThat(uut.listCrashes(it)).isEmpty() }
     }
     
-    @Ignore
+    @Ignore // fails through `gradlew check`, works in AS
     @Test
-    fun capturesNetwork() {
+    fun `captures network exception when namespace found`() {
         uut.uncaughtException(
                 Thread.currentThread(),
-                mock<Throwable>().apply { whenever(stackTrace).then {
-                    arrayOf(element(String::class.qualifiedName!!),
-                            element(AdProvider.CHARTBOOST.namespace),
-                            element(Integer::class.qualifiedName!!))
+                mock<Throwable>().apply {
+                    whenever(cause).then { this }
+                    whenever(stackTrace).then {
+                        arrayOf(element(String::class.qualifiedName!!),
+                                element(AdProvider.CHARTBOOST.namespace),
+                                element(Integer::class.qualifiedName!!))
                 }})
         
         assertThat(uut.listCrashes(AdProvider.CHARTBOOST)).hasSize(1)
@@ -100,4 +95,69 @@ class ExceptionHandlerTest {
                 .minus(arrayOf(AdProvider.CHARTBOOST, AdProvider.CHARTBOOST_REWARDED))
                 .forEach { assertThat(uut.listCrashes(it)).isEmpty() }
     }
+    
+    @Suppress("NestedLambdaShadowedImplicitParameter")
+    @Ignore // fails through `gradlew check`, works in AS
+    @Test
+    fun `captures cause of exception when namespace found`() {
+        uut.uncaughtException(
+                Thread.currentThread(),
+                mock<Throwable>().apply {
+                    whenever(cause).then { mock<Throwable>().apply {
+                        whenever(cause).then { this }
+                        whenever(stackTrace).then {
+                            arrayOf(element(String::class.qualifiedName!!),
+                                    element(AdProvider.CHARTBOOST.namespace),
+                                    element(Integer::class.qualifiedName!!))
+                        }
+                    }}
+                    whenever(stackTrace).then {
+                        arrayOf(element(String::class.qualifiedName!!),
+                                element(Integer::class.qualifiedName!!))
+                    }})
+        
+        assertThat(uut.listCrashes(AdProvider.CHARTBOOST)).hasSize(1)
+        assertThat(uut.listCrashes(AdProvider.CHARTBOOST_REWARDED)).hasSize(1)
+        AdProvider
+                .values()
+                .asIterable()
+                .minus(arrayOf(AdProvider.CHARTBOOST, AdProvider.CHARTBOOST_REWARDED))
+                .forEach { assertThat(uut.listCrashes(it)).isEmpty() }
+    }
+    
+    @Suppress("NestedLambdaShadowedImplicitParameter")
+    @Ignore // fails through `gradlew check`, works in AS
+    @Test
+    fun `captures exception and cause when namespace found`() {
+        uut.uncaughtException(
+                Thread.currentThread(),
+                mock<Throwable>().apply {
+                    whenever(cause).then { mock<Throwable>().apply {
+                        whenever(cause).then { this }
+                        whenever(stackTrace).then {
+                            arrayOf(element(String::class.qualifiedName!!),
+                                    element(AdProvider.CHARTBOOST.namespace),
+                                    element(Integer::class.qualifiedName!!))
+                        }
+                    }}
+                    whenever(stackTrace).then {
+                        arrayOf(element(String::class.qualifiedName!!),
+                                element(AdProvider.CHARTBOOST.namespace),
+                                element(Integer::class.qualifiedName!!))
+                    }})
+        
+        assertThat(uut.listCrashes(AdProvider.CHARTBOOST)).hasSize(2)
+        assertThat(uut.listCrashes(AdProvider.CHARTBOOST_REWARDED)).hasSize(2)
+        AdProvider
+                .values()
+                .asIterable()
+                .minus(arrayOf(AdProvider.CHARTBOOST, AdProvider.CHARTBOOST_REWARDED))
+                .forEach { assertThat(uut.listCrashes(it)).isEmpty() }
+    }
+    
+    private fun element(cls: String) = StackTraceElement(
+            cls,
+            "method",
+            "fileName",
+            0)
 }

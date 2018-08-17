@@ -61,32 +61,43 @@ final class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-        final StackTraceElement[] elements = e.getStackTrace();
-        for (StackTraceElement element : elements) {
-            for (AdProvider provider : AdProvider.values()) {
-                if (    element.getClassName().equals(provider.cls) ||
-                        element.getClassName().startsWith(provider.namespace)) {
-                    
-                    final StringBuilder builder = new StringBuilder()
-                            .append(e)
-                            .append('\n');
-                    add(builder, elements);
-                    if (e.getCause() != null) {
-                        final Throwable cause = e.getCause();
-                        builder .append("Caused by: ")
-                                .append(cause)
+        final List<Throwable> throwables = new ArrayList<>();
+        throwables.add(e);
+        
+        Throwable th = e;
+        while (th.getCause() != null && th.getCause() != th) {
+            th = e.getCause();
+            throwables.add(th);
+        }
+        
+        for (final Throwable throwable : throwables) {
+            final StackTraceElement[] elements = throwable.getStackTrace();
+            for (StackTraceElement element : elements) {
+                for (AdProvider provider : AdProvider.values()) {
+                    if (element.getClassName().equals(provider.cls) ||
+                            element.getClassName().startsWith(provider.namespace)) {
+                        
+                        final StringBuilder builder = new StringBuilder()
+                                .append(throwable)
                                 .append('\n');
-                        add(builder, cause.getStackTrace());
+                        add(builder, elements);
+                        if (throwable.getCause() != null) {
+                            final Throwable cause = throwable.getCause();
+                            builder.append("Caused by: ")
+                                    .append(cause)
+                                    .append('\n');
+                            add(builder, cause.getStackTrace());
+                        }
+                        
+                        db.add(new Date().getTime(),
+                                provider.name(),
+                                version,
+                                versionCode,
+                                versionSdk,
+                                versionSmartAdsSdk,
+                                provider.version(),
+                                builder.toString());
                     }
-                    
-                    db.add( new Date().getTime(),
-                            provider.name(),
-                            version,
-                            versionCode,
-                            versionSdk,
-                            versionSmartAdsSdk,
-                            provider.version(),
-                            builder.toString());
                 }
             }
         }
