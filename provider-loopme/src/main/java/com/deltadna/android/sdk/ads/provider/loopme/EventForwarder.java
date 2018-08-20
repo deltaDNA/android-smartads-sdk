@@ -16,7 +16,6 @@
 
 package com.deltadna.android.sdk.ads.provider.loopme;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult;
@@ -29,22 +28,24 @@ import java.util.Locale;
 
 final class EventForwarder implements LoopMeInterstitial.Listener {
     
+    private final MediationListener listener;
     private final MediationAdapter adapter;
-    
-    @Nullable
-    private MediationListener listener;
     
     private boolean complete;
     private boolean expired;
     
-    EventForwarder(MediationAdapter adapter) {
+    EventForwarder(
+            MediationListener listener,
+            MediationAdapter adapter) {
+        
+        this.listener = listener;
         this.adapter = adapter;
     }
     
     @Override
     public void onLoopMeInterstitialLoadSuccess(LoopMeInterstitial ad) {
         Log.d(BuildConfig.LOG_TAG, "Interstitial load success: " + ad);
-        if (listener != null) listener.onAdLoaded(adapter);
+        listener.onAdLoaded(adapter);
     }
     
     @Override
@@ -57,7 +58,7 @@ final class EventForwarder implements LoopMeInterstitial.Listener {
                 "Interstitial load fail: %s/%s",
                 ad,
                 error.getMessage()));
-        if (listener != null) listener.onAdFailedToLoad(
+        listener.onAdFailedToLoad(
                 adapter,
                 AdRequestResult.NoFill,
                 error.getMessage());
@@ -66,9 +67,7 @@ final class EventForwarder implements LoopMeInterstitial.Listener {
     @Override
     public void onLoopMeInterstitialShow(LoopMeInterstitial ad) {
         Log.d(BuildConfig.LOG_TAG, "Interstitial show: " + ad);
-        
-        complete = false;
-        if (listener != null) listener.onAdShowing(adapter);
+        listener.onAdShowing(adapter);
     }
     
     @Override
@@ -80,34 +79,25 @@ final class EventForwarder implements LoopMeInterstitial.Listener {
     @Override
     public void onLoopMeInterstitialHide(LoopMeInterstitial ad) {
         Log.d(BuildConfig.LOG_TAG, "Interstitial hide: " + ad);
-        
-        if (listener != null) {
-            listener.onAdClosed(adapter, complete);
-            listener = null;
-        }
+        listener.onAdClosed(adapter, complete);
     }
     
     @Override
     public void onLoopMeInterstitialClicked(LoopMeInterstitial ad) {
         Log.d(BuildConfig.LOG_TAG, "Interstitial clicked: " + ad);
-        if (listener != null) listener.onAdClicked(adapter);
+        listener.onAdClicked(adapter);
     }
     
     @Override
     public void onLoopMeInterstitialLeaveApp(LoopMeInterstitial ad) {
         Log.d(BuildConfig.LOG_TAG, "Interstitial leave app: " + ad);
-        if (listener != null) listener.onAdLeftApplication(adapter);
+        listener.onAdLeftApplication(adapter);
     }
     
     @Override
     public void onLoopMeInterstitialExpired(LoopMeInterstitial ad) {
         Log.d(BuildConfig.LOG_TAG, "Interstitial expired: " + ad);
         expired = true;
-    }
-    
-    EventForwarder setListener(MediationListener listener) {
-        this.listener = listener;
-        return this;
     }
     
     boolean hasExpired() {

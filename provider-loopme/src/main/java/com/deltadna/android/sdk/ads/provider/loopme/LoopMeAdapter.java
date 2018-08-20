@@ -63,17 +63,12 @@ public final class LoopMeAdapter extends MediationAdapter {
             MediationListener listener,
             JSONObject configuration) {
         
-        this.listener = listener;
-        
-        if (ad == null) {
-            forwarder = new EventForwarder(this).setListener(listener);
+        ad = LoopMeInterstitial.getInstance(appKey, activity);
+        if (ad != null) {
+            this.listener = listener;
+            forwarder = new EventForwarder(listener, this);
             
-            ad = LoopMeInterstitial.getInstance(appKey, activity);
-            ad.setAutoLoading(false);
             ad.setListener(forwarder);
-            ad.load();
-        } else if (forwarder != null) {
-            forwarder.setListener(listener);
             ad.load();
         }
     }
@@ -87,10 +82,7 @@ public final class LoopMeAdapter extends MediationAdapter {
             } else if (!ad.isReady() && listener != null) {
                 Log.w(BuildConfig.LOG_TAG, "Ad is not ready");
                 listener.onAdFailedToShow(this, AdShowResult.EXPIRED);
-            } else if (!ad.isReady() && listener != null) {
-                Log.w(BuildConfig.LOG_TAG, "Ad is not loaded");
-                listener.onAdFailedToShow(this, AdShowResult.NOT_LOADED);
-            } else {
+            } else if (ad.isReady()) {
                 ad.show();
             }
         }
@@ -122,9 +114,4 @@ public final class LoopMeAdapter extends MediationAdapter {
     
     @Override
     public void onResume() {}
-    
-    @Override
-    public boolean isGdprCompliant() {
-        return true;
-    }
 }

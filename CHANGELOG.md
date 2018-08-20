@@ -11,7 +11,6 @@ Updated Facebook ads.
 Updated Flurry ads.  
 Updated InMobi ads with GDPR compliance.  
 Updated IronSource ads with GDPR compliance.  
-Updated LoopMe ads with GDPR compliance.  
 Updated MobFox ads with GDPR compliance.  
 Updated MoPub ads with GDPR compliance.  
 Updated Tapjoy ads with GDPR compliance.  

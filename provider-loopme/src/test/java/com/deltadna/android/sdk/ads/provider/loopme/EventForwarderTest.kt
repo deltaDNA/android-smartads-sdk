@@ -19,10 +19,11 @@ package com.deltadna.android.sdk.ads.provider.loopme
 import com.deltadna.android.sdk.ads.bindings.AdRequestResult
 import com.deltadna.android.sdk.ads.bindings.MediationAdapter
 import com.deltadna.android.sdk.ads.bindings.MediationListener
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth.*
 import com.loopme.LoopMeInterstitial
 import com.loopme.common.LoopMeError
 import com.nhaarman.mockito_kotlin.*
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,17 +32,19 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class EventForwarderTest {
     
-    private lateinit var adapter: MediationAdapter
-    private lateinit var listener: MediationListener
+    private val listener = mock<MediationListener>()
+    private val adapter = mock<MediationAdapter>()
     
-    private lateinit var uut: EventForwarder
+    private var uut = EventForwarder(listener, adapter)
     
     @Before
     fun before() {
-        adapter = mock()
-        listener = mock()
-        
-        uut = EventForwarder(adapter).setListener(listener)
+        uut = EventForwarder(listener, adapter)
+    }
+    
+    @After
+    fun after() {
+        reset(listener, adapter)
     }
     
     @Test
