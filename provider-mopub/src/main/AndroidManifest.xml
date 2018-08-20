@@ -43,5 +43,14 @@ limitations under the License.
         <activity
             android:name="com.mopub.mobileads.MraidActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
+        
+        <!--
+        This activity is not needed as we don't use rewarded/video ads but it
+        stops an integration error from coming up. The error should not come
+        up if the functionality is not being used, such as in our case.
+        -->
+        <activity
+            android:name="com.mopub.mobileads.MraidVideoPlayerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
     </application>
 </manifest>
