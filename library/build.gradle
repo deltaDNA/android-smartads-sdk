@@ -29,7 +29,7 @@ android {
 dependencies {
     api project(':library-core')
     
-    api 'com.deltadna.android:deltadna-sdk:4.10.0-SNAPSHOT'
+    api 'com.deltadna.android:deltadna-sdk:4.10.0'
     implementation "com.android.support:support-v4:$supportVersion"
     // needed for GAID (http://www.androiddocs.com/google/play-services/id.html)
     implementation "com.google.android.gms:play-services-ads-identifier:$playServicesVersion"

@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.10.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.10.0) (YYYY-MM-DD)
+## [1.10.0](https://github.com/deltaDNA/android-smartads-sdk/releases/tag/1.10.0) (2018-08-22)
 Added support for passing the GAID into forget me events.  
 Fixed crash detection when linked to cause of the exception.  
 Updated AdColony ads with GDPR compliance.  
