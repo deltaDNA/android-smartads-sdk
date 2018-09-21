@@ -42,31 +42,39 @@ allprojects {
 ```
 In your app's build script
 ```groovy
-compile 'com.deltadna.android:deltadna-sdk:VERSION'
-compile 'com.deltadna.android:deltadna-smartads:1.10.0'
+implementation 'com.deltadna.android:deltadna-sdk:VERSION'
+implementation 'com.deltadna.android:deltadna-smartads:1.10.0'
 
-// ad providers
-compile 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-admob:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-amazon:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-applovin:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-facebook:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-flurry:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-hyprmx:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-ironsource:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-loopme:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-mopub:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-tapjoy:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-thirdpresence:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-unity:1.10.0'
-compile 'com.deltadna.android:deltadna-smartads-provider-vungle:1.10.0'
+// ad providers (can mix and match depending on which ones need to be used)
+implementation 'com.deltadna.android:deltadna-smartads-provider-adcolony:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-admob:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-amazon:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-applovin:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-chartboost:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-facebook:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-flurry:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-hyprmx:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-inmobi:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-ironsource:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-loopme:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-mobfox:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-mopub:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-tapjoy:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-thirdpresence:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-unity:1.10.0'
+implementation 'com.deltadna.android:deltadna-smartads-provider-vungle:1.10.0'
 ```
-Any combination of the above ad providers can be defined in your build script, depending on which ad networks you would like to use in your application.
+The Java source and target compatibility needs to be set to 1.8 in you app's build script:
+```groovy
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+```
 
-Please note that the versions used for SmartAds and the providers should be the same. We cannot guarantee that an ad provider will work correctly if there is a version mismatch.
+Please note that the versions used for SmartAds and the providers should be the same. We cannot guarantee that a provider will work correctly if there is a version mismatch.
 
 ## Initialising
 The SDK needs to be initialised in an `Application` subclass:
@@ -163,8 +171,8 @@ Additional (often dangerous) permissions may be added to increase the functional
 More details can be shown about which ads are loaded and have been shown by adding the `deltadna-smartads-debug` dependency to your project. We only recommend adding this for debug builds of your application. You can achieve this with Gradle with the following example:
 ```groovy
 dependencies {
-    compile 'com.deltadna.android:deltadna-smartads:1.10.0'
-    debugCompile 'com.deltadna.android:deltadna-smartads-debug:1.10.0'
+    implementation 'com.deltadna.android:deltadna-smartads:1.10.0'
+    debugImplementation 'com.deltadna.android:deltadna-smartads-debug:1.10.0'
 }
 ```
 The notification can be hidden, until the application is restarted, by swiping away on it.
